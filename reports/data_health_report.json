@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-03-11T10:08:46.295673+00:00",
+  "overall_passed": true,
+  "thresholds": {
+    "required_completeness_min": 0.98,
+    "duplicate_rate_max": 0.01,
+    "critical_null_rate_max": 0.05,
+    "timestamp_parse_success_min": 0.99
+  },
+  "sources": [
+    {
+      "name": "slot_status",
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/raw/slot_status.csv",
+      "exists": true,
+      "row_count": 17280,
+      "column_count": 6,
+      "missing_required_columns": [],
+      "required_completeness": 1.0,
+      "duplicate_count": 0,
+      "duplicate_rate": 0.0,
+      "critical_null_rate": 0.0,
+      "timestamp_parse_success": {
+        "ts": 1.0
+      },
+      "passed": true,
+      "failed_reasons": []
+    },
+    {
+      "name": "vehicle_event",
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/raw/vehicle_event.csv",
+      "exists": true,
+      "row_count": 1728,
+      "column_count": 5,
+      "missing_required_columns": [],
+      "required_completeness": 1.0,
+      "duplicate_count": 0,
+      "duplicate_rate": 0.0,
+      "critical_null_rate": 0.0,
+      "timestamp_parse_success": {
+        "event_ts": 1.0
+      },
+      "passed": true,
+      "failed_reasons": []
+    },
+    {
+      "name": "resident_pattern",
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/raw/resident_pattern.csv",
+      "exists": true,
+      "row_count": 5040,
+      "column_count": 5,
+      "missing_required_columns": [],
+      "required_completeness": 1.0,
+      "duplicate_count": 0,
+      "duplicate_rate": 0.0,
+      "critical_null_rate": 0.0,
+      "timestamp_parse_success": {},
+      "passed": true,
+      "failed_reasons": []
+    }
+  ]
+}

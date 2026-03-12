@@ -1,0 +1,56 @@
+sources:
+  - name: slot_status
+    path: data/raw/slot_status.csv
+    required_columns:
+      - slot_id
+      - region_id
+      - ts
+      - occupied
+    key_columns:
+      - slot_id
+      - ts
+    ts_columns:
+      - ts
+    critical_columns:
+      - slot_id
+      - ts
+      - occupied
+
+  - name: vehicle_event
+    path: data/raw/vehicle_event.csv
+    required_columns:
+      - event_id
+      - region_id
+      - event_type
+      - event_ts
+    key_columns:
+      - event_id
+    ts_columns:
+      - event_ts
+    critical_columns:
+      - event_id
+      - event_ts
+      - event_type
+
+  - name: resident_pattern
+    path: data/raw/resident_pattern.csv
+    required_columns:
+      - resident_id
+      - weekday
+      - hour_bucket
+      - trip_probability
+    key_columns:
+      - resident_id
+      - weekday
+      - hour_bucket
+    ts_columns: []
+    critical_columns:
+      - resident_id
+      - trip_probability
+
+thresholds:
+  required_completeness_min: 0.98
+  duplicate_rate_max: 0.01
+  critical_null_rate_max: 0.05
+  timestamp_parse_success_min: 0.99
+

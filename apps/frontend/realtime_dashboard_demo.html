@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Parking Realtime Demo</title>
+  <style>
+    :root {
+      --bg: #f8f6f1;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --ok: #0f766e;
+      --warn: #b45309;
+      --shadow: rgba(0, 0, 0, 0.08);
+    }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: radial-gradient(circle at 20% 20%, #fef3c7, transparent 40%),
+                  radial-gradient(circle at 80% 10%, #dbeafe, transparent 45%),
+                  var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .panel {
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 10px 24px var(--shadow);
+      margin-bottom: 16px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .badge.realtime {
+      background: #ccfbf1;
+      color: var(--ok);
+    }
+    .badge.degraded {
+      background: #fef3c7;
+      color: var(--warn);
+    }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .metric {
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fcfcfd;
+    }
+    .label {
+      color: #6b7280;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .value {
+      font-size: 20px;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="wrap">
+    <div class="panel">
+      <h2>Property Dashboard Realtime Channel</h2>
+      <p>Step 8 demo: WebSocket as primary channel, HTTP polling as fallback.</p>
+      <div :class="['badge', mode]">
+        <span>{{ mode === 'realtime' ? 'Realtime' : 'Degraded' }}</span>
+        <span>({{ source }})</span>
+      </div>
+    </div>
+
+    <div class="panel metrics">
+      <div class="metric">
+        <div class="label">Occupancy Rate</div>
+        <div class="value">{{ (occupancyRate * 100).toFixed(1) }}%</div>
+      </div>
+      <div class="metric">
+        <div class="label">Active Reservations</div>
+        <div class="value">{{ activeReservations }}</div>
+      </div>
+      <div class="metric">
+        <div class="label">Last Update</div>
+        <div class="value">{{ lastUpdate }}</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          mode: 'degraded',
+          source: 'polling',
+          occupancyRate: 0,
+          activeReservations: 0,
+          lastUpdate: '--',
+          ws: null,
+          pollTimer: null,
+          reconnectTimer: null,
+        };
+      },
+      mounted() {
+        this.connectRealtime();
+      },
+      methods: {
+        setFromPayload(payload) {
+          this.occupancyRate = Number(payload.occupancy_rate || 0);
+          this.activeReservations = Number(payload.active_reservations || 0);
+          this.lastUpdate = new Date((payload.updated_at || 0) * 1000).toLocaleTimeString();
+        },
+        startPolling() {
+          if (this.pollTimer) return;
+          this.mode = 'degraded';
+          this.source = 'polling';
+          this.fetchPolling();
+          this.pollTimer = setInterval(this.fetchPolling, 2000);
+        },
+        stopPolling() {
+          if (!this.pollTimer) return;
+          clearInterval(this.pollTimer);
+          this.pollTimer = null;
+        },
+        async fetchPolling() {
+          try {
+            const resp = await fetch('http://localhost:8080/api/v1/admin/realtime/status');
+            const data = await resp.json();
+            this.setFromPayload(data);
+          } catch (err) {
+            console.error('polling failed', err);
+          }
+        },
+        scheduleReconnect() {
+          if (this.reconnectTimer) return;
+          this.reconnectTimer = setTimeout(() => {
+            this.reconnectTimer = null;
+            this.connectRealtime();
+          }, 4000);
+        },
+        connectRealtime() {
+          try {
+            this.ws = new WebSocket('ws://localhost:8090/ws/status');
+          } catch (_) {
+            this.startPolling();
+            this.scheduleReconnect();
+            return;
+          }
+
+          this.ws.onopen = () => {
+            this.mode = 'realtime';
+            this.source = 'websocket';
+            this.stopPolling();
+          };
+
+          this.ws.onmessage = (evt) => {
+            try {
+              const payload = JSON.parse(evt.data);
+              this.mode = 'realtime';
+              this.source = 'websocket';
+              this.setFromPayload(payload);
+            } catch (_) {
+              // keep current state
+            }
+          };
+
+          this.ws.onerror = () => {
+            this.startPolling();
+          };
+
+          this.ws.onclose = () => {
+            this.startPolling();
+            this.scheduleReconnect();
+          };
+        },
+      },
+      beforeUnmount() {
+        if (this.ws) this.ws.close();
+        this.stopPolling();
+      },
+    }).mount('#app');
+  </script>
+</body>
+</html>

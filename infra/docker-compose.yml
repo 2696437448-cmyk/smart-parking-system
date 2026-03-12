@@ -1,0 +1,123 @@
+services:
+  gateway-service:
+    image: eclipse-temurin:17-jdk
+    working_dir: /app
+    volumes:
+      - ../services/gateway-service:/app
+    command: ["java", "GatewayMain.java"]
+    environment:
+      SERVICE_NAME: gateway-service
+      TZ: UTC
+      PORT: 8080
+      PARKING_BASE_URL: http://parking-service:8081
+      MODEL_BASE_URL: http://model-service:8000
+      UPSTREAM_TIMEOUT_MS: 2500
+      UPSTREAM_CONNECT_TIMEOUT_MS: 10000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - parking-service
+      - model-service
+
+  parking-service:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../services:/app
+    command: ["python", "parking_service.py"]
+    environment:
+      SERVICE_NAME: parking-service
+      TZ: UTC
+      PORT: 8081
+      IDEMPOTENCY_TTL_SECONDS: 7200
+      LOCK_WAIT_SECONDS: 0.1
+      LOCK_LEASE_SECONDS: 3.0
+      ENABLE_MQ: true
+      RABBIT_API_URL: http://rabbitmq:15672/api
+      RABBIT_USER: guest
+      RABBIT_PASS: guest
+    ports:
+      - "8081:8081"
+
+  model-service:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../services:/app
+    command: ["python", "model_service.py"]
+    environment:
+      SERVICE_NAME: model-service
+      TZ: UTC
+      PORT: 8000
+      SLOT_STATUS_PATH: /app/../data/raw/slot_status.csv
+    ports:
+      - "8000:8000"
+
+  realtime-service:
+    image: python:3.11-slim
+    working_dir: /app
+    volumes:
+      - ../services:/app
+    command: ["python", "realtime_service.py"]
+    environment:
+      SERVICE_NAME: realtime-service
+      TZ: UTC
+      PORT: 8090
+      PUSH_INTERVAL_SECONDS: 1.0
+    ports:
+      - "8090:8090"
+
+  frontend:
+    image: node:20-alpine
+    command: ["sh", "-c", "sleep infinity"]
+    environment:
+      SERVICE_NAME: frontend
+      TZ: UTC
+    depends_on:
+      - gateway-service
+      - realtime-service
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: smart_parking
+      MYSQL_USER: sp_user
+      MYSQL_PASSWORD: sp_pass
+      TZ: UTC
+    command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_0900_ai_ci"]
+
+  redis:
+    image: redis:7-alpine
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  prometheus:
+    image: prom/prometheus:latest
+    command: ["--config.file=/etc/prometheus/prometheus.yml"]
+    volumes:
+      - ../infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - parking-service
+      - model-service
+      - realtime-service
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - "13000:3000"
+    volumes:
+      - ../infra/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ../infra/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ../infra/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus

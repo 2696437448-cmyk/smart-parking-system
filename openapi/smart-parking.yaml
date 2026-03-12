@@ -1,0 +1,253 @@
+openapi: 3.0.3
+info:
+  title: Smart Parking API
+  version: 0.1.0
+  description: Frozen API contract for Step 2.
+servers:
+  - url: http://localhost:8080
+    description: gateway
+
+paths:
+  /api/v1/owner/reservations:
+    post:
+      summary: Create reservation
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReservationCreateRequest'
+      responses:
+        '200':
+          description: Reservation created or idempotent replay
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReservationCreateResponse'
+
+  /api/v1/admin/dispatch/run:
+    post:
+      summary: Trigger dispatch run
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchRunRequest'
+      responses:
+        '200':
+          description: Dispatch accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispatchRunResponse'
+
+  /internal/v1/model/predict:
+    post:
+      summary: Predict supply-demand gap
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PredictRequest'
+      responses:
+        '200':
+          description: Predicted records
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [records]
+                properties:
+                  records:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DemandGapRecord'
+
+  /internal/v1/dispatch/optimize:
+    post:
+      summary: Optimize assignment with Hungarian algorithm
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [requests]
+              properties:
+                requests:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/DispatchRequest'
+      responses:
+        '200':
+          description: Optimized assignments
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [results]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DispatchResult'
+
+  /internal/v1/model/activate:
+    post:
+      summary: Activate model version
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [model_version]
+              properties:
+                model_version:
+                  type: string
+      responses:
+        '200':
+          description: Activated
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [model_version, status]
+                properties:
+                  model_version:
+                    type: string
+                  status:
+                    type: string
+
+components:
+  parameters:
+    XTraceId:
+      name: X-Trace-Id
+      in: header
+      required: true
+      schema:
+        type: string
+      description: Cross-service trace id.
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: false
+      schema:
+        type: string
+      description: Idempotency key for write APIs.
+
+  schemas:
+    DemandGapRecord:
+      type: object
+      required: [region_id, ts, supply, demand, gap]
+      properties:
+        region_id:
+          type: string
+        ts:
+          type: string
+          format: date-time
+        supply:
+          type: number
+        demand:
+          type: number
+        gap:
+          type: number
+
+    DispatchRequest:
+      type: object
+      required: [order_id, user_id, preferred_window, location, constraints]
+      properties:
+        order_id:
+          type: string
+        user_id:
+          type: string
+        preferred_window:
+          type: string
+        location:
+          type: string
+        constraints:
+          type: object
+          additionalProperties: true
+
+    DispatchResult:
+      type: object
+      required: [order_id, slot_id, score, eta, price, strategy]
+      properties:
+        order_id:
+          type: string
+        slot_id:
+          type: string
+        score:
+          type: number
+        eta:
+          type: number
+        price:
+          type: number
+        strategy:
+          type: string
+
+    ReservationCreateRequest:
+      type: object
+      required: [user_id, preferred_window, location]
+      properties:
+        user_id:
+          type: string
+        preferred_window:
+          type: string
+        location:
+          type: string
+
+    ReservationCreateResponse:
+      type: object
+      required: [reservation_id, status, trace_id]
+      properties:
+        reservation_id:
+          type: string
+        status:
+          type: string
+        trace_id:
+          type: string
+
+    DispatchRunRequest:
+      type: object
+      required: [trigger_reason]
+      properties:
+        trigger_reason:
+          type: string
+
+    DispatchRunResponse:
+      type: object
+      required: [job_id, accepted, trace_id]
+      properties:
+        job_id:
+          type: string
+        accepted:
+          type: boolean
+        trace_id:
+          type: string
+
+    PredictRequest:
+      type: object
+      required: [region_ids, horizon_minutes]
+      properties:
+        region_ids:
+          type: array
+          items:
+            type: string
+        horizon_minutes:
+          type: integer

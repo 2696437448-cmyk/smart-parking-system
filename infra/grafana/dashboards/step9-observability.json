@@ -1,0 +1,44 @@
+{
+  "id": null,
+  "uid": "smart-parking-step9",
+  "title": "Smart Parking Step9 Observability",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "tags": ["smart-parking", "step9"],
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Service Up",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "targets": [
+        {"expr": "up{job=~\"parking-service|model-service|realtime-service\"}", "refId": "A"}
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP Requests Total",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "targets": [
+        {"expr": "smart_parking_http_requests_total", "refId": "A"}
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP Errors Total",
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "targets": [
+        {"expr": "smart_parking_http_errors_total", "refId": "A"}
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Realtime WS Active Connections",
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "targets": [
+        {"expr": "smart_parking_ws_active_connections", "refId": "A"}
+      ]
+    }
+  ]
+}
