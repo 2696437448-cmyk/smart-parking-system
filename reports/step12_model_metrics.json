@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-03-12T09:26:15.026474+00:00",
+  "feature_input": "data/processed/forecast_feature_table.csv",
+  "seed": 20260312,
+  "epochs": 900,
+  "sequence_len": 8,
+  "train_ratio": 0.8,
+  "train_samples": 672,
+  "test_samples": 168,
+  "models": {
+    "baseline_last_value": {
+      "type": "traditional_baseline",
+      "train": {
+        "mae": 0.12522321,
+        "rmse": 0.15976406,
+        "mape": 23.36799925,
+        "sample_count": 672
+      },
+      "test": {
+        "mae": 0.12410714,
+        "rmse": 0.1607738,
+        "mape": 21.52126104,
+        "sample_count": 168
+      },
+      "model_version": "step12-baseline-v1"
+    },
+    "lstm_lite": {
+      "type": "lightweight_lstm",
+      "train": {
+        "mae": 0.08603622,
+        "rmse": 0.11208647,
+        "mape": 16.84333864,
+        "sample_count": 672
+      },
+      "test": {
+        "mae": 0.09250858,
+        "rmse": 0.11655648,
+        "mape": 16.93389441,
+        "sample_count": 168
+      },
+      "model_version": "step12-lstm-lite-v1",
+      "train_loss_mae": 0.08603622
+    }
+  },
+  "contract_preview": {
+    "schema": "DemandGapRecord(region_id, ts, supply, demand, gap)",
+    "records": [
+      {
+        "region_id": "R1",
+        "ts": "2026-01-03T10:00:00",
+        "supply": 8.0308,
+        "demand": 11.9692,
+        "gap": -3.9384
+      },
+      {
+        "region_id": "R1",
+        "ts": "2026-01-03T10:15:00",
+        "supply": 8.025,
+        "demand": 11.975,
+        "gap": -3.95
+      },
+      {
+        "region_id": "R1",
+        "ts": "2026-01-03T10:30:00",
+        "supply": 8.0105,
+        "demand": 11.9895,
+        "gap": -3.979
+      }
+    ]
+  }
+}

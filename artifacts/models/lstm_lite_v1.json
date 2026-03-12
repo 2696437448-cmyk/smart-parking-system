@@ -1,0 +1,39 @@
+{
+  "model_name": "lstm_lite",
+  "model_version": "step12-lstm-lite-v1",
+  "trained_at": "2026-03-12T09:26:15.026309+00:00",
+  "feature_input": "data/processed/forecast_feature_table.csv",
+  "seed": 20260312,
+  "epochs": 900,
+  "sequence_len": 8,
+  "train_ratio": 0.8,
+  "train_loss_mae": 0.08603622,
+  "train_metrics": {
+    "mae": 0.08603622,
+    "rmse": 0.11208647,
+    "mape": 16.84333864,
+    "sample_count": 672
+  },
+  "test_metrics": {
+    "mae": 0.09250858,
+    "rmse": 0.11655648,
+    "mape": 16.93389441,
+    "sample_count": 168
+  },
+  "weights": {
+    "w_ix": 0.5121438732,
+    "w_ih": 0.637035404,
+    "b_i": -0.2553207435,
+    "w_fx": 0.4296947486,
+    "w_fh": 0.4846469727,
+    "b_f": 0.0569794479,
+    "w_ox": 0.4940719813,
+    "w_oh": 0.1074544799,
+    "b_o": -0.1013255026,
+    "w_gx": 0.4996625924,
+    "w_gh": 0.6303142978,
+    "b_g": -0.5988465253,
+    "w_y": 1.4260870229,
+    "b_y": 0.7162306353
+  }
+}
