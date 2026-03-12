@@ -1,0 +1,84 @@
+{
+  "registry_version": "step13.v1",
+  "generated_at": "2026-03-12T09:47:38.670846+00:00",
+  "active_version": "step12-lstm-lite-v1",
+  "models": {
+    "v0.1-lstm-lite": {
+      "model_version": "v0.1-lstm-lite",
+      "model_name": "lstm_lite",
+      "predictor": "lstm_lite",
+      "weights": [
+        0.9,
+        0.3,
+        -0.2,
+        0.6,
+        0.4,
+        0.1,
+        0.7,
+        0.2,
+        -0.05,
+        0.8,
+        0.35,
+        0.0,
+        1.8,
+        0.5
+      ],
+      "source": "builtin",
+      "created_at": "2026-03-12T09:47:38.670357+00:00"
+    },
+    "v0.2-lstm-lite": {
+      "model_version": "v0.2-lstm-lite",
+      "model_name": "lstm_lite",
+      "predictor": "lstm_lite",
+      "weights": [
+        0.9,
+        0.3,
+        -0.2,
+        0.6,
+        0.4,
+        0.1,
+        0.7,
+        0.2,
+        -0.05,
+        0.8,
+        0.35,
+        0.0,
+        1.8,
+        0.5
+      ],
+      "source": "builtin",
+      "created_at": "2026-03-12T09:47:38.670357+00:00"
+    },
+    "step12-baseline-v1": {
+      "model_version": "step12-baseline-v1",
+      "model_name": "baseline_last_value",
+      "predictor": "baseline_last_value",
+      "source": "artifact:baseline_last_value_v1.json",
+      "created_at": "2026-03-12T09:26:15.025849+00:00"
+    },
+    "step12-lstm-lite-v1": {
+      "model_version": "step12-lstm-lite-v1",
+      "model_name": "lstm_lite",
+      "predictor": "lstm_lite",
+      "weights": [
+        0.5121438732,
+        0.637035404,
+        -0.2553207435,
+        0.4296947486,
+        0.4846469727,
+        0.0569794479,
+        0.4940719813,
+        0.1074544799,
+        -0.1013255026,
+        0.4996625924,
+        0.6303142978,
+        -0.5988465253,
+        1.4260870229,
+        0.7162306353
+      ],
+      "source": "artifact:lstm_lite_v1.json",
+      "created_at": "2026-03-12T09:26:15.026309+00:00"
+    }
+  },
+  "activation_history": []
+}
