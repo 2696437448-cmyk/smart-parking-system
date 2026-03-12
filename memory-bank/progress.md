@@ -124,3 +124,30 @@
 7. 标签：`N/A`。
 8. 回滚标签：`N/A`。
 9. 证据：`memory-bank/git-workflow.md` 与相关文档修订。
+
+## 2026-03-12 Step 11（通过）
+
+1. 完成时间：2026-03-12 16:30（Asia/Shanghai）。
+2. 当前步骤：Step 11 - 数据工程补齐（PySpark ETL）。
+3. 目标与范围：仅完成 ETL 主流程、输出两张特征表与质量报告，不进入 Step 12 训练。
+4. 实际改动：
+   - 新增 `scripts/step11_etl.py`
+   - 新增 `scripts/test_step11_etl.py`
+   - 新增 `reports/step11_execution.md`
+   - 新增 ETL 产物 `data/processed/*.csv` 与 `reports/step11_etl_quality.json`
+   - 更新 `memory-bank/architecture.md`、`memory-bank/gap-matrix.md`
+5. 闸门结果：
+   - 命令：`python3 scripts/test_step11_etl.py`
+   - 结果：`STEP11_GATE_PASS`
+   - 证据：`reports/step11_execution.md`
+6. Git 分支：`feat/step11-etl`。
+7. Git 提交：`N/A`（本次为本地执行与验证，待按 Git 闸门补提交）。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：环境无 `pyspark`。
+   - 修复：脚本实现 `PySpark 优先 + Python fallback`，保证当前环境闸门可通过。
+12. 下一阻塞：
+   - 按 Git 闸门完成 Step11 的代码提交/证据提交/PR/标签；
+   - 进入 Step12 前确认训练环境与依赖方案。
