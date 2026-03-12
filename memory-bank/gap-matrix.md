@@ -34,12 +34,14 @@
 ## 4. 数据工程
 
 1. 定稿要求：PySpark 多源 ETL，产出统一特征表。
-2. 当前实现：Step 0 fallback 数据与健康检查已完成，ETL 主流程待补齐。
+2. 当前实现：Step 11 ETL 已落地并生成两张特征表，支持 `external/fallback_raw` 双路径。
 3. 证据路径：
-   - `scripts/generate_fallback_data.py`
-   - `scripts/data_health_check.py`
-4. 差距判定：部分未对齐。
-5. 下一步闸门：Step 11（ETL 正式化）。
+   - `scripts/step11_etl.py`
+   - `scripts/test_step11_etl.py`
+   - `reports/step11_execution.md`
+   - `reports/step11_etl_quality.json`
+4. 差距判定：阶段性对齐（当前环境缺少 `pyspark`，执行引擎为 Python fallback）。
+5. 下一步闸门：Step 12（训练/评估闭环），并在可用环境补跑 Spark 引擎验证。
 
 ## 5. 前端工程化
 
@@ -69,4 +71,4 @@
    - `POST /internal/v1/model/activate`
 2. 公共头冻结：`X-Trace-Id`、`Idempotency-Key`。
 3. 超时参数冻结：`UPSTREAM_CONNECT_TIMEOUT_MS=10000`、`UPSTREAM_TIMEOUT_MS=2500`（后续仅允许基于压测报告调整）。
-4. 已通过闸门冻结：Step 0~10 能力不可退化。
+4. 已通过闸门冻结：Step 0~11 能力不可退化。

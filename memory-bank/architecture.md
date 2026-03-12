@@ -9,11 +9,12 @@
 
 ## 2. 主数据流
 
-1. 传感器与事件数据 -> ETL -> 特征表。
-2. 业主预约请求 -> 一致性管线（幂等/锁/唯一约束）。
-3. 业务服务调用模型服务 -> 预测/优化结果。
-4. 调度事件入 MQ -> 消费重试 -> DLQ。
-5. 看板实时优先 WebSocket，异常时切轮询。
+1. 传感器与事件数据 -> Step 11 ETL -> `forecast_feature_table`、`dispatch_input_table`。
+2. ETL 数据源策略：优先 external 子集，缺失时回退 `data/raw` fallback 数据。
+3. 业主预约请求 -> 一致性管线（幂等/锁/唯一约束）。
+4. 业务服务调用模型服务 -> 预测/优化结果。
+5. 调度事件入 MQ -> 消费重试 -> DLQ。
+6. 看板实时优先 WebSocket，异常时切轮询。
 
 ## 3. 可靠性链路
 
@@ -31,11 +32,15 @@
 
 ## 5. 当前态与目标态
 
-### 5.1 当前态（Step 10 已验收）
+### 5.1 当前态（Step 11）
 
 1. 拓扑为“3 核心服务 + 1 实时伴生服务”。
-2. 已通过闸门：Step 0~10（数据基线、合同冻结、一致性、容错、MQ、实时、可观测性、技术总验收）。
-3. 关键运行参数：
+2. 已通过闸门：Step 0~11（含 Step 11 ETL 闸门）。
+3. Step 11 产物：
+   - `data/processed/forecast_feature_table.csv`
+   - `data/processed/dispatch_input_table.csv`
+   - `reports/step11_etl_quality.json`
+4. 关键运行参数：
    - `UPSTREAM_CONNECT_TIMEOUT_MS=10000`
    - `UPSTREAM_TIMEOUT_MS=2500`
    - Grafana 对外端口 `13000:3000`
@@ -44,7 +49,7 @@
 
 1. `parking-service` 迁移并对齐为 Java 主业务服务（Spring Boot）。
 2. 一致性主链路对齐为：Redis 幂等 + Redisson 锁 + MySQL 唯一约束。
-3. 模型工程补齐：PySpark ETL、LSTM 训练、基线模型对比、模型注册与热切换。
+3. 模型工程补齐：LSTM 训练、基线模型对比、模型注册与热切换。
 4. 前端工程化对齐：Vue3 + TypeScript + Pinia。
 
 ## 6. 关键冻结决策
@@ -64,4 +69,5 @@
 7. Step 8：实时通道降级通过。
 8. Step 9：可观测性基线通过。
 9. Step 10：技术验收全通过（Technical Acceptance Pass）。
-10. Step 11~18：定稿对齐补齐阶段（待执行）。
+10. Step 11：数据工程 ETL 闸门通过。
+11. Step 12~18：定稿对齐补齐阶段（待执行）。

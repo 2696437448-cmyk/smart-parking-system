@@ -1,0 +1,29 @@
+{
+  "generated_at": "2026-03-12T08:33:59.469414+00:00",
+  "engine": "python",
+  "source_mode": "fallback_raw",
+  "feature_schema_version": "step11.v1",
+  "inputs": {
+    "slot_status": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/raw/slot_status.csv",
+    "vehicle_event": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/raw/vehicle_event.csv",
+    "resident_pattern": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/raw/resident_pattern.csv"
+  },
+  "outputs": {
+    "forecast_feature_table": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/processed/forecast_feature_table.csv",
+    "dispatch_input_table": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/processed/dispatch_input_table.csv"
+  },
+  "quality": {
+    "timestamp_parse_success": {
+      "slot_status": 1.0,
+      "vehicle_event": 1.0
+    },
+    "row_counts": {
+      "slot_status": 17280,
+      "vehicle_event": 1728,
+      "resident_pattern": 5040,
+      "forecast_feature_table": 864,
+      "dispatch_input_table": 864
+    }
+  },
+  "overall_passed": true
+}
