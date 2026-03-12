@@ -141,13 +141,13 @@
    - 结果：`STEP11_GATE_PASS`
    - 证据：`reports/step11_execution.md`
 6. Git 分支：`feat/step11-etl`。
-7. Git 提交：`N/A`（本次为本地执行与验证，待按 Git 闸门补提交）。
-8. PR 信息：`N/A`。
+7. Git 提交：`d6a4e7f`, `828ecd7`。
+8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step11-etl`。
 9. 标签信息：`N/A`。
 10. 回滚标签：`N/A`。
 11. 卡点与修复：
    - 卡点：环境无 `pyspark`。
    - 修复：脚本实现 `PySpark 优先 + Python fallback`，保证当前环境闸门可通过。
 12. 下一阻塞：
-   - 按 Git 闸门完成 Step11 的代码提交/证据提交/PR/标签；
+   - 完成 PR 合并并创建 `step11-pass` 标签；
    - 进入 Step12 前确认训练环境与依赖方案。
