@@ -169,7 +169,7 @@
    - 结果：`STEP12_GATE_PASS`
    - 证据：`reports/step12_execution.md`
 6. Git 分支：`feat/step12-model-training`。
-7. Git 提交：`ed6e2f7`。
+7. Git 提交：`ed6e2f7`, `a497e08`。
 8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step12-model-training`。
 9. 标签信息：`N/A`（待 PR 合并后打 `step12-pass`）。
 10. 回滚标签：`N/A`。
@@ -179,3 +179,31 @@
 12. 下一阻塞：
    - 完成 Step12 PR 合并；
    - 进入 Step13 前确认模型注册表文件落地与热切换回滚闸门脚本通过。
+
+
+## 2026-03-12 Step 13（通过）
+
+1. 完成时间：2026-03-12 17:47（Asia/Shanghai）。
+2. 当前步骤：Step 13 - 模型工程化（注册与热切换）。
+3. 目标与范围：实现模型版本注册、在线激活和回滚，不进入 Step 14 Java 业务后端迁移。
+4. 实际改动：
+   - 升级 `services/model_service.py`（registry + activate + rollback + history）
+   - 新增 `scripts/step13_sync_model_registry.py`
+   - 新增 `scripts/test_step13_model_registry.py`
+   - 新增注册表产物 `artifacts/models/model_registry.json`
+   - 新增执行报告 `reports/step13_execution.md`
+5. 闸门结果：
+   - 命令：`python3 scripts/test_step13_model_registry.py`
+   - 结果：`STEP13_GATE_PASS`
+   - 证据：`reports/step13_execution.md`
+6. Git 分支：`feat/step13-model-registry`。
+7. Git 提交：`095f016`。
+8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step13-model-registry`。
+9. 标签信息：`N/A`（待 PR 合并后打 `step13-pass`）。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：需要在不改动既有合同的前提下扩展回滚语义。
+   - 修复：保持 `model_version` 字段必填兼容，同时增加 `rollback`/`action` 扩展参数，OpenAPI 回归持续通过。
+12. 下一阻塞：
+   - 完成 Step13 PR 合并；
+   - 进入 Step14 前准备 Java parking-service 脚手架与 Redis/Redisson/MySQL 运行环境。
