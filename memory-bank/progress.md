@@ -151,3 +151,31 @@
 12. 下一阻塞：
    - 完成 PR 合并并创建 `step11-pass` 标签；
    - 进入 Step12 前确认训练环境与依赖方案。
+
+## 2026-03-12 Step 12（通过）
+
+1. 完成时间：2026-03-12 17:26（Asia/Shanghai）。
+2. 当前步骤：Step 12 - 模型训练补齐（LSTM + 基线对比）。
+3. 目标与范围：补齐可复现训练、统一评估指标（MAE/RMSE/MAPE）与论文对比证据，不进入 Step 13 注册表切换实现。
+4. 实际改动：
+   - 新增 `scripts/step12_train_models.py`
+   - 新增 `scripts/step12_baseline_model.py`
+   - 新增 `scripts/test_step12_model_training.py`
+   - 新增训练产物与对比报告（`artifacts/models/*.json`、`reports/step12_model_*`）
+   - 新增执行报告 `reports/step12_execution.md`
+   - 新增开发依赖文件 `requirements-dev.txt`（补 PyYAML）
+5. 闸门结果：
+   - 命令：`python3 scripts/test_step12_model_training.py`
+   - 结果：`STEP12_GATE_PASS`
+   - 证据：`reports/step12_execution.md`
+6. Git 分支：`feat/step12-model-training`。
+7. Git 提交：`ed6e2f7`。
+8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step12-model-training`。
+9. 标签信息：`N/A`（待 PR 合并后打 `step12-pass`）。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：OpenAPI 回归依赖 `PyYAML` 缺失。
+   - 修复：安装并固化 `PyYAML==6.0.3`，回归恢复通过。
+12. 下一阻塞：
+   - 完成 Step12 PR 合并；
+   - 进入 Step13 前确认模型注册表文件落地与热切换回滚闸门脚本通过。

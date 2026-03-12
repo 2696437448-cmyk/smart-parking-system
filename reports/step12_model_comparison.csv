@@ -1,0 +1,5 @@
+model,split,mae,rmse,mape,sample_count
+baseline_last_value,train,0.12522321,0.15976406,23.36799925,672
+baseline_last_value,test,0.12410714,0.1607738,21.52126104,168
+lstm_lite,train,0.08603622,0.11208647,16.84333864,672
+lstm_lite,test,0.09250858,0.11655648,16.93389441,168

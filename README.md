@@ -20,6 +20,14 @@
 4. `memory-bank/risk-register.md`
 5. `memory-bank/implementation-plan.md`
 
+## 环境依赖安装
+
+```bash
+python3 -m pip install -r requirements-dev.txt
+```
+
+说明：`scripts/validate_openapi.py` 依赖 `PyYAML`，执行全量回归前请先安装以上依赖。
+
 ## Step 0 数据健康检查命令
 
 ```bash

@@ -1,0 +1,23 @@
+{
+  "model_name": "baseline_last_value",
+  "model_version": "step12-baseline-v1",
+  "trained_at": "2026-03-12T09:26:15.025849+00:00",
+  "feature_input": "data/processed/forecast_feature_table.csv",
+  "sequence_len": 8,
+  "train_ratio": 0.8,
+  "train_metrics": {
+    "mae": 0.12522321,
+    "rmse": 0.15976406,
+    "mape": 23.36799925,
+    "sample_count": 672
+  },
+  "test_metrics": {
+    "mae": 0.12410714,
+    "rmse": 0.1607738,
+    "mape": 21.52126104,
+    "sample_count": 168
+  },
+  "params": {
+    "strategy": "last_sequence_value"
+  }
+}
