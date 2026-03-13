@@ -288,7 +288,7 @@
    - `python3 scripts/test_step3_gateway.py` -> `STEP3_GATE_PASS`
    - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> `openapi_validation_passed`
 6. Git 分支：`feat/step16-frontend-engineering`。
-7. Git 提交：`N/A`（待本次提交后补充）。
+7. Git 提交：`8bf96a3`, `98c9cd2`。
 8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step16-frontend-engineering`。
 9. 标签信息：`N/A`（待 PR 合并后打 `step16-pass`）。
 10. 回滚标签：`step15-pass`。
