@@ -207,3 +207,31 @@
 12. 下一阻塞：
    - 完成 Step13 PR 合并；
    - 进入 Step14 前准备 Java parking-service 脚手架与 Redis/Redisson/MySQL 运行环境。
+
+## 2026-03-13 Step 14（通过）
+
+1. 完成时间：2026-03-13 10:58（Asia/Shanghai）。
+2. 当前步骤：Step 14 - 业务后端对齐（Java + MySQL/Redis/Redisson）。
+3. 目标与范围：将 `parking-service` 迁移为 Java 主业务服务并对齐一致性主链路，不进入 Step 15 网关治理升级。
+4. 实际改动：
+   - 新增 `services/parking-service`（Spring Boot + Redis + Redisson + MySQL 一致性链路）。
+   - 更新 `infra/docker-compose.yml`（parking-service 切换为 Java 运行形态）。
+   - 新增 `scripts/test_step14_java_consistency.py`。
+   - 新增执行证据 `reports/step14_execution.md`。
+5. 闸门结果：
+   - `python3 scripts/test_step14_java_consistency.py` -> `STEP14_GATE_PASS`
+   - `python3 scripts/test_step4_consistency.py` -> `STEP4_GATE_PASS`
+   - `python3 scripts/test_step7_mq_reliability.py ...` -> `STEP7_GATE_PASS`
+   - `python3 scripts/test_step8_realtime_channel.py --mode fallback ...` -> `STEP8_GATE_PASS`
+   - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> `openapi_validation_passed`
+6. Git 分支：`feat/step14-java-parking-service`。
+7. Git 提交：`161de73`。
+8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step14-java-parking-service`。
+9. 标签信息：`N/A`（待 PR 合并后打 `step14-pass`）。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：RabbitMQ publish 在 Java 端出现 `vhost_not_found/EOF` 等不稳定响应。
+   - 修复：固定 publish API 路径、切换 Java `HttpClient`、增加容错重试与非标准响应兼容。
+12. 下一阻塞：
+   - 完成 Step14 PR 合并并打 `step14-pass` 标签；
+   - 进入 Step15 前明确网关治理最小可验收范围（Resilience4j + 降级语义回归）。
