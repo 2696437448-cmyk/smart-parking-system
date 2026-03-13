@@ -5,13 +5,15 @@
 ## 1. 架构与服务形态
 
 1. 定稿要求：`Java 主业务微服务 + Python 算法服务`。
-2. 当前实现：`gateway-service`（Java）+ `parking-service`（Java）+ `model-service`（Python）+ `realtime-service`（伴生）。
+2. 当前实现：`gateway-service`（Java/Spring Cloud Gateway）+ `parking-service`（Java）+ `model-service`（Python）+ `realtime-service`（伴生）。
 3. 证据路径：
    - `infra/docker-compose.yml`
+   - `services/gateway-service/src/main/java/com/smartparking/gateway/*`
    - `services/parking-service/src/main/java/com/smartparking/parking/ParkingServiceApplication.java`
    - `reports/step14_execution.md`
+   - `reports/step15_execution.md`
 4. 差距判定：已对齐（阶段化定义为“3 核心 + 1 伴生”）。
-5. 下一步闸门：Step 15（网关治理能力补齐）。
+5. 下一步闸门：Step 16（前端工程化）。
 
 ## 2. 一致性主链路
 
@@ -64,12 +66,15 @@
 ## 6. 网关治理
 
 1. 定稿要求：Spring Cloud Gateway + Resilience4j，固化超时/熔断/降级语义。
-2. 当前实现：基础网关能力可用，但未完整对齐定稿中的治理组件形态。
+2. 当前实现：已对齐为 Spring Cloud Gateway 路由 + Resilience4j circuit breaker + fallback 控制器。
 3. 证据路径：
-   - `services/gateway-service/GatewayMain.java`
-   - `reports/step6_execution.md`
-4. 差距判定：部分未对齐。
-5. 下一步闸门：Step 15。
+   - `services/gateway-service/src/main/java/com/smartparking/gateway/GatewayRoutesConfig.java`
+   - `services/gateway-service/src/main/java/com/smartparking/gateway/ModelFallbackController.java`
+   - `services/gateway-service/src/main/java/com/smartparking/gateway/TraceIdGlobalFilter.java`
+   - `scripts/test_step15_gateway_governance.py`
+   - `reports/step15_execution.md`
+4. 差距判定：已对齐。
+5. 下一步闸门：Step 18（停模型服务场景回归）。
 
 ## 7. 前端工程化
 
@@ -101,4 +106,4 @@
    - `POST /internal/v1/model/activate`
 2. 公共头冻结：`X-Trace-Id`、`Idempotency-Key`。
 3. 超时参数冻结：`UPSTREAM_CONNECT_TIMEOUT_MS=10000`、`UPSTREAM_TIMEOUT_MS=2500`（后续仅允许基于压测报告调整）。
-4. 已通过闸门冻结：Step 0~14 能力不可退化。
+4. 已通过闸门冻结：Step 0~15 能力不可退化。

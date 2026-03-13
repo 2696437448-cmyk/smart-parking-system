@@ -7,6 +7,7 @@ import json
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timedelta, timezone
 from urllib.error import HTTPError, URLError
 
 GATEWAY = "http://localhost:8080"
@@ -55,8 +56,19 @@ def _reserve(payload: dict, idem_key: str):
     )
 
 
+def _iso_no_tz(dt: datetime) -> str:
+    return dt.replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S")
+
+
 def main() -> None:
     wait_up()
+
+    now = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+    base = now + timedelta(minutes=90)
+    oversell_start = _iso_no_tz(base)
+    oversell_end = _iso_no_tz(base + timedelta(minutes=30))
+    idem_start = _iso_no_tz(base + timedelta(minutes=60))
+    idem_end = _iso_no_tz(base + timedelta(minutes=90))
 
     # 1) Validate consistency component chain is no longer in-memory.
     s_comp, _, b_comp = _http(PARKING_DIRECT + "/internal/debug/consistency/components")
@@ -67,7 +79,7 @@ def main() -> None:
 
     # 2) Concurrent oversell test.
     common = {
-        "preferred_window": "2026-03-12T20:00:00/2026-03-12T20:30:00",
+        "preferred_window": f"{oversell_start}/{oversell_end}",
         "location": "R1",
         "slot_id": "R1-S099",
     }
@@ -76,7 +88,7 @@ def main() -> None:
     with ThreadPoolExecutor(max_workers=30) as pool:
         for i in range(40):
             payload = {**common, "user_id": f"STEP14-U{i:03d}"}
-            futures.append(pool.submit(_reserve, payload, f"step14-concurrent-{i:03d}"))
+            futures.append(pool.submit(_reserve, payload, f"step14-concurrent-{int(time.time())}-{i:03d}"))
 
     results = [f.result() for f in as_completed(futures)]
     success = [x for x in results if x[0] == 200]
@@ -91,11 +103,11 @@ def main() -> None:
     # 3) Idempotency replay test backed by Redis.
     idem_payload = {
         "user_id": "STEP14-IDEM-USER",
-        "preferred_window": "2026-03-12T21:00:00/2026-03-12T21:30:00",
+        "preferred_window": f"{idem_start}/{idem_end}",
         "location": "R2",
         "slot_id": "R2-S088",
     }
-    idem_key = "step14-idem-fixed-001"
+    idem_key = f"step14-idem-fixed-{int(time.time())}"
 
     s1, _, b1 = _reserve(idem_payload, idem_key)
     s2, _, b2 = _reserve(idem_payload, idem_key)
@@ -108,9 +120,7 @@ def main() -> None:
     assert int(b_idem.get("ttl_seconds", 0)) > 0, b_idem
 
     # 4) DB uniqueness proof via debug query.
-    qs = (
-        "slot_id=R1-S099&window_start=2026-03-12T20:00:00&window_end=2026-03-12T20:30:00"
-    )
+    qs = f"slot_id=R1-S099&window_start={oversell_start}&window_end={oversell_end}"
     s_dbg, _, b_dbg = _http(PARKING_DIRECT + "/internal/debug/reservations?" + qs)
     assert s_dbg == 200, b_dbg
     assert int(b_dbg.get("count", -1)) == 1, b_dbg

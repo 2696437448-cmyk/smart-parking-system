@@ -235,3 +235,36 @@
 12. 下一阻塞：
    - 完成 Step14 PR 合并并打 `step14-pass` 标签；
    - 进入 Step15 前明确网关治理最小可验收范围（Resilience4j + 降级语义回归）。
+
+## 2026-03-13 Step 15（通过）
+
+1. 完成时间：2026-03-13 12:18（Asia/Shanghai）。
+2. 当前步骤：Step 15 - 网关治理对齐（Spring Cloud Gateway + Resilience4j）。
+3. 目标与范围：网关治理能力对齐并固化降级语义，不进入 Step 16 前端工程化。
+4. 实际改动：
+   - 新建 `services/gateway-service` Spring Boot 工程（Gateway + Resilience4j + trace 过滤器 + fallback 控制器）。
+   - 更新 `infra/docker-compose.yml` 使 gateway-service 以 Maven/Spring Boot 运行。
+   - 新增 `scripts/test_step15_gateway_governance.py`。
+   - 新增 `reports/step15_execution.md`。
+   - 修复回归脚本可重复性：`test_step3_gateway.py`、`test_step4_consistency.py`、`test_step14_java_consistency.py`。
+5. 闸门结果：
+   - `docker compose -f infra/docker-compose.yml config` -> `COMPOSE_OK`
+   - `python3 scripts/test_step6_resilience.py`（模型停机） -> `STEP6_GATE_PASS`
+   - `python3 scripts/test_step15_gateway_governance.py`（模型停机） -> `STEP15_GATE_PASS`
+   - `python3 scripts/test_step3_gateway.py` -> `STEP3_GATE_PASS`
+   - `python3 scripts/test_step4_consistency.py` -> `STEP4_GATE_PASS`
+   - `python3 scripts/test_step14_java_consistency.py` -> `STEP14_GATE_PASS`
+   - `python3 scripts/test_step7_mq_reliability.py ...` -> `STEP7_GATE_PASS`
+   - `python3 scripts/test_step8_realtime_channel.py --mode fallback ...` -> `STEP8_GATE_PASS`
+   - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> `openapi_validation_passed`
+6. Git 分支：`feat/step15-gateway-governance`。
+7. Git 提交：`3986131`, `d2b4bfb`, `f2268b3`, `f2c38fe`。
+8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step15-gateway-governance`。
+9. 标签信息：`N/A`（待 PR 合并后打 `step15-pass`）。
+10. 回滚标签：`step14-pass`。
+11. 卡点与修复：
+   - 卡点：旧回归脚本固定时间窗在重复执行时与历史数据冲突，出现假失败。
+   - 修复：改为动态时间窗 + 合同字段校验，保证闸门可重复执行。
+12. 下一阻塞：
+   - 完成 Step15 PR 合并并打 `step15-pass` 标签；
+   - 进入 Step16 前冻结前端最小交付边界（Vue3 + TS + Pinia + 实时/降级状态）。

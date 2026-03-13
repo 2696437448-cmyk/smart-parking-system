@@ -1,10 +1,11 @@
 services:
   gateway-service:
-    image: eclipse-temurin:17-jdk
+    image: maven:3.9.8-eclipse-temurin-17
     working_dir: /app
     volumes:
       - ../services/gateway-service:/app
-    command: ["java", "GatewayMain.java"]
+      - m2-cache:/root/.m2
+    command: ["mvn", "-q", "-DskipTests", "spring-boot:run"]
     environment:
       SERVICE_NAME: gateway-service
       TZ: UTC
