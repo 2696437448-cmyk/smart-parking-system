@@ -258,7 +258,7 @@
    - `python3 scripts/test_step8_realtime_channel.py --mode fallback ...` -> `STEP8_GATE_PASS`
    - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> `openapi_validation_passed`
 6. Git 分支：`feat/step15-gateway-governance`。
-7. Git 提交：`3986131`, `d2b4bfb`。
+7. Git 提交：`3986131`, `d2b4bfb`, `f2268b3`, `f2c38fe`。
 8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step15-gateway-governance`。
 9. 标签信息：`N/A`（待 PR 合并后打 `step15-pass`）。
 10. 回滚标签：`step14-pass`。
