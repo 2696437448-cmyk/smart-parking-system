@@ -28,17 +28,17 @@
 
 ## 4. 可观测性链路
 
-1. 服务暴露 `/metrics` 给 Prometheus 抓取。
-2. Grafana 读取 Prometheus 展示状态与趋势。
+1. Prometheus 抓取 `gateway-service`、`parking-service`、`model-service`、`realtime-service`。
+2. Grafana 提供 Step17 三视图（正常态/故障态/恢复态）。
 3. 网关与业务日志统一输出 JSON，保留 `trace_id`。
 
 ## 5. 当前态与目标态
 
-### 5.1 当前态（Step 16）
+### 5.1 当前态（Step 17）
 
 1. 拓扑为“3 核心服务 + 1 实时伴生服务 + 1 前端工程化应用”。
-2. 已通过闸门：Step 0~16。
-3. Step 11~16 关键产物：
+2. 已通过闸门：Step 0~17。
+3. Step 11~17 关键产物：
    - `data/processed/forecast_feature_table.csv`
    - `data/processed/dispatch_input_table.csv`
    - `artifacts/models/model_registry.json`
@@ -51,6 +51,7 @@
    - `reports/step14_execution.md`
    - `reports/step15_execution.md`
    - `reports/step16_execution.md`
+   - `reports/step17_execution.md`
 4. 关键运行参数：
    - `UPSTREAM_CONNECT_TIMEOUT_MS=10000`
    - `UPSTREAM_TIMEOUT_MS=2500`
@@ -58,8 +59,7 @@
 
 ### 5.2 目标态（技术定稿完整版）
 
-1. 可观测性与性能证据补齐（Step 17）。
-2. 全量验收与论文证据收口（Step 18）。
+1. 全量验收与论文证据收口（Step 18）。
 
 ## 6. 关键冻结决策
 
@@ -84,4 +84,5 @@
 13. Step 14：Java 业务后端与一致性主链路闸门通过。
 14. Step 15：网关治理（Spring Cloud Gateway + Resilience4j）闸门通过。
 15. Step 16：前端工程化（Vue3 + TypeScript + Pinia）闸门通过。
-16. Step 17~18：定稿对齐收口阶段（待执行）。
+16. Step 17：可观测性与性能证据（P95/P99/错误率/吞吐）闸门通过。
+17. Step 18：定稿对齐最终收口（待执行）。

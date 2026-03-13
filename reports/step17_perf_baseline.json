@@ -1,0 +1,20 @@
+{
+  "scenario": "baseline",
+  "timestamp_utc": "2026-03-13T08:05:14.757680+00:00",
+  "total_requests": 320,
+  "concurrency": 20,
+  "warmup": 20,
+  "throughput_rps": 290.7134,
+  "error_count": 0,
+  "error_rate": 0.0,
+  "fallback_count": 11,
+  "fallback_rate": 0.034375,
+  "latency_ms": {
+    "min": 4.4831,
+    "avg": 45.4716,
+    "p50": 9.3494,
+    "p95": 29.4059,
+    "p99": 1015.774,
+    "max": 1021.4163
+  }
+}

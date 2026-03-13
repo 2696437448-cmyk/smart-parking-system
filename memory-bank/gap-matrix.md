@@ -15,7 +15,7 @@
    - `reports/step15_execution.md`
    - `reports/step16_execution.md`
 4. 差距判定：已对齐（阶段化定义为“3 核心 + 1 伴生”）。
-5. 下一步闸门：Step 17（性能证据补齐）。
+5. 下一步闸门：Step 18（全量验收）。
 
 ## 2. 一致性主链路
 
@@ -94,12 +94,17 @@
 ## 8. 可观测性与性能证据
 
 1. 定稿要求：Prometheus + Grafana + 结构化日志 + P95/P99 压测对比。
-2. 当前实现：可观测性基线已通过，压测对比报告待补齐。
+2. 当前实现：已补齐 gateway 指标抓取、Grafana 三视图与 baseline/fault/recovery 性能对比报告。
 3. 证据路径：
-   - `reports/step9_execution.md`
-   - `reports/step10_technical_acceptance.md`
-4. 差距判定：部分未对齐。
-5. 下一步闸门：Step 17。
+   - `infra/prometheus/prometheus.yml`
+   - `infra/grafana/dashboards/step17-normal-state.json`
+   - `infra/grafana/dashboards/step17-fault-state.json`
+   - `infra/grafana/dashboards/step17-recovery-state.json`
+   - `reports/step17_performance_summary.md`
+   - `reports/step17_performance_summary.csv`
+   - `reports/step17_execution.md`
+4. 差距判定：已对齐。
+5. 下一步闸门：Step 18（全量验收与答辩收口）。
 
 ## 9. 冻结项（禁止回退）
 
@@ -111,4 +116,4 @@
    - `POST /internal/v1/model/activate`
 2. 公共头冻结：`X-Trace-Id`、`Idempotency-Key`。
 3. 超时参数冻结：`UPSTREAM_CONNECT_TIMEOUT_MS=10000`、`UPSTREAM_TIMEOUT_MS=2500`（后续仅允许基于压测报告调整）。
-4. 已通过闸门冻结：Step 0~16 能力不可退化。
+4. 已通过闸门冻结：Step 0~17 能力不可退化。

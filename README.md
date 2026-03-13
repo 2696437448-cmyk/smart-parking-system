@@ -48,6 +48,27 @@ npm run dev
 
 默认访问：`http://localhost:5173`
 
+## Step17 性能证据命令
+
+```bash
+# baseline
+python3 scripts/step17_collect_performance.py --scenario baseline --output reports/step17_perf_baseline.json
+
+# fault（先停 model-service）
+python3 scripts/step17_collect_performance.py --scenario fault --output reports/step17_perf_fault.json
+
+# recovery（恢复 model-service 后）
+python3 scripts/step17_collect_performance.py --scenario recovery --output reports/step17_perf_recovery.json
+
+# 汇总报告
+python3 scripts/step17_build_report.py \
+  --baseline reports/step17_perf_baseline.json \
+  --fault reports/step17_perf_fault.json \
+  --recovery reports/step17_perf_recovery.json \
+  --md-output reports/step17_performance_summary.md \
+  --csv-output reports/step17_performance_summary.csv
+```
+
 ## 论文与答辩入口
 
 1. 论文证据包：
