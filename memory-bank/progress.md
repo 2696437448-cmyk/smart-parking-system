@@ -298,3 +298,36 @@
 12. 下一阻塞：
    - 完成 Step16 PR 合并并打 `step16-pass` 标签；
    - 进入 Step17 前冻结压测脚本与指标口径（P95/P99、错误率、吞吐）。
+
+## 2026-03-13 Step 17（通过）
+
+1. 完成时间：2026-03-13 16:10（Asia/Shanghai）。
+2. 当前步骤：Step 17 - 可观测性与性能证据补齐。
+3. 目标与范围：补齐三视图可观测证据与 baseline/fault/recovery 性能对比，不进入 Step18 全量验收。
+4. 实际改动：
+   - 更新 `infra/prometheus/prometheus.yml`，新增 `gateway-service` 指标抓取。
+   - 新增 Grafana 三视图：`step17-normal-state.json`、`step17-fault-state.json`、`step17-recovery-state.json`。
+   - 新增性能采样脚本 `scripts/step17_collect_performance.py`。
+   - 新增性能汇总脚本 `scripts/step17_build_report.py`。
+   - 新增 Step17 gate 脚本 `scripts/test_step17_observability_performance.py`。
+   - 生成证据：`reports/step17_perf_*.json`、`reports/step17_performance_summary.md/csv`、`reports/step17_execution.md`。
+5. 闸门结果：
+   - `docker compose -f infra/docker-compose.yml config` -> `COMPOSE_OK`
+   - `python3 scripts/test_step9_observability.py --mode baseline` -> `STEP9_BASELINE_OK`
+   - `python3 scripts/test_step9_observability.py --mode fault` -> `STEP9_GATE_PASS`
+   - `python3 scripts/step17_collect_performance.py --scenario baseline ...` -> `STEP17_PERF_BASELINE_PASS`
+   - `python3 scripts/step17_collect_performance.py --scenario fault ...` -> `STEP17_PERF_FAULT_PASS`
+   - `python3 scripts/step17_collect_performance.py --scenario recovery ...` -> `STEP17_PERF_RECOVERY_PASS`
+   - `python3 scripts/step17_build_report.py ...` -> `STEP17_REPORT_PASS`
+   - `python3 scripts/test_step17_observability_performance.py` -> `STEP17_GATE_PASS`
+6. Git 分支：`feat/step17-observability-performance`。
+7. Git 提交：`N/A`（待本次提交后补充）。
+8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step17-observability-performance`。
+9. 标签信息：`N/A`（待 PR 合并后打 `step17-pass`）。
+10. 回滚标签：`step16-pass`。
+11. 卡点与修复：
+   - 卡点：fault 场景需要验证可用性而非错误率，单看 HTTP 状态难以体现降级命中。
+   - 修复：在性能采样中加入 `fallback_rate`，明确记录故障态降级命中比例（1.0）。
+12. 下一阻塞：
+   - 完成 Step17 PR 合并并打 `step17-pass` 标签；
+   - 进入 Step18 前冻结最终全量回归清单与论文收口目录。

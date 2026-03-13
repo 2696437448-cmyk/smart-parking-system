@@ -1,0 +1,20 @@
+{
+  "scenario": "recovery",
+  "timestamp_utc": "2026-03-13T08:06:06.715514+00:00",
+  "total_requests": 320,
+  "concurrency": 20,
+  "warmup": 20,
+  "throughput_rps": 277.9952,
+  "error_count": 0,
+  "error_rate": 0.0,
+  "fallback_count": 13,
+  "fallback_rate": 0.040625,
+  "latency_ms": {
+    "min": 4.2981,
+    "avg": 51.4838,
+    "p50": 9.3521,
+    "p95": 30.7887,
+    "p99": 1024.0857,
+    "max": 1034.5597
+  }
+}

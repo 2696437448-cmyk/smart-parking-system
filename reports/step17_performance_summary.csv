@@ -1,0 +1,4 @@
+scenario,total_requests,throughput_rps,error_rate,fallback_rate,p95_ms,p99_ms
+baseline,320,290.7134,0.0,0.034375,29.4059,1015.774
+fault,320,1608.0153,0.0,1.0,18.8385,23.2184
+recovery,320,277.9952,0.0,0.040625,30.7887,1024.0857
