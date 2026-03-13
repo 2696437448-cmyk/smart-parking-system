@@ -6,9 +6,8 @@ from __future__ import annotations
 import json
 import time
 import urllib.request
+from datetime import datetime, timedelta, timezone
 from urllib.error import URLError, HTTPError
-
-
 
 
 def _header_ci(headers: dict, key: str) -> str:
@@ -17,6 +16,7 @@ def _header_ci(headers: dict, key: str) -> str:
         if k.lower() == target:
             return v
     return ""
+
 
 def request(url: str, method: str = "GET", body: dict | None = None, headers: dict | None = None):
     data = None
@@ -43,14 +43,22 @@ def wait_gateway() -> None:
     raise RuntimeError(f"gateway health check timeout, last={last}")
 
 
+def _iso_no_tz(dt: datetime) -> str:
+    return dt.replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S")
+
+
 def main() -> None:
     wait_gateway()
+
+    now = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+    w_start = _iso_no_tz(now + timedelta(minutes=15))
+    w_end = _iso_no_tz(now + timedelta(minutes=45))
 
     s1, h1, b1 = request(
         "http://localhost:8080/api/v1/owner/reservations",
         method="POST",
-        body={"user_id": "U0001", "preferred_window": "2026-03-11T09:00/09:30", "location": "R1"},
-        headers={"Idempotency-Key": "idem-001"},
+        body={"user_id": "U0001", "preferred_window": f"{w_start}/{w_end}", "location": "R1"},
+        headers={"Idempotency-Key": f"step3-idem-{int(time.time())}"},
     )
     j1 = json.loads(b1)
     assert s1 == 200, f"owner route status invalid: {s1}"
