@@ -11,7 +11,7 @@
 1. 新建前端工程目录：`apps/frontend`
    - `package.json`（Vue3 + Pinia + TypeScript + Vite）
    - `package-lock.json`
-   - `.npmrc`（registry + strict-ssl workaround）
+   - `.npmrc`（registry + strict-ssl=true）
    - `tsconfig.json`
    - `vite.config.ts`
    - `index.html`
@@ -101,8 +101,8 @@ python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml
 ## 风险与说明
 
 1. 本机 npm 证书链存在问题（`UNABLE_TO_GET_ISSUER_CERT_LOCALLY`）。
-2. 处理方式：在项目级 `.npmrc` 固化 `registry=https://registry.npmjs.org/` 与 `strict-ssl=false`，确保可复现安装。
-3. 若后续证书环境恢复，可删除 `strict-ssl=false` 以回归默认安全策略。
+2. 处理方式：已恢复项目级 `.npmrc` 为安全配置（`registry=https://registry.npmjs.org/`, `strict-ssl=true`）。
+3. 若后续再次出现证书链问题，优先修复系统/代理 CA 配置，不再关闭 strict-ssl。
 
 ## 验收映射
 
