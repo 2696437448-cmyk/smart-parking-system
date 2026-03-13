@@ -33,7 +33,6 @@ start_stack() {
   wait_http "http://localhost:15672/api/overview" 120 1 || true
   wait_http "http://localhost:9090/-/ready"
 
-  # Warm up gateway-to-parking connections to reduce cold-start jitter.
   local i
   for i in $(seq 1 10); do
     curl -fsS "http://localhost:8080/api/v1/admin/realtime/status" >/dev/null 2>&1 || true
@@ -91,10 +90,17 @@ run_faults() {
   echo "[defense-demo] fault-injection sequence passed"
 }
 
+run_acceptance() {
+  echo "[defense-demo] running Step18 full acceptance..."
+  "$PYTHON_BIN" "$ROOT_DIR/scripts/test_step18_full_acceptance.py"
+  echo "[defense-demo] full acceptance passed"
+}
+
 run_full() {
   start_stack
   run_baseline
   run_faults
+  run_acceptance
   stop_stack
   echo "[defense-demo] full demo run passed"
 }
@@ -104,11 +110,12 @@ usage() {
 Usage: ./scripts/defense_demo.sh <command>
 
 Commands:
-  start      Start demo stack and warm up routes
-  baseline   Run contract + Step4 + Step5 baseline checks
-  faults     Run Step6/7/8/9 fault-injection sequence
-  full       Run start + baseline + faults + stop
-  stop       Stop and clean stack
+  start       Start demo stack and warm up routes
+  baseline    Run contract + Step4 + Step5 baseline checks
+  faults      Run Step6/7/8/9 fault-injection sequence
+  acceptance  Run Step18 full acceptance gates
+  full        Run start + baseline + faults + acceptance + stop
+  stop        Stop and clean stack
 USAGE
 }
 
@@ -127,6 +134,9 @@ main() {
       ;;
     faults)
       run_faults
+      ;;
+    acceptance)
+      run_acceptance
       ;;
     full)
       run_full
