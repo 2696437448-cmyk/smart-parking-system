@@ -7,6 +7,7 @@ import json
 import time
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timedelta, timezone
 from urllib.error import HTTPError
 
 GATEWAY = "http://localhost:8080"
@@ -44,11 +45,20 @@ def wait_gateway() -> None:
     raise RuntimeError("gateway health timeout")
 
 
+def _iso_no_tz(dt: datetime) -> str:
+    return dt.replace(tzinfo=None).strftime("%Y-%m-%dT%H:%M:%S")
+
+
 def main() -> None:
     wait_gateway()
 
+    now = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+    base = now + timedelta(minutes=30)
+    oversell_start = _iso_no_tz(base)
+    oversell_end = _iso_no_tz(base + timedelta(minutes=30))
+
     common = {
-        "preferred_window": "2026-03-12T09:00:00/2026-03-12T09:30:00",
+        "preferred_window": f"{oversell_start}/{oversell_end}",
         "location": "R1",
         "slot_id": "R1-S001",
     }
@@ -58,7 +68,7 @@ def main() -> None:
     with ThreadPoolExecutor(max_workers=24) as ex:
         for i in range(30):
             payload = {**common, "user_id": f"U{i:04d}"}
-            headers = {"Idempotency-Key": f"step4-concurrent-{i:03d}"}
+            headers = {"Idempotency-Key": f"step4-concurrent-{int(time.time())}-{i:03d}"}
             futures.append(ex.submit(request, "/api/v1/owner/reservations", "POST", payload, headers))
 
     results = [f.result() for f in as_completed(futures)]
@@ -75,13 +85,15 @@ def main() -> None:
     )
 
     # 2) Idempotency replay test (same key, same payload => same reservation id)
+    idem_start = _iso_no_tz(base + timedelta(minutes=60))
+    idem_end = _iso_no_tz(base + timedelta(minutes=90))
     idem_payload = {
         "user_id": "U9000",
-        "preferred_window": "2026-03-12T10:00:00/2026-03-12T10:30:00",
+        "preferred_window": f"{idem_start}/{idem_end}",
         "location": "R2",
         "slot_id": "R2-S001",
     }
-    idem_headers = {"Idempotency-Key": "idem-fixed-001"}
+    idem_headers = {"Idempotency-Key": f"idem-fixed-{int(time.time())}"}
 
     s1, _, b1 = request("/api/v1/owner/reservations", "POST", idem_payload, idem_headers)
     s2, _, b2 = request("/api/v1/owner/reservations", "POST", idem_payload, idem_headers)
@@ -91,7 +103,8 @@ def main() -> None:
 
     # 3) Debug endpoint verifies no duplicate active reservation for the oversell target window
     req = urllib.request.Request(
-        PARKING_DIRECT + "/internal/debug/reservations?slot_id=R1-S001&window_start=2026-03-12T09:00:00&window_end=2026-03-12T09:30:00",
+        PARKING_DIRECT
+        + f"/internal/debug/reservations?slot_id=R1-S001&window_start={oversell_start}&window_end={oversell_end}",
         method="GET",
     )
     with urllib.request.urlopen(req, timeout=8) as resp:

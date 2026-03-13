@@ -64,7 +64,8 @@ def main() -> None:
     )
     j2 = json.loads(b2)
     assert s2 == 200, f"model route status invalid: {s2}"
-    assert j2.get("service") == "model-service", f"model route not forwarded to model-service: {j2}"
+    assert isinstance(j2.get("records"), list), f"model route payload invalid: {j2}"
+    assert j2.get("model_version"), f"model route missing model_version: {j2}"
     assert _header_ci(h2, "X-Trace-Id"), "missing X-Trace-Id in model route response"
 
     print("STEP3_GATE_PASS")
