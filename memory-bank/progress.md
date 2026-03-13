@@ -348,7 +348,7 @@
    - `python3 scripts/test_step18_full_acceptance.py` -> `STEP18_GATE_PASS`
    - `reports/step18_gate_results.json` 显示 `overall_passed=true`（21/21）。
 6. Git 分支：`feat/step18-final-acceptance`。
-7. Git 提交：`N/A`（待本次提交后补充）。
+7. Git 提交：`a83ff1c`, `7b61ab8`。
 8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step18-final-acceptance`。
 9. 标签信息：`N/A`（待 PR 合并后打 `step18-pass`）。
 10. 回滚标签：`step17-pass`。
