@@ -321,7 +321,7 @@
    - `python3 scripts/step17_build_report.py ...` -> `STEP17_REPORT_PASS`
    - `python3 scripts/test_step17_observability_performance.py` -> `STEP17_GATE_PASS`
 6. Git 分支：`feat/step17-observability-performance`。
-7. Git 提交：`N/A`（待本次提交后补充）。
+7. Git 提交：`528a9c0`, `69ca89e`。
 8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step17-observability-performance`。
 9. 标签信息：`N/A`（待 PR 合并后打 `step17-pass`）。
 10. 回滚标签：`step16-pass`。
