@@ -1,0 +1,25 @@
+server:
+  port: ${PORT:8081}
+
+spring:
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://mysql:3306/smart_parking?characterEncoding=utf8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${MYSQL_USER:sp_user}
+    password: ${MYSQL_PASSWORD:sp_pass}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      initialization-fail-timeout: -1
+  redis:
+    host: ${REDIS_HOST:redis}
+    port: ${REDIS_PORT:6379}
+    timeout: 3s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
