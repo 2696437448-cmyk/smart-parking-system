@@ -5,15 +5,17 @@
 ## 1. 架构与服务形态
 
 1. 定稿要求：`Java 主业务微服务 + Python 算法服务`。
-2. 当前实现：`gateway-service`（Java/Spring Cloud Gateway）+ `parking-service`（Java）+ `model-service`（Python）+ `realtime-service`（伴生）。
+2. 当前实现：`gateway-service`（Java/Spring Cloud Gateway）+ `parking-service`（Java）+ `model-service`（Python）+ `realtime-service`（伴生）+ `frontend-app`（Vue3+TS+Pinia）。
 3. 证据路径：
    - `infra/docker-compose.yml`
    - `services/gateway-service/src/main/java/com/smartparking/gateway/*`
    - `services/parking-service/src/main/java/com/smartparking/parking/ParkingServiceApplication.java`
+   - `apps/frontend/src/*`
    - `reports/step14_execution.md`
    - `reports/step15_execution.md`
+   - `reports/step16_execution.md`
 4. 差距判定：已对齐（阶段化定义为“3 核心 + 1 伴生”）。
-5. 下一步闸门：Step 16（前端工程化）。
+5. 下一步闸门：Step 17（性能证据补齐）。
 
 ## 2. 一致性主链路
 
@@ -79,12 +81,15 @@
 ## 7. 前端工程化
 
 1. 定稿要求：Vue3 + TypeScript + Pinia 工程化前端。
-2. 当前实现：单文件 Vue3 演示页（CDN），具备实时/降级演示能力。
+2. 当前实现：已落地 Vue3 + TypeScript + Pinia 项目，保留 WebSocket 主通道 + Polling 兜底，且保留单文件演示页作为答辩保底。
 3. 证据路径：
-   - `apps/frontend/realtime_dashboard_demo.html`
-   - `reports/step8_execution.md`
-4. 差距判定：部分未对齐。
-5. 下一步闸门：Step 16。
+   - `apps/frontend/package.json`
+   - `apps/frontend/src/stores/realtime.ts`
+   - `apps/frontend/src/composables/useRealtimeChannel.ts`
+   - `scripts/test_step16_frontend_engineering.py`
+   - `reports/step16_execution.md`
+4. 差距判定：已对齐（已通过项目级 .npmrc 解决证书链阻塞，安装与构建均可复现）。
+5. 下一步闸门：Step 18（前后端联调全回归）。
 
 ## 8. 可观测性与性能证据
 
@@ -106,4 +111,4 @@
    - `POST /internal/v1/model/activate`
 2. 公共头冻结：`X-Trace-Id`、`Idempotency-Key`。
 3. 超时参数冻结：`UPSTREAM_CONNECT_TIMEOUT_MS=10000`、`UPSTREAM_TIMEOUT_MS=2500`（后续仅允许基于压测报告调整）。
-4. 已通过闸门冻结：Step 0~15 能力不可退化。
+4. 已通过闸门冻结：Step 0~16 能力不可退化。

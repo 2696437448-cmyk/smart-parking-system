@@ -38,6 +38,16 @@ python3 scripts/data_health_check.py \
   --md-output reports/data_health_report.md
 ```
 
+## Step16 前端工程命令
+
+```bash
+cd apps/frontend
+npm install
+npm run dev
+```
+
+默认访问：`http://localhost:5173`
+
 ## 论文与答辩入口
 
 1. 论文证据包：

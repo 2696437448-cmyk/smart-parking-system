@@ -6,6 +6,7 @@
 2. `parking-service`：Java 主业务服务，负责预约一致性、调度触发、轮询兜底接口。
 3. `model-service`：Python 算法服务，负责预测、优化、模型激活与版本管理。
 4. `realtime-service`：WebSocket 实时推送与实时指标伴生服务。
+5. `frontend-app`：Vue3 + TypeScript + Pinia，看板状态管理与通道切换可视化。
 
 ## 2. 主数据流
 
@@ -14,7 +15,7 @@
 3. 业主预约请求 -> Gateway -> 一致性管线（Redis 幂等/Redisson 锁/MySQL 唯一约束）。
 4. 业务服务调用模型服务 -> 预测/优化结果。
 5. 调度事件入 MQ -> 消费重试 -> DLQ。
-6. 看板实时优先 WebSocket，异常时切轮询。
+6. 前端实时通道优先 WebSocket，异常时自动切轮询。
 
 ## 3. 可靠性链路
 
@@ -23,6 +24,7 @@
 3. MySQL 唯一约束兜底写入一致性。
 4. Gateway 侧超时 + 熔断 + fallback（固定 `fallback_reason/fallback_strategy/trace_id`）。
 5. MQ 重试与 DLQ。
+6. 前端连接链路降级（WebSocket -> Polling）。
 
 ## 4. 可观测性链路
 
@@ -32,21 +34,23 @@
 
 ## 5. 当前态与目标态
 
-### 5.1 当前态（Step 15）
+### 5.1 当前态（Step 16）
 
-1. 拓扑为“3 核心服务 + 1 实时伴生服务”。
-2. 已通过闸门：Step 0~15。
-3. Step 11~15 关键产物：
+1. 拓扑为“3 核心服务 + 1 实时伴生服务 + 1 前端工程化应用”。
+2. 已通过闸门：Step 0~16。
+3. Step 11~16 关键产物：
    - `data/processed/forecast_feature_table.csv`
    - `data/processed/dispatch_input_table.csv`
    - `artifacts/models/model_registry.json`
    - `services/parking-service/*`
    - `services/gateway-service/*`
+   - `apps/frontend/*`
    - `reports/step11_execution.md`
    - `reports/step12_execution.md`
    - `reports/step13_execution.md`
    - `reports/step14_execution.md`
    - `reports/step15_execution.md`
+   - `reports/step16_execution.md`
 4. 关键运行参数：
    - `UPSTREAM_CONNECT_TIMEOUT_MS=10000`
    - `UPSTREAM_TIMEOUT_MS=2500`
@@ -54,9 +58,8 @@
 
 ### 5.2 目标态（技术定稿完整版）
 
-1. 前端工程化对齐到 Vue3 + TypeScript + Pinia（Step 16）。
-2. 可观测性与性能证据补齐（Step 17）。
-3. 全量验收与论文证据收口（Step 18）。
+1. 可观测性与性能证据补齐（Step 17）。
+2. 全量验收与论文证据收口（Step 18）。
 
 ## 6. 关键冻结决策
 
@@ -80,4 +83,5 @@
 12. Step 13：模型注册与热切换闸门通过。
 13. Step 14：Java 业务后端与一致性主链路闸门通过。
 14. Step 15：网关治理（Spring Cloud Gateway + Resilience4j）闸门通过。
-15. Step 16~18：定稿对齐收口阶段（待执行）。
+15. Step 16：前端工程化（Vue3 + TypeScript + Pinia）闸门通过。
+16. Step 17~18：定稿对齐收口阶段（待执行）。
