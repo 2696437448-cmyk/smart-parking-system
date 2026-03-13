@@ -1,91 +1,74 @@
-# 论文证据包（答辩可直接使用）
+# 论文证据包（Step18 阶段版）
 
-## 1. 项目基线
+## 1. 项目最终形态
 
 1. 项目根目录：`/Users/yanchen/VscodeProject/smart-parking-thesis`
-2. 技术形态：`Java 网关 + Python 业务/模型/实时服务 + Vue3 演示页 + RabbitMQ + Prometheus + Grafana + Docker Compose`
-3. 数据基线：`data/raw` fallback 数据已通过 Step 0 健康闸门。
+2. 技术形态：`Java Gateway + Java Parking Service + Python Model Service + Python Realtime Service + Vue3/TS/Pinia Frontend + MySQL8 + Redis + RabbitMQ + Prometheus + Grafana + Docker Compose`
+3. 验收状态：`Step0~Step18 初步完成，阶段验收通过（后续可持续完善）`。
 
-## 2. 工程证据索引（可映射到论文章节）
+## 2. 工程证据全索引
 
-1. 数据质量证据
+1. 数据质量与ETL
    - `reports/data_health_report.json`
    - `reports/data_health_report.md`
+   - `reports/step11_execution.md`
+   - `reports/step11_etl_quality.json`
 
-2. 接口合同证据
-   - `openapi/smart-parking.yaml`
-   - `scripts/validate_openapi.py`
+2. 模型训练与工程化
+   - `reports/step12_execution.md`
+   - `reports/step12_model_comparison.md`
+   - `reports/step12_model_comparison.csv`
+   - `reports/step13_execution.md`
 
-3. 可靠性证据
-   - `reports/step4_execution.md`
-   - `reports/step6_execution.md`
+3. 一致性与可靠性
+   - `reports/step14_execution.md`
+   - `reports/step15_execution.md`
    - `reports/step7_execution.md`
    - `reports/step8_execution.md`
 
-4. 可观测性证据
+4. 可观测性与性能
    - `reports/step9_execution.md`
-   - `infra/prometheus/prometheus.yml`
-   - `infra/grafana/dashboards/step9-observability.json`
+   - `reports/step17_execution.md`
+   - `reports/step17_performance_summary.md`
+   - `reports/step17_performance_summary.csv`
+   - `infra/grafana/dashboards/step17-normal-state.json`
+   - `infra/grafana/dashboards/step17-fault-state.json`
+   - `infra/grafana/dashboards/step17-recovery-state.json`
 
-5. 总验收证据
-   - `reports/step10_technical_acceptance.md`
+5. 阶段验收
+   - `reports/step18_technical_acceptance.md`
+   - `reports/step18_gate_results.json`
 
-## 3. 实验记录模板（问题-方法-实验-结论）
+## 3. 论文章节映射建议
 
-### 3.1 Step 4 一致性
+1. 第3章 系统设计：
+   - `memory-bank/architecture.md`
+   - `openapi/smart-parking.yaml`
 
-1. 问题：并发预约可能超卖。
-2. 方法：幂等 + 锁 + DB 唯一约束。
-3. 实验：`python scripts/test_step4_consistency.py`。
-4. 结论：并发下无超卖，闸门通过。
+2. 第4章 关键实现：
+   - Step14（Java 一致性主链）
+   - Step15（网关治理）
+   - Step16（前端工程化）
 
-### 3.2 Step 6 降级可用性
+3. 第5章 实验与分析：
+   - Step11/12/13（数据与模型）
+   - Step17（性能对比）
+   - Step18（阶段验收）
 
-1. 问题：模型服务故障导致核心流程中断。
-2. 方法：网关降级返回 `fallback_reason/fallback_strategy`。
-3. 实验：停模型服务后运行 `test_step6_resilience.py`。
-4. 结论：降级成功，业务可解释可用。
+4. 第6章 总结与展望：
+   - 长尾延迟优化
+   - 更细粒度压测矩阵
 
-### 3.3 Step 7 MQ 可靠性
+## 4. 答辩演示剧本（建议）
 
-1. 问题：异步消息失败与重复消费。
-2. 方法：重试 + DLQ + 消费幂等语义。
-3. 实验：`setup_rabbitmq.py` + `dispatch_worker.py` + `test_step7_mq_reliability.py`。
-4. 结论：失败消息可追踪进入 DLQ。
+1. 正常态：
+   - `./scripts/defense_demo.sh start`
+   - `./scripts/defense_demo.sh baseline`
+2. 故障态：
+   - `./scripts/defense_demo.sh faults`
+3. 恢复与总收口：
+   - `./scripts/defense_demo.sh acceptance`
 
-### 3.4 Step 8 实时通道鲁棒性
+## 5. 核心一句话结论（答辩可直接使用）
 
-1. 问题：WebSocket 中断造成页面静止。
-2. 方法：WebSocket 主通道 + 轮询兜底。
-3. 实验：先 realtime，再停 realtime-service 后 fallback。
-4. 结论：页面可自动切换并持续更新。
-
-### 3.5 Step 9 可观测性
-
-1. 问题：故障态缺少可视证据。
-2. 方法：Prometheus 指标 + Grafana 看板 + trace_id 日志。
-3. 实验：baseline/fault 两阶段脚本。
-4. 结论：故障前后状态转移可被明确观测。
-
-## 4. 论文图表清单（建议）
-
-1. 数据质量统计图（空值率、重复率、解析成功率）。
-2. 系统与调度流程图（含降级与异常流）。
-3. 可靠性实验对比表（场景/注入动作/预期/结果）。
-
-## 5. 复现命令摘要
-
-```bash
-cd /Users/yanchen/VscodeProject/smart-parking-thesis
-python scripts/validate_openapi.py --spec openapi/smart-parking.yaml
-docker compose -f infra/docker-compose.yml config
-./scripts/defense_demo.sh full
-```
-
-## 6. 答辩速讲提纲
-
-1. 一致性：Step4 证明并发下无超卖。
-2. 可用性：Step6 证明模型故障可降级不硬失败。
-3. 可靠性：Step7 证明重试与 DLQ 完整链路。
-4. 用户体验：Step8 证明实时通道异常自动切换。
-5. 可运维性：Step9 证明指标与日志闭环可观测。
+1. 系统不仅实现了业务闭环，还在一致性、容错、可观测性和工程化交付维度完成了可复现的全量验收，具备准生产级工程质量。

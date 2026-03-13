@@ -331,3 +331,30 @@
 12. 下一阻塞：
    - 完成 Step17 PR 合并并打 `step17-pass` 标签；
    - 进入 Step18 前冻结最终全量回归清单与论文收口目录。
+
+## 2026-03-13 Step 18（通过）
+
+1. 完成时间：2026-03-13 16:26（Asia/Shanghai）。
+2. 当前步骤：Step 18 - 全量验收与论文证据收口。
+3. 目标与范围：执行 Step4~Step17 全量回归并生成最终技术验收报告、论文证据包与答辩脚本收口。
+4. 实际改动：
+   - 新增全量验收脚本 `scripts/test_step18_full_acceptance.py`。
+   - 生成 `reports/step18_gate_results.json`。
+   - 新增阶段验收报告 `reports/step18_technical_acceptance.md`。
+   - 升级 `reports/thesis_evidence_package.md` 为 Step18 阶段版（后续可持续完善）。
+   - 升级 `scripts/defense_demo.sh`，新增 `acceptance` 命令并纳入 `full` 流程。
+   - 更新 `memory-bank/architecture.md`、`memory-bank/gap-matrix.md` 至阶段态。
+5. 闸门结果：
+   - `python3 scripts/test_step18_full_acceptance.py` -> `STEP18_GATE_PASS`
+   - `reports/step18_gate_results.json` 显示 `overall_passed=true`（21/21）。
+6. Git 分支：`feat/step18-final-acceptance`。
+7. Git 提交：`N/A`（待本次提交后补充）。
+8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step18-final-acceptance`。
+9. 标签信息：`N/A`（待 PR 合并后打 `step18-pass`）。
+10. 回滚标签：`step17-pass`。
+11. 卡点与修复：
+   - 卡点：全量验收场景多、服务状态切换复杂，人工执行容易漏项。
+   - 修复：脚本化编排 Step18 全量验收并输出 machine-readable 结果。
+12. 下一阻塞：
+   - 完成 Step18 PR 合并并打 `step18-pass` 标签；
+   - 毕设技术侧进入迭代期，后续可继续做性能优化、功能增强与文档完善。
