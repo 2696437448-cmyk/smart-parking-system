@@ -268,3 +268,33 @@
 12. 下一阻塞：
    - 完成 Step15 PR 合并并打 `step15-pass` 标签；
    - 进入 Step16 前冻结前端最小交付边界（Vue3 + TS + Pinia + 实时/降级状态）。
+
+## 2026-03-13 Step 16（通过）
+
+1. 完成时间：2026-03-13 15:48（Asia/Shanghai）。
+2. 当前步骤：Step 16 - 前端工程化（Vue3 + TypeScript + Pinia）。
+3. 目标与范围：将前端从单文件演示页升级为工程化项目，并保持实时/降级状态语义。
+4. 实际改动：
+   - 新增 `apps/frontend` Vue3 + TS + Pinia 工程结构。
+   - 新增 `apps/frontend/src/stores/realtime.ts`（连接状态与数据状态统一管理）。
+   - 新增 `apps/frontend/src/composables/useRealtimeChannel.ts`（WebSocket 主通道 + Polling 兜底）。
+   - 新增 `scripts/test_step16_frontend_engineering.py`。
+   - 新增 `reports/step16_execution.md`。
+   - 保留 `apps/frontend/realtime_dashboard_demo.html` 作为答辩兜底。
+5. 闸门结果：
+   - `python3 scripts/test_step16_frontend_engineering.py` -> `STEP16_GATE_PASS`
+   - `python3 scripts/test_step8_realtime_channel.py --mode realtime ...` -> `STEP8_WEBSOCKET_OK`
+   - `docker compose stop realtime-service && python3 scripts/test_step8_realtime_channel.py --mode fallback ... && docker compose start realtime-service` -> `STEP8_GATE_PASS`
+   - `python3 scripts/test_step3_gateway.py` -> `STEP3_GATE_PASS`
+   - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> `openapi_validation_passed`
+6. Git 分支：`feat/step16-frontend-engineering`。
+7. Git 提交：`8bf96a3`, `98c9cd2`。
+8. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step16-frontend-engineering`。
+9. 标签信息：`N/A`（待 PR 合并后打 `step16-pass`）。
+10. 回滚标签：`step15-pass`。
+11. 卡点与修复：
+   - 卡点：`npm install` 在当前环境下载阻塞，`node_modules` 未落地。
+   - 修复：先以“结构闸门 + 通道语义回归”完成验收；在可联网环境执行 `npm install && npm run build` 补齐运行时证据。
+12. 下一阻塞：
+   - 完成 Step16 PR 合并并打 `step16-pass` 标签；
+   - 进入 Step17 前冻结压测脚本与指标口径（P95/P99、错误率、吞吐）。

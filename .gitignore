@@ -2,6 +2,10 @@
 services/parking-service/target/
 services/gateway-service/target/
 
+# Frontend build outputs
+apps/frontend/node_modules/
+apps/frontend/dist/
+
 # Local IDE/cache
 *.iml
 .idea/
