@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Lightweight OpenAPI validator for Step 2 gate."""
+"""Lightweight OpenAPI validator for Step24 contract."""
 
 from __future__ import annotations
 
@@ -10,12 +10,27 @@ import yaml
 
 REQUIRED_PATHS = [
     "/api/v1/owner/reservations",
+    "/api/v1/owner/recommendations",
+    "/api/v1/owner/orders/{order_id}",
+    "/api/v1/owner/orders/{order_id}/complete",
+    "/api/v1/owner/navigation/{order_id}",
     "/api/v1/admin/dispatch/run",
+    "/api/v1/admin/revenue/summary",
+    "/api/v1/admin/monitor/summary",
     "/internal/v1/model/predict",
     "/internal/v1/dispatch/optimize",
     "/internal/v1/model/activate",
 ]
-REQUIRED_SCHEMAS = ["DemandGapRecord", "DispatchRequest", "DispatchResult"]
+REQUIRED_SCHEMAS = [
+    "DemandGapRecord",
+    "DispatchRequest",
+    "DispatchResult",
+    "GeoPoint",
+    "BillingRule",
+    "BillingRecord",
+    "RegionRevenueSummary",
+    "NavigationTarget",
+]
 REQUIRED_PARAMETERS = ["XTraceId", "IdempotencyKey"]
 
 
@@ -33,7 +48,6 @@ def main() -> None:
     paths = doc.get("paths", {})
     for endpoint in REQUIRED_PATHS:
         assert endpoint in paths, f"missing path: {endpoint}"
-        assert "post" in paths[endpoint], f"missing POST method on {endpoint}"
 
     components = doc.get("components", {})
     schemas = components.get("schemas", {})

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import math
 import os
@@ -545,55 +546,119 @@ def _slot_pool(requests: list[dict[str, Any]]) -> list[str]:
     return pool
 
 
+def _stable_unit(seed: str) -> float:
+    digest = hashlib.sha256(seed.encode("utf-8")).digest()
+    value = int.from_bytes(digest[:8], "big")
+    return value / float((1 << 64) - 1)
+
+
+def _slot_index(slot_id: str) -> int:
+    try:
+        suffix = slot_id.split("-S", 1)[1]
+        return max(1, int(suffix))
+    except Exception:
+        return 1
+
+
+def _region_factor(region: str) -> float:
+    return {"R1": 1.18, "R2": 1.0, "R3": 0.92}.get(region, 1.0)
+
+
 def _cost(req: dict[str, Any], slot_id: str) -> tuple[float, float, float]:
     order_id = str(req.get("order_id", ""))
     region = _location_to_region(str(req.get("location", "R1")))
     slot_region = slot_id.split("-")[0]
-    region_penalty = 0.0 if region == slot_region else 4.0
+    region_penalty = 0.0 if region == slot_region else 3.6
+    slot_idx = _slot_index(slot_id)
 
-    distance = (abs(hash(order_id + slot_id)) % 700) / 100.0 + region_penalty
-    congestion = (abs(hash(slot_id + "cg")) % 500) / 100.0
-    price = 5.0 + (abs(hash(slot_id + "pr")) % 400) / 100.0
+    distance = round(0.9 + region_penalty + (slot_idx % 11) * 0.17 + 0.8 * _stable_unit(f"{order_id}|{slot_id}|distance"), 4)
+    congestion = round(0.2 + 0.65 * _stable_unit(f"{slot_id}|congestion"), 4)
+    price = round((5.2 + (slot_idx % 5) * 0.55 + 0.45 * _stable_unit(f"{slot_id}|price")) * _region_factor(slot_region), 2)
 
-    total = 0.5 * distance + 0.3 * congestion + 0.2 * price
+    total = round(0.55 * distance + 1.8 * congestion + 0.2 * price, 6)
     return total, distance, price
 
 
+def _hungarian_assign(cost_matrix: list[list[float]]) -> list[int]:
+    if not cost_matrix:
+        return []
+
+    row_count = len(cost_matrix)
+    col_count = len(cost_matrix[0]) if cost_matrix[0] else 0
+    if col_count == 0:
+        return [-1] * row_count
+
+    size = max(row_count, col_count)
+    padded = [[0.0] * (size + 1) for _ in range(size + 1)]
+    for i in range(row_count):
+        for j in range(col_count):
+            padded[i + 1][j + 1] = cost_matrix[i][j]
+
+    u = [0.0] * (size + 1)
+    v = [0.0] * (size + 1)
+    p = [0] * (size + 1)
+    way = [0] * (size + 1)
+
+    for i in range(1, size + 1):
+        p[0] = i
+        j0 = 0
+        minv = [float("inf")] * (size + 1)
+        used = [False] * (size + 1)
+        while True:
+            used[j0] = True
+            i0 = p[j0]
+            delta = float("inf")
+            j1 = 0
+            for j in range(1, size + 1):
+                if used[j]:
+                    continue
+                cur = padded[i0][j] - u[i0] - v[j]
+                if cur < minv[j]:
+                    minv[j] = cur
+                    way[j] = j0
+                if minv[j] < delta:
+                    delta = minv[j]
+                    j1 = j
+            for j in range(size + 1):
+                if used[j]:
+                    u[p[j]] += delta
+                    v[j] -= delta
+                else:
+                    minv[j] -= delta
+            j0 = j1
+            if p[j0] == 0:
+                break
+        while True:
+            j1 = way[j0]
+            p[j0] = p[j1]
+            j0 = j1
+            if j0 == 0:
+                break
+
+    assignment = [-1] * row_count
+    for j in range(1, size + 1):
+        if 1 <= p[j] <= row_count and j <= col_count:
+            assignment[p[j] - 1] = j - 1
+    return assignment
+
+
 def _optimize(requests: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], str]:
-    n = len(requests)
-    if n == 0:
-        return [], "hungarian_bruteforce"
+    if not requests:
+        return [], "hungarian_optimal"
 
     pool = _slot_pool(requests)
-    best_perm = None
-    best_score = float("inf")
-    strategy = "hungarian_bruteforce"
+    cost_matrix = [[_cost(req, slot)[0] for slot in pool] for req in requests]
+    assignment = _hungarian_assign(cost_matrix)
+    strategy = "hungarian_optimal"
 
-    if n <= 7:
-        for chosen in combinations(pool, n):
-            for perm in permutations(chosen):
-                score = 0.0
-                for req, slot in zip(requests, perm):
-                    c, _, _ = _cost(req, slot)
-                    score += c
-                if score < best_score:
-                    best_score = score
-                    best_perm = perm
-    else:
-        strategy = "greedy_fallback"
-        available = pool.copy()
-        chosen = []
-        for req in requests:
-            available.sort(key=lambda s: _cost(req, s)[0])
-            chosen_slot = available.pop(0)
-            chosen.append(chosen_slot)
-        best_perm = tuple(chosen)
-
-    assert best_perm is not None
     results: list[dict[str, Any]] = []
-    for req, slot in zip(requests, best_perm):
+    for idx, req in enumerate(requests):
+        slot_idx = assignment[idx]
+        if slot_idx < 0 or slot_idx >= len(pool):
+            raise RuntimeError("hungarian assignment incomplete")
+        slot = pool[slot_idx]
         total, distance, price = _cost(req, slot)
-        eta = max(2.0, round(distance * 2.6, 2))
+        eta = max(2.0, round(distance * 2.35, 2))
         score = round(1.0 / (1.0 + total), 6)
         results.append(
             {
