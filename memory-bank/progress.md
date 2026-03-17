@@ -520,3 +520,24 @@
 12. 下一阻塞：
    - 补 Git 提交 / PR / tag；
    - 如继续迭代，可在 Step24 基础上做 UI 打磨与压测增强。
+
+## 2026-03-17 Step19A~24 Git 收口（进行中）
+
+1. 更新时间：2026-03-17 17:56（Asia/Shanghai）。
+2. 当前范围：为 Step19A~24 集成改造补 Git 元数据与安全收口，不再修改业务语义。
+3. 收口说明：
+   - Step19A~24 横跨 Spark strict、Hungarian、计费、前端页面、演示入口与全量验收，实际以单一集成分支 `feat/step19-step24-completion` 收口。
+   - 仓库默认前端配置已恢复为安全值 `strict-ssl=true`；此前证书链问题仅作为本机临时 workaround，不再保留为仓库默认提交。
+4. 本次验证：
+   - `cd apps/frontend && npm run typecheck` -> pass
+   - `cd apps/frontend && npm run build` -> pass
+5. Git 分支：`feat/step19-step24-completion`。
+6. Git 提交：
+   - `ff391c2` `feat(step24): complete step19a-step24 business closure`
+   - `9349077` `docs(step24): add step19a-step24 evidence and plan updates`
+7. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step19-step24-completion`。
+8. 标签信息：`待 PR 合并后补 step19a-pass / step19b-pass / step20-pass / step21-pass / step22-pass / step23-pass / step24-pass`。
+9. 回滚标签：`step18-pass`。
+10. 下一阻塞：
+   - 将远端 PR 合并到 `main`；
+   - 合并后补齐 Step19A~24 标签，并将各步 Git 字段从 `N/A` 更新为最终值。
