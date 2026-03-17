@@ -1,0 +1,69 @@
+{
+  "generated_at_utc": "2026-03-17T05:57:32.273836+00:00",
+  "overall_passed": true,
+  "steps": [
+    {
+      "name": "step18_legacy",
+      "command": "python3 scripts/test_step18_full_acceptance.py",
+      "passed": true,
+      "elapsed_seconds": 22.833,
+      "output_tail": "STEP18_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step18_gate_results.json"
+    },
+    {
+      "name": "step19a_spark_strict",
+      "command": "python3 scripts/test_step19a_spark_strict.py",
+      "passed": true,
+      "elapsed_seconds": 6.785,
+      "output_tail": "STEP19A_GATE_PASS"
+    },
+    {
+      "name": "step19b_hungarian",
+      "command": "python3 scripts/test_step19b_hungarian.py",
+      "passed": true,
+      "elapsed_seconds": 1.363,
+      "output_tail": "STEP19B_GATE_PASS"
+    },
+    {
+      "name": "step20_22_billing_revenue",
+      "command": "python3 scripts/test_step20_billing_revenue.py",
+      "passed": true,
+      "elapsed_seconds": 0.123,
+      "output_tail": "STEP20_22_GATE_PASS"
+    },
+    {
+      "name": "step21_frontend_pages",
+      "command": "python3 scripts/test_step21_frontend_pages.py",
+      "passed": true,
+      "elapsed_seconds": 0.03,
+      "output_tail": "STEP21_GATE_PASS"
+    },
+    {
+      "name": "frontend_typecheck",
+      "command": "npm run typecheck",
+      "passed": true,
+      "elapsed_seconds": 2.198,
+      "output_tail": "> smart-parking-frontend@0.2.0 typecheck\n> tsc --noEmit"
+    },
+    {
+      "name": "frontend_build",
+      "command": "npm run build",
+      "passed": true,
+      "elapsed_seconds": 0.842,
+      "output_tail": "transforming...\n✓ 37 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.41 kB │ gzip:  0.28 kB\ndist/assets/index-CDPcg7t5.css    3.25 kB │ gzip:  1.29 kB\ndist/assets/index-BtMeSPY_.js   107.19 kB │ gzip: 41.66 kB\n✓ built in 458ms"
+    },
+    {
+      "name": "step23_demo_entry",
+      "command": "python3 scripts/test_step23_demo_entry.py",
+      "passed": true,
+      "elapsed_seconds": 0.025,
+      "output_tail": "STEP23_GATE_PASS"
+    },
+    {
+      "name": "openapi_validation",
+      "command": "python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml",
+      "passed": true,
+      "elapsed_seconds": 0.061,
+      "output_tail": "openapi_validation_passed spec=openapi/smart-parking.yaml"
+    }
+  ]
+}

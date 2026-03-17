@@ -1,145 +1,145 @@
 {
-  "generated_at_utc": "2026-03-13T08:16:32.021444+00:00",
+  "generated_at_utc": "2026-03-17T05:57:20.838266+00:00",
   "overall_passed": true,
   "steps": [
     {
       "name": "compose_config",
       "command": "docker compose -f infra/docker-compose.yml config >/tmp/spt_step18_compose_config_check.txt",
       "passed": true,
-      "elapsed_seconds": 0.17,
+      "elapsed_seconds": 0.162,
       "output_tail": ""
     },
     {
       "name": "step3_gateway",
       "command": "python3 scripts/test_step3_gateway.py",
       "passed": true,
-      "elapsed_seconds": 0.161,
+      "elapsed_seconds": 0.123,
       "output_tail": "STEP3_GATE_PASS"
     },
     {
       "name": "step4_consistency",
       "command": "python3 scripts/test_step4_consistency.py",
       "passed": true,
-      "elapsed_seconds": 0.274,
+      "elapsed_seconds": 0.184,
       "output_tail": "STEP4_GATE_PASS"
     },
     {
       "name": "step5_model_core",
       "command": "python3 scripts/test_step5_model_core.py",
       "passed": true,
-      "elapsed_seconds": 0.098,
+      "elapsed_seconds": 0.083,
       "output_tail": "STEP5_GATE_PASS"
     },
     {
       "name": "step11_etl",
       "command": "python3 scripts/test_step11_etl.py",
       "passed": true,
-      "elapsed_seconds": 0.216,
+      "elapsed_seconds": 7.186,
       "output_tail": "STEP11_GATE_PASS"
     },
     {
       "name": "step12_training",
       "command": "python3 scripts/test_step12_model_training.py",
       "passed": true,
-      "elapsed_seconds": 5.579,
+      "elapsed_seconds": 4.603,
       "output_tail": "STEP12_GATE_PASS"
     },
     {
       "name": "step13_registry",
       "command": "python3 scripts/test_step13_model_registry.py",
       "passed": true,
-      "elapsed_seconds": 0.987,
+      "elapsed_seconds": 1.007,
       "output_tail": "STEP13_GATE_PASS"
     },
     {
       "name": "step14_java_consistency",
       "command": "python3 scripts/test_step14_java_consistency.py",
       "passed": true,
-      "elapsed_seconds": 0.268,
+      "elapsed_seconds": 0.194,
       "output_tail": "STEP14_GATE_PASS"
     },
     {
       "name": "step16_frontend_engineering",
       "command": "python3 scripts/test_step16_frontend_engineering.py",
       "passed": true,
-      "elapsed_seconds": 0.032,
+      "elapsed_seconds": 0.028,
       "output_tail": "STEP16_GATE_PASS"
     },
     {
       "name": "step17_observability_performance",
       "command": "python3 scripts/test_step17_observability_performance.py",
       "passed": true,
-      "elapsed_seconds": 0.031,
+      "elapsed_seconds": 0.028,
       "output_tail": "STEP17_GATE_PASS"
     },
     {
       "name": "openapi_validation",
       "command": "python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml",
       "passed": true,
-      "elapsed_seconds": 0.065,
+      "elapsed_seconds": 0.062,
       "output_tail": "openapi_validation_passed spec=openapi/smart-parking.yaml"
     },
     {
       "name": "step8_realtime",
       "command": "python3 scripts/test_step8_realtime_channel.py --mode realtime --ws-host localhost --ws-port 8090 --ws-path /ws/status --poll-url http://localhost:8080/api/v1/admin/realtime/status",
       "passed": true,
-      "elapsed_seconds": 0.067,
+      "elapsed_seconds": 0.057,
       "output_tail": "STEP8_WEBSOCKET_OK"
     },
     {
       "name": "step9_baseline",
       "command": "python3 scripts/test_step9_observability.py --mode baseline",
       "passed": true,
-      "elapsed_seconds": 0.094,
+      "elapsed_seconds": 0.072,
       "output_tail": "STEP9_BASELINE_OK"
     },
     {
       "name": "stop_model_for_step6_15",
       "command": "docker compose -f infra/docker-compose.yml stop model-service",
       "passed": true,
-      "elapsed_seconds": 1.319,
+      "elapsed_seconds": 1.336,
       "output_tail": "Container infra-model-service-1 Stopping \n Container infra-model-service-1 Stopped"
     },
     {
       "name": "step6_resilience",
       "command": "python3 scripts/test_step6_resilience.py",
       "passed": true,
-      "elapsed_seconds": 2.112,
+      "elapsed_seconds": 1.114,
       "output_tail": "STEP6_GATE_PASS"
     },
     {
       "name": "step15_governance",
       "command": "python3 scripts/test_step15_gateway_governance.py",
       "passed": true,
-      "elapsed_seconds": 1.102,
+      "elapsed_seconds": 0.107,
       "output_tail": "STEP15_GATE_PASS"
     },
     {
       "name": "start_model_after_step6_15",
       "command": "docker compose -f infra/docker-compose.yml start model-service",
       "passed": true,
-      "elapsed_seconds": 0.224,
+      "elapsed_seconds": 0.192,
       "output_tail": "Container infra-model-service-1 Starting \n Container infra-model-service-1 Started"
     },
     {
       "name": "step9_fault",
       "command": "docker compose -f infra/docker-compose.yml stop model-service && python3 scripts/test_step9_observability.py --mode fault && docker compose -f infra/docker-compose.yml start model-service",
       "passed": true,
-      "elapsed_seconds": 2.808,
+      "elapsed_seconds": 3.606,
       "output_tail": "STEP9_GATE_PASS\n Container infra-model-service-1 Stopping \n Container infra-model-service-1 Stopped \n Container infra-model-service-1 Starting \n Container infra-model-service-1 Started"
     },
     {
       "name": "step7_reliability",
       "command": "python3 scripts/setup_rabbitmq.py --api http://localhost:15672/api --user guest --password guest >/tmp/spt_step18_setup_rabbitmq.log && python3 services/dispatch_worker.py --api http://localhost:15672/api --user guest --password guest --max-retry 2 --max-cycles 240 >/tmp/spt_step18_worker.log 2>&1 & WORKER_PID=$!; sleep 1; python3 scripts/test_step7_mq_reliability.py --rabbit-api http://localhost:15672/api --user guest --password guest --gateway http://localhost:8080; kill $WORKER_PID >/dev/null 2>&1 || true; wait $WORKER_PID 2>/dev/null || true",
       "passed": true,
-      "elapsed_seconds": 1.133,
+      "elapsed_seconds": 1.136,
       "output_tail": "STEP7_GATE_PASS"
     },
     {
       "name": "step8_fallback",
       "command": "docker compose -f infra/docker-compose.yml stop realtime-service && python3 scripts/test_step8_realtime_channel.py --mode fallback --ws-host localhost --ws-port 8090 --ws-path /ws/status --poll-url http://localhost:8080/api/v1/admin/realtime/status && docker compose -f infra/docker-compose.yml start realtime-service",
       "passed": true,
-      "elapsed_seconds": 1.635,
+      "elapsed_seconds": 1.516,
       "output_tail": "STEP8_GATE_PASS\n Container infra-realtime-service-1 Stopping \n Container infra-realtime-service-1 Stopped \n Container infra-realtime-service-1 Starting \n Container infra-realtime-service-1 Started"
     }
   ]

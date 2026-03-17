@@ -9,6 +9,7 @@
 3. 未完成 Step 0 数据基线，禁止进入后续开发。
 4. 已通过闸门不可回退；每步完成后必须做回归抽查。
 5. Git 闸门强制执行：`branch created`、`commit exists`、`PR merged`、`tag created`。
+6. Step 18 仅定义为“工程化基线完成态”；对齐最初题目需求的最终态从 Step19A 开始继续推进。
 
 ## 全步骤通用 Git 闸门（强制）
 
@@ -178,11 +179,74 @@
 - Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
 - 回滚：保留 Step 9 基线看板与最小指标集。
 
-## Step 18 - 全量验收与论文证据收口
+## Step 18 - 全量验收与论文证据收口（工程基线）
 
-- 目标：完成“原闸门 + 定稿对齐闸门”双重验收。
+- 目标：完成“原闸门 + 定稿对齐闸门”第一阶段验收。
 - 输入：Step 11~17 产物与 `acceptance.md`。
-- 输出：升级版技术验收报告、论文证据包、答辩脚本。
-- 测试：Step 4~10 全回归通过 + 新增定稿条目全部通过。
+- 输出：技术验收报告、论文证据包、答辩脚本。
+- 测试：Step 4~10 全回归通过 + Step11~17 闸门通过。
 - Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
 - 回滚：按失败项定位回退到最近稳定步骤，禁止跨步修复。
+
+## Step 19A - Spark Strict 与依赖基线收敛
+
+- 目标：将 ETL 验收口径从“Spark 优先”升级为“Spark strict 必过”。
+- 输入：Step 11 ETL 脚本、`requirements-dev.txt`、OpenAPI 校验脚本。
+- 输出：统一 Python 依赖、严格 Spark 验收脚本、`engine=spark` 质量报告。
+- 测试：`step11_etl.py --engine spark` 成功；`validate_openapi.py` 依赖齐全；质量报告显示 `engine=spark`。
+- Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
+- 回滚：仅保留开发态 `auto/fallback`，验收态不降级。
+
+## Step 19B - 调度算法纠偏（确定性真实 Hungarian）
+
+- 目标：移除随机 cost 与伪 Hungarian，实现可复现的最优匹配。
+- 输入：`model-service` 优化接口、Step 5 合同。
+- 输出：确定性 cost matrix、真实 Hungarian 求解、对照校验脚本。
+- 测试：同输入多次输出一致；小样本与 brute-force 最优一致；中大样本不退化为贪心。
+- Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
+- 回滚：仅允许回退到上一稳定确定性实现，禁止退回随机 hash 路径。
+
+## Step 20 - 共享计费主链补齐
+
+- 目标：完成预约、预估、结算、账单的业务闭环。
+- 输入：预约接口、计费规则冻结口径。
+- 输出：`billing_records`、预估金额返回、订单完成结算接口。
+- 测试：同一订单可追踪 `estimate -> final bill -> recognized revenue`；重复完成请求不重复记账。
+- Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
+- 回滚：回退新增账单接口与表结构，不影响预约主链。
+
+## Step 21 - 业主端 / 物业端页面化交付
+
+- 目标：将现有单页实时看板升级为多页面业务前端。
+- 输入：Vue3 工程、冻结 API、静态地理目录。
+- 输出：`vue-router`、业主页、物业页、导航页、账单视图。
+- 测试：页面路由可访问；业主可预约/查看账单/查看导航；物业可查看监控与收益。
+- Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
+- 回滚：保留 Step16 实时看板能力与单页入口。
+
+## Step 22 - 收益统计与业务监控收口
+
+- 目标：完成物业收益与区域统计，不再只展示系统指标。
+- 输入：`billing_records`、实时状态接口、区域维度。
+- 输出：按日/区域收益汇总接口与业务监控视图。
+- 测试：汇总结果可回溯到账单明细；业务视图与技术看板口径分离。
+- Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
+- 回滚：保留账单明细能力，临时关闭汇总接口。
+
+## Step 23 - 演示入口升级
+
+- 目标：`defense_demo.sh start` 直接输出本项目业务页面入口。
+- 输入：前端 build/preview、compose 栈、答辩 runbook。
+- 输出：脚本自动启动前端预览并打印 owner/admin 业务 URL，RabbitMQ/Grafana 仅作诊断地址。
+- 测试：一条命令后首屏落到业务页面而非 `15672`；README/runbook/脚本输出一致。
+- Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
+- 回滚：保留现有后端栈启动，但必须继续给出业务前端补充启动说明。
+
+## Step 24 - 新默认全量验收
+
+- 目标：以最初题目需求为准完成新的最终态验收。
+- 输入：Step18 基线 + Step19A~23 新增能力。
+- 输出：`Step24` 全量验收报告、业务页面演示手册、更新后的 README 默认入口。
+- 测试：旧 Step18 回归通过；新增 Spark strict / Hungarian / billing / frontend / demo entry 全通过。
+- Git 闸门：`branch created`、`commit exists`、`PR merged`、`tag created`。
+- 回滚：保留 Step18 作为历史证据，但默认入口不再回退。

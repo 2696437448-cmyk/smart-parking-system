@@ -1,30 +1,32 @@
-# 答辩演示手册（脚本化）
+# 答辩演示手册（Step24 默认脚本）
 
 ## 1. 目标与时长
 
-1. 目标：在 8~12 分钟内稳定完成技术演示。
+1. 目标：在 8~12 分钟内稳定完成业务页面 + 技术链路双线演示。
 2. 节奏：
-   - 启动与基线验证
-   - 故障注入演示
-   - 可观测性切换展示
-   - 阶段验收收口
+   - 启动环境并打开业务页面
+   - 展示业主端预约 / 账单 / 导航
+   - 展示物业端监控 / 收益统计
+   - 演示故障注入与降级
+   - 运行 Step24 默认验收收口
 
 ## 2. 演示前检查
 
 1. Docker Desktop 已运行。
 2. Python 可执行路径可用：
    - `/Users/yanchen/PycharmProjects/quant-value-regression/.venv/bin/python`
-3. 端口可用：
-   - `8080`, `8081`, `8000`, `8090`, `15672`, `9090`, `13000`
+3. Node 与 npm 可用。
+4. 端口可用：
+   - `8080`, `8081`, `8000`, `8090`, `4173`, `15672`, `9090`, `13000`
 
 ## 3. 一键命令
 
-1. 启动环境
+1. 启动环境并拉起前端业务入口
 ```bash
 ./scripts/defense_demo.sh start
 ```
 
-2. 跑基线
+2. 跑基线与业务闭环检查
 ```bash
 ./scripts/defense_demo.sh baseline
 ```
@@ -34,53 +36,67 @@
 ./scripts/defense_demo.sh faults
 ```
 
-4. 全流程回放
+4. 运行默认 Step24 全量验收
+```bash
+./scripts/defense_demo.sh acceptance
+```
+
+5. 全流程回放
 ```bash
 ./scripts/defense_demo.sh full
 ```
 
-5. 停止清理
+6. 停止清理
 ```bash
 ./scripts/defense_demo.sh stop
 ```
 
-## 4. 故障注入顺序（推荐）
+## 4. 默认展示地址
 
-1. Step 6 模型故障降级
-   - 动作：停止 model-service。
-   - 预期：接口返回降级字段，不 500。
+1. 业主端：`http://localhost:4173/owner/dashboard`
+2. 物业端：`http://localhost:4173/admin/monitor`
+3. 诊断地址（仅备用）：
+   - Gateway health：`http://localhost:8080/actuator/health`
+   - RabbitMQ：`http://localhost:15672`
+   - Grafana：`http://localhost:13000`
 
-2. Step 7 MQ 失败重试与 DLQ
-   - 动作：触发强制失败调度事件。
-   - 预期：重试后进入 DLQ。
+## 5. 推荐演示顺序
 
-3. Step 8 实时通道中断
-   - 动作：停止 realtime-service。
-   - 预期：自动切换轮询，页面继续更新。
+1. 业主端业务链路
+   - 查看推荐车位
+   - 创建预约
+   - 查看预估金额
+   - 完成订单并展示最终账单
+   - 打开导航页（ETA + 地图跳转）
 
-4. Step 9 可观测性状态迁移
-   - 动作：先 baseline，再停 model-service。
-   - 预期：Prometheus 指标状态迁移正确。
+2. 物业端业务链路
+   - 查看资源监控摘要
+   - 查看日收益与区域收益统计
+   - 展示实时状态与降级标签
 
-## 5. 讲解话术（简版）
+3. 技术故障链路
+   - Step6：停 `model-service`，展示降级响应。
+   - Step7：强制失败调度事件进入重试 / DLQ。
+   - Step8：停 `realtime-service`，展示页面自动切换轮询。
+   - Step9 / Step17：切到 Grafana 展示正常态 / 故障态 / 恢复态。
+
+4. 验收收口
+   - 运行 `./scripts/defense_demo.sh acceptance`
+   - 强调 Step24 已覆盖旧 Step18 基线 + 新增业务闭环
+
+## 6. 讲解话术（简版）
 
 1. 开场
-   - "本项目采用合同先行 + 闸门式交付，先保证稳定再追求复杂度。"
+   - “项目先完成工程化基线，再继续补齐原始题目中的共享计费、导航和业务页面。”
 
-2. 基线
-   - "先验证合同一致与核心能力（Step4/Step5）。"
+2. 业主端
+   - “这里展示从推荐、预约到账单和导航的完整业主流程。”
 
-3. 故障演示
-   - "接下来依次演示降级、DLQ、实时通道兜底。"
+3. 物业端
+   - “这里展示的是业务监控与收益统计，不是中间件后台。”
 
-4. 可观测性
-   - "通过指标和日志展示故障前后状态转移。"
+4. 故障演示
+   - “技术看板用于说明系统在异常情况下如何自动降级并保持业务可用。”
 
 5. 收口
-   - "所有技术闸门已在 Step10 验收报告中闭环。"
-
-## 6. 现场展示建议文件
-
-1. `reports/thesis_evidence_package.md`
-2. `reports/step10_technical_acceptance.md`
-3. `memory-bank/progress.md`
+   - “默认验收入口已经升级为 Step24，Step18 仅保留为历史工程基线证据。”
