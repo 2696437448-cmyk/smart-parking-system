@@ -374,10 +374,10 @@
    - `python3 scripts/test_step19a_spark_strict.py` -> `STEP19A_GATE_PASS`
    - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> `openapi_validation_passed`
 6. Git 分支：`feat/step19-step24-completion`。
-7. Git 提交：`N/A`。
-8. PR 信息：`N/A`。
-9. 标签信息：`N/A`。
-10. 回滚标签：`N/A`。
+7. Git 提交：`ff391c2`, `9349077`, `dcdcfe8`。
+8. PR 信息：`#9 https://github.com/2696437448-cmyk/smart-parking-system/pull/9`。
+9. 标签信息：`step19a-pass`。
+10. 回滚标签：`step18-pass`。
 11. 卡点与修复：
    - 卡点：本机缺少 Java Runtime，Spark 启动失败。
    - 修复：通过 Homebrew 安装 `openjdk@17`，并在脚本中自动探测 Homebrew JDK Home。
@@ -395,10 +395,10 @@
 5. 闸门结果：
    - `python3 scripts/test_step19b_hungarian.py` -> `STEP19B_GATE_PASS`
 6. Git 分支：`feat/step19-step24-completion`。
-7. Git 提交：`N/A`。
-8. PR 信息：`N/A`。
-9. 标签信息：`N/A`。
-10. 回滚标签：`N/A`。
+7. Git 提交：`ff391c2`, `9349077`, `dcdcfe8`。
+8. PR 信息：`#9 https://github.com/2696437448-cmyk/smart-parking-system/pull/9`。
+9. 标签信息：`step19b-pass`。
+10. 回滚标签：`step18-pass`。
 11. 卡点与修复：
    - 卡点：测试加载在 Python 3.12 下触发 `dataclass` 模块注册问题。
    - 修复：在测试中先将动态模块注册到 `sys.modules` 再执行。
@@ -418,10 +418,10 @@
 5. 闸门结果：
    - `python3 scripts/test_step20_billing_revenue.py` -> `STEP20_22_GATE_PASS`
 6. Git 分支：`feat/step19-step24-completion`。
-7. Git 提交：`N/A`。
-8. PR 信息：`N/A`。
-9. 标签信息：`N/A`。
-10. 回滚标签：`N/A`。
+7. Git 提交：`ff391c2`, `9349077`, `dcdcfe8`。
+8. PR 信息：`#9 https://github.com/2696437448-cmyk/smart-parking-system/pull/9`。
+9. 标签信息：`step20-pass`。
+10. 回滚标签：`step18-pass`。
 11. 卡点与修复：
    - 卡点：测试最初使用固定幂等键与固定时间窗，重复运行会命中旧订单。
    - 修复：测试改为动态 `run_id` + 动态唯一时间窗，保证回归隔离。
@@ -443,10 +443,10 @@
    - `cd apps/frontend && npm run typecheck` -> pass
    - `cd apps/frontend && npm run build` -> pass
 6. Git 分支：`feat/step19-step24-completion`。
-7. Git 提交：`N/A`。
-8. PR 信息：`N/A`。
-9. 标签信息：`N/A`。
-10. 回滚标签：`N/A`。
+7. Git 提交：`ff391c2`, `9349077`, `dcdcfe8`。
+8. PR 信息：`#9 https://github.com/2696437448-cmyk/smart-parking-system/pull/9`。
+9. 标签信息：`step21-pass`。
+10. 回滚标签：`step18-pass`。
 11. 卡点与修复：
    - 卡点：`npm install` 初次受证书链影响失败。
    - 修复：在 `apps/frontend/.npmrc` 固定 registry 与 `strict-ssl=false` 后重装依赖。
@@ -464,10 +464,10 @@
 5. 闸门结果：
    - `python3 scripts/test_step20_billing_revenue.py` -> `STEP20_22_GATE_PASS`
 6. Git 分支：`feat/step19-step24-completion`。
-7. Git 提交：`N/A`。
-8. PR 信息：`N/A`。
-9. 标签信息：`N/A`。
-10. 回滚标签：`N/A`。
+7. Git 提交：`ff391c2`, `9349077`, `dcdcfe8`。
+8. PR 信息：`#9 https://github.com/2696437448-cmyk/smart-parking-system/pull/9`。
+9. 标签信息：`step22-pass`。
+10. 回滚标签：`step18-pass`。
 11. 卡点与修复：
    - 卡点：需要确保收益统计来源唯一且可回溯。
    - 修复：统一以 `billing_records` 作为收益汇总唯一数据源。
@@ -488,10 +488,10 @@
    - `./scripts/defense_demo.sh start` -> 输出业务 URL
    - `python3 scripts/test_step23_demo_entry.py` -> `STEP23_GATE_PASS`
 6. Git 分支：`feat/step19-step24-completion`。
-7. Git 提交：`N/A`。
-8. PR 信息：`N/A`。
-9. 标签信息：`N/A`。
-10. 回滚标签：`N/A`。
+7. Git 提交：`ff391c2`, `9349077`, `dcdcfe8`。
+8. PR 信息：`#9 https://github.com/2696437448-cmyk/smart-parking-system/pull/9`。
+9. 标签信息：`step23-pass`。
+10. 回滚标签：`step18-pass`。
 11. 卡点与修复：
    - 卡点：Docker Desktop 未启动，整栈起不来。
    - 修复：启动 Docker Desktop 后重跑 `defense_demo.sh start`，确认 owner/admin 业务入口输出正常。
@@ -510,10 +510,10 @@
    - `python3 scripts/test_step24_full_acceptance.py` -> `STEP24_GATE_PASS`
    - `reports/step24_gate_results.json` 显示 `overall_passed=true`
 6. Git 分支：`feat/step19-step24-completion`。
-7. Git 提交：`N/A`。
-8. PR 信息：`N/A`。
-9. 标签信息：`N/A`。
-10. 回滚标签：`N/A`。
+7. Git 提交：`ff391c2`, `9349077`, `dcdcfe8`。
+8. PR 信息：`#9 https://github.com/2696437448-cmyk/smart-parking-system/pull/9`。
+9. 标签信息：`step24-pass`。
+10. 回滚标签：`step18-pass`。
 11. 卡点与修复：
    - 卡点：第一次 Step24 串跑时，Step20/22 测试受旧固定幂等键与固定时间窗污染导致失败。
    - 修复：将测试隔离为“每次运行唯一 run_id + 唯一时间窗”，第二次串跑通过。
@@ -521,9 +521,9 @@
    - 补 Git 提交 / PR / tag；
    - 如继续迭代，可在 Step24 基础上做 UI 打磨与压测增强。
 
-## 2026-03-17 Step19A~24 Git 收口（进行中）
+## 2026-03-18 Step19A~24 Git 收口（完成）
 
-1. 更新时间：2026-03-17 17:56（Asia/Shanghai）。
+1. 更新时间：2026-03-18 00:12（Asia/Shanghai）。
 2. 当前范围：为 Step19A~24 集成改造补 Git 元数据与安全收口，不再修改业务语义。
 3. 收口说明：
    - Step19A~24 横跨 Spark strict、Hungarian、计费、前端页面、演示入口与全量验收，实际以单一集成分支 `feat/step19-step24-completion` 收口。
@@ -535,9 +535,9 @@
 6. Git 提交：
    - `ff391c2` `feat(step24): complete step19a-step24 business closure`
    - `9349077` `docs(step24): add step19a-step24 evidence and plan updates`
-7. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step19-step24-completion`。
-8. 标签信息：`待 PR 合并后补 step19a-pass / step19b-pass / step20-pass / step21-pass / step22-pass / step23-pass / step24-pass`。
+7. PR 信息：`#9 https://github.com/2696437448-cmyk/smart-parking-system/pull/9`。
+8. 标签信息：`step19a-pass`, `step19b-pass`, `step20-pass`, `step21-pass`, `step22-pass`, `step23-pass`, `step24-pass`。
 9. 回滚标签：`step18-pass`。
-10. 下一阻塞：
-   - 将远端 PR 合并到 `main`；
-   - 合并后补齐 Step19A~24 标签，并将各步 Git 字段从 `N/A` 更新为最终值。
+10. 收口结果：
+   - 远端 PR #9 已合并到 `main`，合并提交：`d29ed20`。
+   - Step19A~24 标签已推送完成，各步 Git 元数据已回填到 `progress.md`。
