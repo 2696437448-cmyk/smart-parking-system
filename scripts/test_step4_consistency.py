@@ -52,7 +52,7 @@ def _iso_no_tz(dt: datetime) -> str:
 def main() -> None:
     wait_gateway()
 
-    now = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+    now = datetime.now(timezone.utc).replace(microsecond=0)
     base = now + timedelta(minutes=30)
     oversell_start = _iso_no_tz(base)
     oversell_end = _iso_no_tz(base + timedelta(minutes=30))

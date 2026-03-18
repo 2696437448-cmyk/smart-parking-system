@@ -1,47 +1,47 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useRealtimeStore } from "./stores/realtime";
-import { useRealtimeChannel } from "./composables/useRealtimeChannel";
+import { useRoute, RouterLink, RouterView } from "vue-router";
 
-const store = useRealtimeStore();
-const { reconnect } = useRealtimeChannel();
-
-const statusClass = computed(() => (store.mode === "realtime" ? "status-realtime" : "status-degraded"));
+const route = useRoute();
+const pageTitle = computed(() => {
+  if (route.path.startsWith("/admin")) {
+    return "物业端资源监控与收益统计";
+  }
+  if (route.path.startsWith("/owner/navigation")) {
+    return "业主端导航引导";
+  }
+  return "业主端预约与共享计费";
+});
 </script>
 
 <template>
-  <main class="page">
-    <section class="hero-card">
-      <p class="eyebrow">Step16 Frontend Engineering</p>
-      <h1>物业实时看板</h1>
-      <p class="subtitle">主链路 WebSocket，故障自动切换 Polling，状态由 Pinia 统一管理。</p>
-      <div class="status-bar" :class="statusClass">
-        <span>{{ store.modeLabel }}</span>
-        <span>/</span>
-        <span>{{ store.sourceLabel }}</span>
-      </div>
-      <button class="reconnect" type="button" @click="reconnect">手动重连</button>
-    </section>
+  <div class="shell">
+    <aside class="sidebar">
+      <p class="eyebrow">Step24 Delivery</p>
+      <h1>Smart Parking</h1>
+      <p class="sidebar-copy">
+        基于 Pinia、WebSocket、Polling 与手动重连机制构建的多页面业务前端。
+      </p>
+      <nav class="nav-links">
+        <RouterLink to="/owner/dashboard">业主端</RouterLink>
+        <RouterLink to="/owner/navigation">导航页</RouterLink>
+        <RouterLink to="/admin/monitor">物业端</RouterLink>
+      </nav>
+    </aside>
 
-    <section class="grid">
-      <article class="metric">
-        <p class="label">占用率</p>
-        <p class="value">{{ store.occupancyRatePercent }}</p>
-      </article>
-      <article class="metric">
-        <p class="label">活动预约</p>
-        <p class="value">{{ store.activeReservations }}</p>
-      </article>
-      <article class="metric">
-        <p class="label">最后更新</p>
-        <p class="value">{{ store.updatedAtText }}</p>
-      </article>
-    </section>
-
-    <section class="diag">
-      <h2>通道诊断</h2>
-      <p><strong>connected</strong>: {{ store.connected }}</p>
-      <p><strong>last_error</strong>: {{ store.lastError || "none" }}</p>
-    </section>
-  </main>
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Business UI</p>
+          <h2>{{ pageTitle }}</h2>
+        </div>
+        <div class="badge-group">
+          <span class="pill">Vue Router</span>
+          <span class="pill">Pinia</span>
+          <span class="pill">Realtime + Fallback</span>
+        </div>
+      </header>
+      <RouterView />
+    </main>
+  </div>
 </template>

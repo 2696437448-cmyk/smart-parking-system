@@ -456,6 +456,7 @@ class ReservationService {
     private final IdempotencyStore idempotencyStore;
     private final RedissonClient redissonClient;
     private final ObjectMapper objectMapper;
+    private final BillingService billingService;
 
     @Value("${SERVICE_NAME:parking-service}")
     private String serviceName;
@@ -470,12 +471,14 @@ class ReservationService {
             ReservationRepository repository,
             IdempotencyStore idempotencyStore,
             RedissonClient redissonClient,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            BillingService billingService
     ) {
         this.repository = repository;
         this.idempotencyStore = idempotencyStore;
         this.redissonClient = redissonClient;
         this.objectMapper = objectMapper;
+        this.billingService = billingService;
     }
 
     ApiResponse reserve(Map<String, Object> payload, String idempotencyKey, String traceId) {
@@ -578,15 +581,28 @@ class ReservationService {
                         "RESERVED"
                 );
                 repository.insert(row);
-                response = ApiResponse.of(200, Map.of(
-                        "reservation_id", reservationId,
-                        "status", "RESERVED",
-                        "slot_id", slotId,
-                        "window_start", windowStart,
-                        "window_end", windowEnd,
-                        "trace_id", traceId,
-                        "service", serviceName
-                ));
+                BillingRecordRow estimate = billingService.createEstimatedOrder(
+                        reservationId,
+                        userId,
+                        slotId,
+                        location,
+                        windowStart,
+                        windowEnd
+                );
+                Map<String, Object> success = new LinkedHashMap<>();
+                success.put("reservation_id", reservationId);
+                success.put("order_id", reservationId);
+                success.put("status", "RESERVED");
+                success.put("billing_status", estimate == null ? "ESTIMATED" : estimate.billingStatus());
+                success.put("estimated_amount", estimate == null ? 0.0 : estimate.estimatedAmount());
+                success.put("currency", "CNY");
+                success.put("region_id", location.split("-")[0].trim().toUpperCase());
+                success.put("slot_id", slotId);
+                success.put("window_start", windowStart);
+                success.put("window_end", windowEnd);
+                success.put("trace_id", traceId);
+                success.put("service", serviceName);
+                response = ApiResponse.of(200, success);
             }
         } catch (DuplicateKeyException ex) {
             log.info("mysql unique constraint prevented oversell slot={} window={}~{}", slotId, windowStart, windowEnd);

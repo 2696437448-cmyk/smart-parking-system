@@ -358,3 +358,186 @@
 12. 下一阻塞：
    - 完成 Step18 PR 合并并打 `step18-pass` 标签；
    - 毕设技术侧进入迭代期，后续可继续做性能优化、功能增强与文档完善。
+
+## 2026-03-17 Step 19A（通过）
+
+1. 完成时间：2026-03-17 14:07（Asia/Shanghai）。
+2. 当前步骤：Step 19A - Spark Strict 与依赖基线收敛。
+3. 目标与范围：仅收敛 Spark strict 验收口径、统一依赖与 Java 运行时，不进入算法与业务功能改动。
+4. 实际改动：
+   - 更新 `requirements-dev.txt`，新增 `pyspark==3.5.1`
+   - 新增 `scripts/test_step19a_spark_strict.py`
+   - 生成 `reports/step19a_spark_quality.json`
+   - 补 Homebrew OpenJDK 17，并让脚本自动探测 `JAVA_HOME`
+   - 新增执行证据 `reports/step19a_execution.md`
+5. 闸门结果：
+   - `python3 scripts/test_step19a_spark_strict.py` -> `STEP19A_GATE_PASS`
+   - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> `openapi_validation_passed`
+6. Git 分支：`feat/step19-step24-completion`。
+7. Git 提交：`N/A`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：本机缺少 Java Runtime，Spark 启动失败。
+   - 修复：通过 Homebrew 安装 `openjdk@17`，并在脚本中自动探测 Homebrew JDK Home。
+12. 下一阻塞：完成 Step19B、Step20~24 的代码 / 验收闭环，并最终补 Git 证据。
+
+## 2026-03-17 Step 19B（通过）
+
+1. 完成时间：2026-03-17 14:07（Asia/Shanghai）。
+2. 当前步骤：Step 19B - 调度算法纠偏（确定性真实 Hungarian）。
+3. 目标与范围：仅修复优化策略实现与可复现性，不改预测合同字段。
+4. 实际改动：
+   - 更新 `services/model_service.py`
+   - 新增 `scripts/test_step19b_hungarian.py`
+   - 新增执行证据 `reports/step19b_execution.md`
+5. 闸门结果：
+   - `python3 scripts/test_step19b_hungarian.py` -> `STEP19B_GATE_PASS`
+6. Git 分支：`feat/step19-step24-completion`。
+7. Git 提交：`N/A`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：测试加载在 Python 3.12 下触发 `dataclass` 模块注册问题。
+   - 修复：在测试中先将动态模块注册到 `sys.modules` 再执行。
+12. 下一阻塞：进入计费与业务前端联调，验证新接口与新页面一致性。
+
+## 2026-03-17 Step 20（通过）
+
+1. 完成时间：2026-03-17 14:07（Asia/Shanghai）。
+2. 当前步骤：Step 20 - 共享计费主链补齐。
+3. 目标与范围：打通预约、预估、结算、账单主链，不扩展营销规则。
+4. 实际改动：
+   - 新增 `services/parking-service/src/main/java/com/smartparking/parking/ParkingBusinessExtensions.java`
+   - 扩展 `services/parking-service/src/main/java/com/smartparking/parking/ParkingServiceApplication.java`
+   - 扩展 `openapi/smart-parking.yaml`
+   - 新增 `scripts/test_step20_billing_revenue.py`
+   - 新增执行证据 `reports/step20_execution.md`
+5. 闸门结果：
+   - `python3 scripts/test_step20_billing_revenue.py` -> `STEP20_22_GATE_PASS`
+6. Git 分支：`feat/step19-step24-completion`。
+7. Git 提交：`N/A`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：测试最初使用固定幂等键与固定时间窗，重复运行会命中旧订单。
+   - 修复：测试改为动态 `run_id` + 动态唯一时间窗，保证回归隔离。
+12. 下一阻塞：将计费结果汇总到物业收益统计，并通过前端页面直接展示。
+
+## 2026-03-17 Step 21（通过）
+
+1. 完成时间：2026-03-17 14:07（Asia/Shanghai）。
+2. 当前步骤：Step 21 - 业主端 / 物业端页面化交付。
+3. 目标与范围：仅完成多页面业务前端与路由，不改实时协议语义。
+4. 实际改动：
+   - 更新 `apps/frontend/package.json` 与 `apps/frontend/package-lock.json`
+   - 新增 `apps/frontend/src/router.ts`
+   - 新增 `apps/frontend/src/pages/*`
+   - 更新 `apps/frontend/src/App.vue`、`main.ts`、`styles.css`
+   - 新增执行证据 `reports/step21_execution.md`
+5. 闸门结果：
+   - `python3 scripts/test_step21_frontend_pages.py` -> `STEP21_GATE_PASS`
+   - `cd apps/frontend && npm run typecheck` -> pass
+   - `cd apps/frontend && npm run build` -> pass
+6. Git 分支：`feat/step19-step24-completion`。
+7. Git 提交：`N/A`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：`npm install` 初次受证书链影响失败。
+   - 修复：在 `apps/frontend/.npmrc` 固定 registry 与 `strict-ssl=false` 后重装依赖。
+12. 下一阻塞：继续完成收益统计、演示入口与默认验收切换。
+
+## 2026-03-17 Step 22（通过）
+
+1. 完成时间：2026-03-17 14:07（Asia/Shanghai）。
+2. 当前步骤：Step 22 - 收益统计与业务监控收口。
+3. 目标与范围：完成按日 / 区域汇总和物业页业务监控，不扩展更复杂 BI 指标。
+4. 实际改动：
+   - 在 `ParkingBusinessExtensions.java` 中新增收益汇总与监控接口
+   - 物业页 `AdminMonitor.vue` 直接消费业务汇总接口
+   - 新增执行证据 `reports/step22_execution.md`
+5. 闸门结果：
+   - `python3 scripts/test_step20_billing_revenue.py` -> `STEP20_22_GATE_PASS`
+6. Git 分支：`feat/step19-step24-completion`。
+7. Git 提交：`N/A`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：需要确保收益统计来源唯一且可回溯。
+   - 修复：统一以 `billing_records` 作为收益汇总唯一数据源。
+12. 下一阻塞：升级演示入口与默认全量验收脚本。
+
+## 2026-03-17 Step 23（通过）
+
+1. 完成时间：2026-03-17 14:07（Asia/Shanghai）。
+2. 当前步骤：Step 23 - 演示入口升级。
+3. 目标与范围：调整 demo script 与文档默认入口，不修改核心业务语义。
+4. 实际改动：
+   - 更新 `scripts/defense_demo.sh`
+   - 更新 `README.md`
+   - 更新 `docs/defense_demo_runbook.md`
+   - 新增 `scripts/test_step23_demo_entry.py`
+   - 新增执行证据 `reports/step23_execution.md`
+5. 闸门结果：
+   - `./scripts/defense_demo.sh start` -> 输出业务 URL
+   - `python3 scripts/test_step23_demo_entry.py` -> `STEP23_GATE_PASS`
+6. Git 分支：`feat/step19-step24-completion`。
+7. Git 提交：`N/A`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：Docker Desktop 未启动，整栈起不来。
+   - 修复：启动 Docker Desktop 后重跑 `defense_demo.sh start`，确认 owner/admin 业务入口输出正常。
+12. 下一阻塞：运行 Step24 全量验收并归档最终报告。
+
+## 2026-03-17 Step 24（通过）
+
+1. 完成时间：2026-03-17 14:07（Asia/Shanghai）。
+2. 当前步骤：Step 24 - 新默认全量验收。
+3. 目标与范围：覆盖旧 Step18 基线与新 Step19A~23 能力，生成新的默认验收结果。
+4. 实际改动：
+   - 新增 `scripts/test_step24_full_acceptance.py`
+   - 生成 `reports/step24_gate_results.json`
+   - 新增 `reports/step24_technical_acceptance.md`
+5. 闸门结果：
+   - `python3 scripts/test_step24_full_acceptance.py` -> `STEP24_GATE_PASS`
+   - `reports/step24_gate_results.json` 显示 `overall_passed=true`
+6. Git 分支：`feat/step19-step24-completion`。
+7. Git 提交：`N/A`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`N/A`。
+11. 卡点与修复：
+   - 卡点：第一次 Step24 串跑时，Step20/22 测试受旧固定幂等键与固定时间窗污染导致失败。
+   - 修复：将测试隔离为“每次运行唯一 run_id + 唯一时间窗”，第二次串跑通过。
+12. 下一阻塞：
+   - 补 Git 提交 / PR / tag；
+   - 如继续迭代，可在 Step24 基础上做 UI 打磨与压测增强。
+
+## 2026-03-17 Step19A~24 Git 收口（进行中）
+
+1. 更新时间：2026-03-17 17:56（Asia/Shanghai）。
+2. 当前范围：为 Step19A~24 集成改造补 Git 元数据与安全收口，不再修改业务语义。
+3. 收口说明：
+   - Step19A~24 横跨 Spark strict、Hungarian、计费、前端页面、演示入口与全量验收，实际以单一集成分支 `feat/step19-step24-completion` 收口。
+   - 仓库默认前端配置已恢复为安全值 `strict-ssl=true`；此前证书链问题仅作为本机临时 workaround，不再保留为仓库默认提交。
+4. 本次验证：
+   - `cd apps/frontend && npm run typecheck` -> pass
+   - `cd apps/frontend && npm run build` -> pass
+5. Git 分支：`feat/step19-step24-completion`。
+6. Git 提交：
+   - `ff391c2` `feat(step24): complete step19a-step24 business closure`
+   - `9349077` `docs(step24): add step19a-step24 evidence and plan updates`
+7. PR 信息：`https://github.com/2696437448-cmyk/smart-parking-system/pull/new/feat/step19-step24-completion`。
+8. 标签信息：`待 PR 合并后补 step19a-pass / step19b-pass / step20-pass / step21-pass / step22-pass / step23-pass / step24-pass`。
+9. 回滚标签：`step18-pass`。
+10. 下一阻塞：
+   - 将远端 PR 合并到 `main`；
+   - 合并后补齐 Step19A~24 标签，并将各步 Git 字段从 `N/A` 更新为最终值。

@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: Smart Parking API
-  version: 0.1.0
-  description: Frozen API contract for Step 2.
+  version: 0.2.0
+  description: Step24 contract with owner/admin business pages, billing, navigation, and revenue summaries.
 servers:
   - url: http://localhost:8080
     description: gateway
@@ -28,6 +28,90 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReservationCreateResponse'
 
+  /api/v1/owner/recommendations:
+    get:
+      summary: Get owner slot recommendations
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: location
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: preferred_window
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recommendation list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationResponse'
+
+  /api/v1/owner/orders/{order_id}:
+    get:
+      summary: Get owner order detail
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnerOrderDetail'
+
+  /api/v1/owner/orders/{order_id}/complete:
+    post:
+      summary: Complete owner order and confirm billing
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCompleteRequest'
+      responses:
+        '200':
+          description: Order completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderCompleteResponse'
+
+  /api/v1/owner/navigation/{order_id}:
+    get:
+      summary: Get owner navigation target
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Navigation target
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NavigationTarget'
+
   /api/v1/admin/dispatch/run:
     post:
       summary: Trigger dispatch run
@@ -47,6 +131,49 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DispatchRunResponse'
+
+  /api/v1/admin/revenue/summary:
+    get:
+      summary: Get daily and regional revenue summary
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: region_id
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Revenue summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevenueSummaryResponse'
+
+  /api/v1/admin/monitor/summary:
+    get:
+      summary: Get admin business monitor summary
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Monitor summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonitorSummaryResponse'
 
   /internal/v1/model/predict:
     post:
@@ -201,6 +328,121 @@ components:
         strategy:
           type: string
 
+    GeoPoint:
+      type: object
+      required: [lat, lng, display_name]
+      properties:
+        lat:
+          type: number
+        lng:
+          type: number
+        display_name:
+          type: string
+
+    BillingRule:
+      type: object
+      required: [timezone, unit_minutes, rounding_mode, effective_window]
+      properties:
+        timezone:
+          type: string
+        unit_minutes:
+          type: integer
+        rounding_mode:
+          type: string
+        effective_window:
+          type: string
+
+    BillingRecord:
+      type: object
+      required: [order_id, reservation_id, slot_id, region_id, billable_minutes, estimated_amount, final_amount, billing_status]
+      properties:
+        order_id:
+          type: string
+        reservation_id:
+          type: string
+        user_id:
+          type: string
+        slot_id:
+          type: string
+        region_id:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+        ended_at:
+          type: string
+          format: date-time
+        billable_minutes:
+          type: integer
+        estimated_amount:
+          type: number
+        final_amount:
+          type: number
+        billing_status:
+          type: string
+        recognized_on:
+          type: string
+
+    RegionRevenueSummary:
+      type: object
+      required: [date, region_id, revenue_amount, order_count, utilization_rate]
+      properties:
+        date:
+          type: string
+        region_id:
+          type: string
+        revenue_amount:
+          type: number
+        order_count:
+          type: integer
+        utilization_rate:
+          type: number
+
+    RecommendationItem:
+      type: object
+      required: [slot_id, estimated_amount, eta_minutes, destination, map_url]
+      properties:
+        slot_id:
+          type: string
+        estimated_amount:
+          type: number
+        eta_minutes:
+          type: integer
+        destination:
+          $ref: '#/components/schemas/GeoPoint'
+        map_url:
+          type: string
+
+    RecommendationResponse:
+      type: object
+      required: [location, preferred_window, billing_rule, results]
+      properties:
+        location:
+          type: string
+        preferred_window:
+          type: string
+        billing_rule:
+          $ref: '#/components/schemas/BillingRule'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendationItem'
+
+    NavigationTarget:
+      type: object
+      required: [order_id, slot_id, eta_minutes, map_url, destination]
+      properties:
+        order_id:
+          type: string
+        slot_id:
+          type: string
+        eta_minutes:
+          type: integer
+        map_url:
+          type: string
+        destination:
+          $ref: '#/components/schemas/GeoPoint'
+
     ReservationCreateRequest:
       type: object
       required: [user_id, preferred_window, location]
@@ -211,6 +453,8 @@ components:
           type: string
         location:
           type: string
+        slot_id:
+          type: string
 
     ReservationCreateResponse:
       type: object
@@ -218,10 +462,100 @@ components:
       properties:
         reservation_id:
           type: string
+        order_id:
+          type: string
         status:
+          type: string
+        billing_status:
+          type: string
+        estimated_amount:
+          type: number
+        currency:
+          type: string
+        region_id:
+          type: string
+        slot_id:
           type: string
         trace_id:
           type: string
+
+    OwnerOrderDetail:
+      allOf:
+        - $ref: '#/components/schemas/BillingRecord'
+        - type: object
+          properties:
+            billing_rule:
+              $ref: '#/components/schemas/BillingRule'
+
+    OrderCompleteRequest:
+      type: object
+      properties:
+        ended_at:
+          type: string
+          format: date-time
+
+    OrderCompleteResponse:
+      type: object
+      required: [order_id, billing_status, estimated_amount, final_amount, billable_minutes]
+      properties:
+        order_id:
+          type: string
+        reservation_id:
+          type: string
+        billing_status:
+          type: string
+        estimated_amount:
+          type: number
+        final_amount:
+          type: number
+        billable_minutes:
+          type: integer
+        recognized_on:
+          type: string
+        currency:
+          type: string
+        trace_id:
+          type: string
+
+    RevenueSummaryResponse:
+      type: object
+      required: [date, summaries, revenue_total]
+      properties:
+        date:
+          type: string
+        region_id:
+          type: string
+        summaries:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionRevenueSummary'
+        revenue_total:
+          type: number
+
+    MonitorSummaryResponse:
+      type: object
+      required: [date, active_reservations, occupancy_rate, revenue_total, region_summaries, business_view]
+      properties:
+        date:
+          type: string
+        active_reservations:
+          type: integer
+        occupancy_rate:
+          type: number
+        revenue_total:
+          type: number
+        region_summaries:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionRevenueSummary'
+        dispatch_strategy:
+          type: string
+        business_view:
+          type: boolean
+        diagnostic_links:
+          type: object
+          additionalProperties:
+            type: string
 
     DispatchRunRequest:
       type: object
