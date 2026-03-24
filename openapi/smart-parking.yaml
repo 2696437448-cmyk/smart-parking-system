@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
   title: Smart Parking API
-  version: 0.2.0
-  description: Step24 contract with owner/admin business pages, billing, navigation, and revenue summaries.
+  version: 0.3.0
+  description: Step25-Step30 enhancement contract on top of the Step24 baseline.
 servers:
   - url: http://localhost:8080
     description: gateway
@@ -156,6 +156,29 @@ paths:
               schema:
                 $ref: '#/components/schemas/RevenueSummaryResponse'
 
+  /api/v1/admin/revenue/trend:
+    get:
+      summary: Get admin revenue trend points
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: region_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: days
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Revenue trend
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevenueTrendResponse'
+
   /api/v1/admin/monitor/summary:
     get:
       summary: Get admin business monitor summary
@@ -174,6 +197,52 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MonitorSummaryResponse'
+
+  /api/v1/admin/occupancy/trend:
+    get:
+      summary: Get occupancy trend points
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: region_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Occupancy trend
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OccupancyTrendResponse'
+
+  /api/v1/admin/forecast/compare:
+    get:
+      summary: Get forecast vs actual compare points
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: region_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Forecast compare
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ForecastCompareResponse'
 
   /internal/v1/model/predict:
     post:
@@ -261,6 +330,81 @@ paths:
                   status:
                     type: string
 
+  /internal/v1/ingest/sensor-events:
+    post:
+      summary: Ingest near-real sensor events
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [events]
+              properties:
+                events:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RawSensorEvent'
+      responses:
+        '200':
+          description: Sensor events accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestResponse'
+
+  /internal/v1/ingest/lpr-events:
+    post:
+      summary: Ingest near-real LPR events
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [events]
+              properties:
+                events:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RawLprEvent'
+      responses:
+        '200':
+          description: LPR events accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestResponse'
+
+  /internal/v1/ingest/resident-patterns:
+    post:
+      summary: Ingest near-real resident trip patterns
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [events]
+              properties:
+                events:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RawResidentTripPattern'
+      responses:
+        '200':
+          description: Resident patterns accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IngestResponse'
+
 components:
   parameters:
     XTraceId:
@@ -339,6 +483,19 @@ components:
         display_name:
           type: string
 
+    RouteSummary:
+      type: object
+      required: [distance_km, route_mode, summary, eta_minutes]
+      properties:
+        distance_km:
+          type: number
+        route_mode:
+          type: string
+        summary:
+          type: string
+        eta_minutes:
+          type: integer
+
     BillingRule:
       type: object
       required: [timezone, unit_minutes, rounding_mode, effective_window]
@@ -412,6 +569,10 @@ components:
           $ref: '#/components/schemas/GeoPoint'
         map_url:
           type: string
+        slot_display_name:
+          type: string
+        region_label:
+          type: string
 
     RecommendationResponse:
       type: object
@@ -442,6 +603,12 @@ components:
           type: string
         destination:
           $ref: '#/components/schemas/GeoPoint'
+        region_label:
+          type: string
+        slot_display_name:
+          type: string
+        route_summary:
+          $ref: '#/components/schemas/RouteSummary'
 
     ReservationCreateRequest:
       type: object
@@ -532,6 +699,90 @@ components:
         revenue_total:
           type: number
 
+    RevenueTrendPoint:
+      type: object
+      required: [date, revenue_amount, order_count]
+      properties:
+        date:
+          type: string
+        revenue_amount:
+          type: number
+        order_count:
+          type: integer
+
+    RevenueTrendResponse:
+      type: object
+      required: [points]
+      properties:
+        region_id:
+          type: string
+        days:
+          type: integer
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/RevenueTrendPoint'
+        trace_id:
+          type: string
+        service:
+          type: string
+
+    OccupancyTrendPoint:
+      type: object
+      required: [ts, region_id, occupancy_rate, active_supply]
+      properties:
+        ts:
+          type: string
+        region_id:
+          type: string
+        occupancy_rate:
+          type: number
+        active_supply:
+          type: number
+
+    OccupancyTrendResponse:
+      type: object
+      required: [points]
+      properties:
+        region_id:
+          type: string
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/OccupancyTrendPoint'
+        trace_id:
+          type: string
+        service:
+          type: string
+
+    ForecastComparePoint:
+      type: object
+      required: [ts, region_id, predicted_gap, actual_gap]
+      properties:
+        ts:
+          type: string
+        region_id:
+          type: string
+        predicted_gap:
+          type: number
+        actual_gap:
+          type: number
+
+    ForecastCompareResponse:
+      type: object
+      required: [points]
+      properties:
+        region_id:
+          type: string
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/ForecastComparePoint'
+        trace_id:
+          type: string
+        service:
+          type: string
+
     MonitorSummaryResponse:
       type: object
       required: [date, active_reservations, occupancy_rate, revenue_total, region_summaries, business_view]
@@ -585,3 +836,73 @@ components:
             type: string
         horizon_minutes:
           type: integer
+
+    RawSensorEvent:
+      type: object
+      required: [slot_id, region_id, event_ts, occupied]
+      properties:
+        event_id:
+          type: string
+        slot_id:
+          type: string
+        region_id:
+          type: string
+        event_ts:
+          type: string
+          format: date-time
+        occupied:
+          type: integer
+        sensor_source:
+          type: string
+        quality_flag:
+          type: string
+
+    RawLprEvent:
+      type: object
+      required: [region_id, event_type, event_ts]
+      properties:
+        event_id:
+          type: string
+        plate:
+          type: string
+        plate_hash:
+          type: string
+        region_id:
+          type: string
+        event_type:
+          type: string
+        event_ts:
+          type: string
+          format: date-time
+
+    RawResidentTripPattern:
+      type: object
+      required: [resident_id, home_region, weekday, hour_bucket, trip_probability]
+      properties:
+        raw_id:
+          type: string
+        resident_id:
+          type: string
+        home_region:
+          type: string
+        weekday:
+          type: integer
+        hour_bucket:
+          type: integer
+        trip_probability:
+          type: number
+
+    IngestResponse:
+      type: object
+      required: [accepted, table, inserted_count, trace_id, service]
+      properties:
+        accepted:
+          type: boolean
+        table:
+          type: string
+        inserted_count:
+          type: integer
+        trace_id:
+          type: string
+        service:
+          type: string

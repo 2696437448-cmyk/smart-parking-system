@@ -24,7 +24,7 @@ public class GatewayRoutesConfig {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("parking-route", r -> r
-                        .path("/api/v1/owner/**", "/api/v1/admin/**")
+                        .path("/api/v1/owner/**", "/api/v1/admin/**", "/internal/v1/ingest/**")
                         .uri(parkingBaseUrl))
                 .route("model-route", r -> r
                         .path("/internal/v1/model/**", "/internal/v1/dispatch/**")

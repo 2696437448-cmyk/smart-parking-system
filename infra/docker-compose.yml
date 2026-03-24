@@ -25,6 +25,7 @@ services:
     working_dir: /app
     volumes:
       - ../services/parking-service:/app
+      - ../data:/workspace/data
       - m2-cache:/root/.m2
     command: ["mvn", "-q", "-DskipTests", "spring-boot:run"]
     environment:
@@ -40,6 +41,7 @@ services:
       LOCK_WAIT_SECONDS: 0.1
       LOCK_LEASE_SECONDS: 3.0
       ENABLE_MQ: true
+      SMART_PARKING_DATA_ROOT: /workspace/data
       RABBIT_API_URL: http://rabbitmq:15672/api
       RABBIT_USER: guest
       RABBIT_PASS: guest
@@ -90,6 +92,8 @@ services:
 
   mysql:
     image: mysql:8.0
+    ports:
+      - "13306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: smart_parking

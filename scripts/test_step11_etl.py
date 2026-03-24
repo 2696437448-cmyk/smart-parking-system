@@ -50,6 +50,8 @@ def _run_etl() -> None:
     cmd = [
         sys.executable,
         str(PROJECT_ROOT / "scripts/step11_etl.py"),
+        "--source-mode",
+        "files",
         "--raw-dir",
         str(PROJECT_ROOT / "data/raw"),
         "--forecast-output",
@@ -109,7 +111,7 @@ def main() -> None:
     _assert_ts(d_rows, "ts")
 
     source_modes = {r.get("source_mode", "") for r in f_rows[:100]}
-    if not source_modes.issubset({"external", "fallback_raw"}):
+    if not source_modes.issubset({"external", "fallback_raw", "mysql_raw"}):
         raise AssertionError(f"unexpected source_mode values: {source_modes}")
 
     with QUALITY.open("r", encoding="utf-8") as f:
