@@ -1,105 +1,98 @@
-# 技术定稿差距矩阵（Step24 口径）
+# 技术差距矩阵（Step30 默认完成态）
 
-> 目的：统一记录“原始题目要求 / 技术定稿要求 vs 当前实现 vs 证据路径 vs 下一闸门”。
+> 目的：统一记录“原始题目主链已完成什么、增强阶段补了什么、默认完成态现在在哪里”。
 
-## 1. 架构与服务形态
+## 1. 当前稳定基线
 
-1. 定稿要求：`Java 主业务微服务 + Python 算法服务 + Vue3 前端 + 单机 Docker Compose 可复现`。
-2. 当前实现：`gateway-service`（Java）+ `parking-service`（Java）+ `model-service`（Python）+ `realtime-service`（伴生）+ `frontend-app`（Vue3+TS+Pinia）。
-3. 证据路径：
-   - `infra/docker-compose.yml`
-   - `services/gateway-service/src/main/java/com/smartparking/gateway/*`
-   - `services/parking-service/src/main/java/com/smartparking/parking/ParkingServiceApplication.java`
-   - `apps/frontend/src/*`
-4. 差距判定：基础对齐，需补 Step21 页面化交付与 Step23 默认演示入口。
+1. 当前稳定默认完成态：`Step30`。
+2. 含义：Spark strict、确定性 Hungarian、共享计费、收益统计、业主端/物业端页面、近真实 raw ingest、App 壳层、地图导航增强、物业端图表与增强验收已经完成并可验收。
+3. `Step24` 作为历史主链基线保留，不再作为默认完成态。
 
-## 2. 一致性主链路
+## 2. 主链需求对齐状态
 
-1. 定稿要求：Redis 幂等 + Redisson 锁 + MySQL 唯一约束。
-2. 当前实现：写路径已切换为 Redis 幂等 + Redisson 锁 + MySQL 唯一约束。
-3. 证据路径：
-   - `scripts/test_step14_java_consistency.py`
-   - `reports/step14_execution.md`
-4. 差距判定：已对齐，后续仅允许增强，不允许退化。
+### 2.1 架构与服务形态
 
-## 3. 数据工程
+1. 目标：`Java 主业务 + Python 算法 + Vue3 前端 + Docker Compose 单机可复现`。
+2. 当前：已对齐，形成 `gateway-service + parking-service + model-service + realtime-service + frontend-app`。
+3. 证据：`infra/docker-compose.yml`、`services/*`、`apps/frontend/*`。
+4. 判定：已完成。
 
-1. 定稿要求：PySpark 多源 ETL，产出统一特征表，验收严格走 Spark 主链。
-2. 当前实现：Step11 已产出两张特征表，但当前报告仍允许 `Spark 优先 + Python fallback`。
-3. 证据路径：
-   - `scripts/step11_etl.py`
-   - `scripts/test_step11_etl.py`
-   - `reports/step11_execution.md`
-4. 差距判定：未完全对齐，需 Step19A 将验收提升为 `engine=spark` strict。
+### 2.2 一致性主链路
 
-## 4. 模型训练与论文对比
+1. 目标：Redis 幂等 + Redisson 锁 + MySQL 唯一约束。
+2. 当前：已对齐。
+3. 证据：`reports/step14_execution.md`、`scripts/test_step14_java_consistency.py`。
+4. 判定：已完成。
 
-1. 定稿要求：轻量 LSTM 训练 + 传统基线模型对比。
-2. 当前实现：训练脚本、模型产物、统一指标对比（MAE/RMSE/MAPE）完整。
-3. 证据路径：
-   - `scripts/step12_train_models.py`
-   - `scripts/step12_baseline_model.py`
-   - `reports/step12_model_comparison.md`
-4. 差距判定：已对齐。
+### 2.3 数据工程主链
 
-## 5. 调度算法语义
+1. 目标：PySpark ETL，产出统一特征表，验收必须走 Spark strict。
+2. 当前：已对齐，并在 Step26 增强为 raw ingest + Spark analytics。
+3. 证据：`scripts/step11_etl.py`、`scripts/test_step19a_spark_strict.py`、`scripts/test_step26_raw_ingest_analytics.py`、`reports/step26_execution.md`。
+4. 判定：已完成。
 
-1. 定稿要求：匈牙利算法最小化代价函数，结果可复现。
-2. 当前实现：接口名为 Hungarian，但历史实现存在 `小规模暴力 + 大规模贪心`，并使用 Python `hash()` 造成随机漂移。
-3. 证据路径：
-   - `services/model_service.py`
-   - `scripts/test_step5_model_core.py`
-4. 差距判定：未完全对齐，需 Step19B 落地确定性真实 Hungarian。
+### 2.4 模型与调度
 
-## 6. 模型管理（注册与热切换）
+1. 目标：轻量 LSTM + 确定性 Hungarian。
+2. 当前：已完成，并可复现。
+3. 证据：`scripts/test_step12_model_training.py`、`scripts/test_step19b_hungarian.py`、`reports/step19b_execution.md`。
+4. 判定：已完成。
 
-1. 定稿要求：模型注册表 + 激活接口 + 在线热切换回滚。
-2. 当前实现：注册、激活、回滚、历史查询均已落地。
-3. 证据路径：
-   - `scripts/test_step13_model_registry.py`
-   - `reports/step13_execution.md`
-4. 差距判定：已对齐。
+### 2.5 共享计费与收益统计
 
-## 7. 网关治理
+1. 目标：预约、预估、结算、账单、收益汇总闭环。
+2. 当前：已完成，`billing_records` 是唯一收益数据源。
+3. 证据：`services/parking-service/src/main/java/com/smartparking/parking/ParkingBusinessExtensions.java`、`reports/step20_execution.md`、`reports/step22_execution.md`。
+4. 判定：已完成。
 
-1. 定稿要求：Spring Cloud Gateway + Resilience4j，固化超时/熔断/降级语义。
-2. 当前实现：Gateway 路由 + CircuitBreaker + fallback 语义完整。
-3. 证据路径：
-   - `scripts/test_step15_gateway_governance.py`
-   - `reports/step15_execution.md`
-4. 差距判定：已对齐；Step21 需补前端跨域访问与页面入口一致性。
+### 2.6 业主端 / 物业端业务页面
 
-## 8. 共享计费与收益统计
+1. 目标：业主端预约/计费/导航，物业端监控/收益统计。
+2. 当前：已完成，并在 Step27~29 增强为移动优先、地图化、图表化交付。
+3. 证据：`apps/frontend/src/pages/*`、`reports/step21_execution.md`、`reports/step27_execution.md`、`reports/step28_execution.md`、`reports/step29_execution.md`。
+4. 判定：已完成。
 
-1. 原始需求：支持共享计费，物业端查看收益统计。
-2. 当前实现：预约主链已完成，但缺少冻结后的 `billing_records`、结算闭环和日/区域收益汇总。
-3. 证据路径：
-   - `memory-bank/data-spec.md`
-   - `services/parking-service/src/main/java/com/smartparking/parking/ParkingServiceApplication.java`
-4. 差距判定：未对齐，需 Step20 + Step22 补齐。
+### 2.7 演示入口与默认完成态
 
-## 9. 前端页面交付
+1. 目标：一键启动后落到业务页面，不是 RabbitMQ/Grafana。
+2. 当前：已完成，并在 Step30 后升级默认完成态与默认验收入口。
+3. 证据：`scripts/defense_demo.sh`、`README.md`、`docs/defense_demo_runbook.md`、`reports/step23_execution.md`、`reports/step30_technical_acceptance.md`。
+4. 判定：已完成。
 
-1. 原始需求：业主端支持预约、共享计费、导航引导；物业端支持资源监控与收益统计。
-2. 当前实现：Step16 为工程化单页实时看板，尚未形成 owner/admin 多页面业务界面。
-3. 证据路径：
-   - `apps/frontend/src/App.vue`
-   - `apps/frontend/package.json`
-   - `reports/step16_execution.md`
-4. 差距判定：未对齐，需 Step21 增加 `vue-router`、业务页面和静态地理目录。
+## 3. 增强阶段完成项（Step25~30）
 
-## 10. 演示入口与默认完成态
+### 3.1 Step25 - 文档与完成态口径收敛
 
-1. 定稿要求：一键启动后打开业务页面，文档与脚本指向同一入口。
-2. 当前实现：`defense_demo.sh start` 主要拉起后端栈，默认仍容易误导到 RabbitMQ/Grafana 等诊断地址；默认验收入口仍是 Step18。
-3. 证据路径：
-   - `scripts/defense_demo.sh`
-   - `README.md`
-   - `docs/defense_demo_runbook.md`
-4. 差距判定：未对齐，需 Step23 + Step24 收口。
+1. 完成：统一了 memory-bank、README、runbook、脚本与执行证据口径。
+2. 证据：`reports/step25_execution.md`。
 
-## 11. 阶段结论
+### 3.2 Step26 - 近真实数据接入与 Spark 关联分析
 
-1. Step0~Step18：定义为“工程化基线已通过”。
-2. Step19A~24：定义为“对齐原始题目需求的补完阶段”。
-3. 默认冻结状态：Step18 已验收能力不允许退化，后续仅可增强。
+1. 完成：新增 `sensor_event_raw`、`lpr_event_raw`、`resident_trip_raw` 与 Spark 分析摘要输出。
+2. 证据：`reports/step26_execution.md`、`reports/step26_spark_quality.json`、`reports/step26_occupancy_heatmap_summary.json`、`reports/step26_vehicle_flow_summary.json`、`reports/step26_resident_peak_summary.json`。
+
+### 3.3 Step27 - App 壳层与移动优先业主端
+
+1. 完成：交付 `Vue + Capacitor` Android 壳层、移动优先布局与底部导航。
+2. 证据：`reports/step27_execution.md`、`apps/frontend/android/*`、`scripts/test_step27_app_shell.py`。
+
+### 3.4 Step28 - 地图导航增强
+
+1. 完成：交付 Leaflet + OpenStreetMap 页面内地图预览与兼容导航接口。
+2. 证据：`reports/step28_execution.md`、`scripts/test_step28_navigation_map.py`。
+
+### 3.5 Step29 - 物业端图表化展示
+
+1. 完成：交付收益趋势、区域对比、占用率趋势、预测对照图。
+2. 证据：`reports/step29_execution.md`、`scripts/test_step29_admin_charts.py`。
+
+### 3.6 Step30 - 增强验收与答辩升级
+
+1. 完成：Step24 原回归和 Step26~29 增强闸门已统一通过。
+2. 证据：`reports/step30_gate_results.json`、`reports/step30_technical_acceptance.md`。
+
+## 4. 阶段结论
+
+1. Step24：历史主链基线。
+2. Step25~29：已完成的增强阶段实现。
+3. Step30：当前稳定默认完成态。

@@ -1,0 +1,62 @@
+{
+  "generated_at_utc": "2026-03-24T02:09:44.921017+00:00",
+  "overall_passed": true,
+  "steps": [
+    {
+      "name": "step24_default_acceptance",
+      "command": "python3 scripts/test_step24_full_acceptance.py",
+      "passed": true,
+      "elapsed_seconds": 38.309,
+      "output_tail": "STEP24_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step24_gate_results.json"
+    },
+    {
+      "name": "step26_raw_ingest_analytics",
+      "command": "python3 scripts/test_step26_raw_ingest_analytics.py",
+      "passed": true,
+      "elapsed_seconds": 8.681,
+      "output_tail": "STEP11_ETL_OK {\"engine\": \"spark\", \"source_mode\": \"mysql_raw\", \"forecast_rows\": 8, \"dispatch_rows\": 8, \"overall_passed\": true}\nSTEP26_GATE_PASS\nSetting default log level to \"WARN\".\nTo adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).\n26/03/24 10:09:31 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable\n\n[Stage 0:>                                                          (0 + 8) / 8]"
+    },
+    {
+      "name": "frontend_typecheck",
+      "command": "npm run typecheck",
+      "passed": true,
+      "elapsed_seconds": 2.626,
+      "output_tail": "> smart-parking-frontend@0.3.0 typecheck\n> vue-tsc --noEmit"
+    },
+    {
+      "name": "frontend_build",
+      "command": "npm run build",
+      "passed": true,
+      "elapsed_seconds": 2.664,
+      "output_tail": "computing gzip size...\ndist/index.html                   0.41 kB │ gzip:   0.28 kB\ndist/assets/index-BGU42kHY.css   20.25 kB │ gzip:   8.01 kB\ndist/assets/index-C_awgM6g.js   770.08 kB │ gzip: 257.68 kB\n✓ built in 2.34s\n\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit."
+    },
+    {
+      "name": "step27_app_shell",
+      "command": "python3 scripts/test_step27_app_shell.py",
+      "passed": true,
+      "elapsed_seconds": 0.037,
+      "output_tail": "STEP27_GATE_PASS"
+    },
+    {
+      "name": "step28_navigation_map",
+      "command": "python3 scripts/test_step28_navigation_map.py",
+      "passed": true,
+      "elapsed_seconds": 0.088,
+      "output_tail": "STEP28_GATE_PASS"
+    },
+    {
+      "name": "step29_admin_charts",
+      "command": "python3 scripts/test_step29_admin_charts.py",
+      "passed": true,
+      "elapsed_seconds": 0.106,
+      "output_tail": "STEP29_GATE_PASS"
+    },
+    {
+      "name": "openapi_validation",
+      "command": "python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml",
+      "passed": true,
+      "elapsed_seconds": 0.103,
+      "output_tail": "openapi_validation_passed spec=openapi/smart-parking.yaml"
+    }
+  ]
+}
