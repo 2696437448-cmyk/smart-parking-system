@@ -1,6 +1,6 @@
-# 架构说明（Step30 默认完成态）
+# 架构说明（Step36 默认完成态）
 
-## 1. 当前稳定架构（Step30）
+## 1. 当前稳定架构（Step36）
 
 1. `gateway-service`：Spring Cloud Gateway + Resilience4j，负责统一路由、trace 透传、超时熔断、降级兜底与 CORS。
 2. `parking-service`：Java 主业务服务，负责预约一致性、共享计费、账单、收益统计、导航目标生成、业务监控与 raw ingest 接入。
@@ -43,9 +43,10 @@
 
 ## 6. 默认完成态与历史基线
 
-1. 当前默认完成态：`Step30`。
-2. 历史主链基线：`Step24`。
-3. 后续迭代必须建立在 Step30 之上，不再回退到 Step24 之前的口径。
+1. 当前默认完成态：`Step36`。
+2. 历史功能基线：`Step30`。
+3. 历史主链基线：`Step24`。
+4. 后续迭代必须建立在 Step36 之上，不再回退到 Step30 / Step24 之前的口径。
 
 ## 7. 冻结决策
 
@@ -53,3 +54,18 @@
 2. 仍冻结 `UPSTREAM_CONNECT_TIMEOUT_MS=10000`、`UPSTREAM_TIMEOUT_MS=2500`。
 3. 仍冻结计费语义：`Asia/Shanghai`、`15 分钟一个计费块`、`不足一个计费块向上取整`。
 4. 仍冻结地图策略：免费栈 `Leaflet + OpenStreetMap`，不接入付费地图 SDK。
+
+## 8. Post-Step30 发布化增强层
+
+1. Step31：负责把 Post-Step30 路线、缺口与验收目标固化进文档系统。
+2. Step32：负责根目录 `.env.example`、preflight 脚本、`Makefile` 与 `defense_demo.sh preflight` 入口。
+3. Step33：负责 CI 层，已通过 `.github/workflows/ci.yml`、`make ci-smoke` 和 Step33 smoke gate 将关键闸门自动化。
+4. Step34：负责 release bundle 与交付资产目录，已通过 `scripts/create_release_bundle.sh` 与 `deliverables/` 目录规范落地。
+5. Step35：负责安全与配置硬化，已通过 `.env.secure.example`、security scan 与恢复文档收口。
+6. Step36：负责新的发布化总验收，已将默认完成态从 Step30 升级到 Step36。
+
+## 9. 默认完成态升级规则
+
+1. 当前默认完成态已升级为 `Step36`。
+2. `Step30` 继续保留为功能与增强交付基线。
+3. 后续若继续升级默认完成态，必须在 Step36 基线之上新增新的总验收步骤。

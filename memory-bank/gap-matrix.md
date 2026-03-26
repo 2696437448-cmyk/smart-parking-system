@@ -1,12 +1,14 @@
-# 技术差距矩阵（Step30 默认完成态）
+# 技术差距矩阵（Step36 默认完成态）
 
 > 目的：统一记录“原始题目主链已完成什么、增强阶段补了什么、默认完成态现在在哪里”。
 
 ## 1. 当前稳定基线
 
-1. 当前稳定默认完成态：`Step30`。
-2. 含义：Spark strict、确定性 Hungarian、共享计费、收益统计、业主端/物业端页面、近真实 raw ingest、App 壳层、地图导航增强、物业端图表与增强验收已经完成并可验收。
-3. `Step24` 作为历史主链基线保留，不再作为默认完成态。
+1. 当前稳定默认完成态：`Step36`。
+2. 含义：在 Step30 功能基线之上，进一步完成环境模板、preflight、CI、release bundle、安全扫描与发布化总验收。
+3. 历史基线：
+   - `Step30`：功能与增强交付基线
+   - `Step24`：原始题目主链基线
 
 ## 2. 主链需求对齐状态
 
@@ -95,4 +97,42 @@
 
 1. Step24：历史主链基线。
 2. Step25~29：已完成的增强阶段实现。
-3. Step30：当前稳定默认完成态。
+3. Step30：历史功能与增强交付基线。
+4. Step36：当前稳定默认完成态。
+
+## 5. Post-Step30 发布化缺口
+
+### 5.1 环境模板与统一入口
+
+1. 目标：根目录级 `.env.example`、preflight、统一命令入口。
+2. 当前：已由 Step32 补齐。
+3. 证据：`.env.example`、`scripts/preflight_check.sh`、`Makefile`、`reports/step32_execution.md`。
+4. 判定：已完成。
+
+### 5.2 CI 与回归自动化
+
+1. 目标：把关键回归从“手工执行”升级为 PR 自动执行。
+2. 当前：已新增 `.github/workflows/ci.yml`、`make ci-smoke` 与 Step33 轻量 smoke gate。
+3. 证据：`.github/workflows/ci.yml`、`scripts/test_step33_ci_smoke.py`、`reports/step33_execution.md`。
+4. 判定：已完成。
+
+### 5.3 发布包与交付物管理
+
+1. 目标：形成 release bundle、答辩交付目录与版本化演示资产。
+2. 当前：已新增 `make release-bundle`、`scripts/create_release_bundle.sh` 与 `deliverables/` 目录规范。
+3. 证据：`deliverables/README.md`、`reports/step34_execution.md`。
+4. 判定：已完成。
+
+### 5.4 安全与配置硬化
+
+1. 目标：减少默认凭证、分散配置和潜在敏感项风险。
+2. 当前：已通过 `.env.secure.example`、security scan、配置分层和恢复文档收口。
+3. 证据：`reports/step35_execution.md`、`reports/step35_gate_results.json`、`reports/step35_security_scan.json`。
+4. 判定：已完成。
+
+### 5.5 发布化总验收
+
+1. 目标：在 Step30 基线之上升级新的默认交付完成态。
+2. 当前：已通过 Step36 发布化总验收并升级默认完成态。
+3. 证据：`reports/step36_gate_results.json`、`reports/step36_technical_acceptance.md`。
+4. 判定：已完成。

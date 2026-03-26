@@ -1,10 +1,12 @@
-# 答辩演示手册（Step30 默认完成态）
+# 答辩演示手册（Step36 默认完成态）
 
 ## 1. 当前演示基线
 
-1. 当前默认演示基线为 `Step30`。
-2. 含义：主链业务闭环、近真实数据接入、App 壳层、地图导航增强、物业端图表化与增强验收均已通过。
-3. `Step24` 保留为历史主链基线，可在需要时单独回放，但不再作为默认展示口径。
+1. 当前默认演示基线为 `Step36`。
+2. 含义：主链业务闭环、近真实数据接入、App 壳层、地图导航增强、物业端图表化，以及环境模板、CI、security scan、release bundle 与发布化总验收均已通过。
+3. 历史基线：
+   - `Step30`：功能与增强交付基线
+   - `Step24`：主链基线
 
 ## 2. 目标与时长
 
@@ -14,7 +16,7 @@
    - 展示业主端预约 / 账单 / 导航 / App 壳层
    - 展示物业端监控 / 收益趋势 / 区域对比 / 预测图表
    - 说明 Step26 raw ingest 与 Spark 关联分析
-   - 运行默认 Step30 验收收口
+   - 运行默认 Step36 验收收口
 
 ## 3. 演示前检查
 
@@ -22,11 +24,14 @@
 2. Python 可执行路径可用。
 3. Node 与 npm 可用。
 4. 端口可用：`8080`, `8081`, `8000`, `8090`, `4173`, `15672`, `9090`, `13000`, `13306`。
+5. 建议先运行 `./scripts/defense_demo.sh preflight` 或 `make preflight`。
+6. 若当前机器只做脚本/仓库检查，还未启动 Docker，可先运行 `make preflight-static`。
 
 ## 4. 一键命令
 
 1. 启动环境并拉起前端业务入口
 ```bash
+./scripts/defense_demo.sh preflight
 ./scripts/defense_demo.sh start
 ```
 
@@ -40,19 +45,40 @@
 ./scripts/defense_demo.sh faults
 ```
 
-4. 运行默认 Step30 增强验收
+4. 运行默认 Step36 发布化验收
 ```bash
 ./scripts/defense_demo.sh acceptance
+# 或
+make acceptance
 ```
 
-5. 如需回放 Step24 主链基线
+5. 如需回放 Step30 增强验收
+```bash
+./scripts/defense_demo.sh acceptance-step30
+# 或
+make acceptance-step30
+```
+
+6. 如需回放 Step24 主链基线
 ```bash
 ./scripts/defense_demo.sh acceptance-step24
+# 或
+make acceptance-step24
 ```
 
-6. 停止清理
+7. 停止清理
 ```bash
 ./scripts/defense_demo.sh stop
+```
+
+8. 如需导出当前交付包
+```bash
+make release-bundle
+```
+
+9. 如需做交付前安全检查
+```bash
+make security-scan
 ```
 
 ## 5. 默认展示地址
@@ -92,4 +118,5 @@
 
 5. 验收收口
    - 运行 `./scripts/defense_demo.sh acceptance`
-   - 强调默认完成态已从 Step24 升级为 Step30
+   - 强调默认完成态已从 Step30 升级为 Step36
+   - 如需交付归档，再执行 `make release-bundle`

@@ -1,10 +1,12 @@
-# 技术验收清单（Step30 默认完成态）
+# 技术验收清单（Step36 默认完成态）
 
 ## 1. 当前默认验收基线
 
-1. 当前默认稳定完成态为 `Step30`。
-2. `Step24` 继续作为历史主链基线保留，但默认收口入口已升级为 Step30。
-3. Step30 验收必须同时满足“Step24 原回归通过 + Step26~29 增强能力通过”。
+1. 当前默认稳定完成态为 `Step36`。
+2. 历史基线：
+   - `Step30`：功能与增强交付基线
+   - `Step24`：原始题目主链基线
+3. Step36 验收必须同时满足“Step30 历史功能基线保持通过 + Step33/35/34 发布化增强通过”。
 
 ## 2. Step24 基线继续要求
 
@@ -67,7 +69,58 @@
 3. 已形成新的增强版技术验收报告与 machine-readable gate results。
 4. README / runbook / memory-bank 默认完成态已升级到 Step30。
 
-## 9. Git 管理验收
+## 9. Step31 路线收敛验收（已完成）
+
+1. `implementation-plan.md` 已追加 Step31~36。
+2. `gap-matrix.md` 已区分“Step30 当前完成态”和“Post-Step30 发布化缺口”。
+3. `acceptance.md`、`architecture.md`、README、runbook 对下一阶段表述一致。
+4. 未提前把默认完成态从 Step30 升级到未验收的新阶段。
+
+## 10. Step32 环境基线验收（已完成）
+
+1. 根目录存在 `.env.example`。
+2. 前端环境模板已包含 `VITE_GATEWAY_BASE_URL`、`VITE_REALTIME_WS_URL`、`VITE_GATEWAY_POLL_URL`。
+3. 存在 `scripts/preflight_check.sh`，可在启动前执行本地检查。
+4. `scripts/defense_demo.sh` 支持 `preflight` 子命令，`start` 默认先做检查。
+5. 根目录存在 `Makefile`，统一常用演示与验收命令。
+6. `infra/docker-compose.yml` 允许关键环境变量通过 `.env` 覆盖。
+7. `scripts/preflight_check.sh --static` 或 `make preflight-static` 可在无 Docker daemon 环境下完成静态校验。
+
+## 11. Step33 CI 与回归自动化验收（已完成）
+
+1. 存在 `.github/workflows/ci.yml`。
+2. CI 至少覆盖 `make ci-smoke`、OpenAPI 校验、前端 `typecheck`、前端 `build`。
+3. 存在 `scripts/test_step33_ci_smoke.py` 作为轻量 smoke gate。
+4. 本地可运行 `make ci-smoke` 与 CI 入口保持一致。
+5. Step30 gate report 仍保持 `overall_passed=true`，未因 CI 引入退化。
+
+## 12. Step34 发布包与交付物验收（已完成）
+
+1. 存在 `scripts/create_release_bundle.sh`。
+2. 存在 `make release-bundle` 入口。
+3. 存在 `deliverables/README.md` 与 `bundles/`、`screenshots/`、`recordings/` 目录规范。
+4. 本地可生成版本化交付包 tar.gz。
+5. 交付包至少包含 README、runbook、OpenAPI、关键脚本、memory-bank 核心文档与 Step30/31/32/33 关键证据。
+
+## 13. Step35 安全与配置硬化验收（已完成）
+
+1. 存在 `.env.secure.example`。
+2. 存在 `scripts/security_scan.py` 与 `scripts/test_step35_security_config.py`。
+3. 存在 `docs/security_hardening.md`，覆盖配置分层、凭证轮换与恢复建议。
+4. `make security-scan` 可通过。
+5. demo 默认值与 secure 模板已明确分层，`defense_demo.sh` 不再直接打印默认密码。
+
+## 14. Step36 发布化总验收（已完成）
+
+1. Step30 历史功能基线报告仍保持 `overall_passed=true`。
+2. `make ci-smoke` 通过。
+3. `make security-scan` 通过。
+4. `make release-bundle` 通过。
+5. 存在最新 bundle 与 sidecar manifest。
+6. `reports/step36_gate_results.json` 显示 `overall_passed=true`。
+7. README / runbook / memory-bank 默认完成态已升级到 Step36。
+
+## 15. Git 管理验收
 
 1. 仓库可 clone 并读取完整项目文档、执行脚本与增强阶段材料。
 2. 每步继续满足 `branch created`、`commit exists`、`PR merged`、`tag created`。

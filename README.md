@@ -10,11 +10,12 @@
 
 ## 📌 当前状态
 
-1. 当前稳定默认完成态：`Step30`。
-2. 含义：主链需求与增强交付均已验收通过，覆盖 Spark strict、确定性 Hungarian、共享计费、收益统计、业主端/物业端业务页面、近真实 raw ingest、Capacitor App 壳层、地图预览、物业端图表与增强验收收口。
-3. 历史稳定基线：`Step24`。
-4. 含义：Step24 继续作为“主链已闭环”的保留基线；Step30 在其之上完成成品增强并升级为新的默认完成态。
-5. 当前默认业务入口：
+1. 当前稳定默认完成态：`Step36`。
+2. 含义：在 `Step30` 功能闭环基础上，新增发布化增强层并完成验收，覆盖环境模板、preflight、CI、release bundle、安全扫描与发布化总验收。
+3. 历史稳定基线：
+   - `Step30`：功能与增强交付基线
+   - `Step24`：原始题目主链闭环基线
+4. 当前默认业务入口：
    - 业主端：`http://localhost:4173/owner/dashboard`
    - 物业端：`http://localhost:4173/admin/monitor`
 
@@ -28,7 +29,7 @@
 4. 一致性三重防护（幂等 + 分布式锁 + DB 唯一约束）保障高并发稳定性；
 5. 共享计费、收益统计、地图导航、App 壳层与图表化物业端补齐完整业务闭环。
 
-## 🎯 Step30 默认完成态
+## 🎯 Step36 默认完成态
 
 1. **并发一致性**：并发预约场景实现“零超卖、零重复有效写入”。
 2. **高可用降级**：模型服务故障时自动降级，接口保持可解释可用。
@@ -39,9 +40,11 @@
 7. **跨端交付**：前端已具备 `Vue + Capacitor` Android 壳层与移动优先业主端页面。
 8. **地图导航增强**：导航页支持 Leaflet + OpenStreetMap 页面内地图预览，并保留外部地图 fallback。
 9. **物业图表化**：收益趋势、区域对比、占用率趋势、预测对照图全部进入物业业务页。
-10. **增强验收收口**：Step24 基线与 Step26~29 增强闸门已统一通过，默认完成态已升级到 Step30。
+10. **增强验收收口**：Step24 基线与 Step26~29 增强闸门已统一通过。
+11. **发布化基线**：根目录环境模板、preflight、CI smoke、security scan、release bundle 已补齐。
+12. **发布化总验收**：Step30 历史功能基线继续保持通过，Step33/35/34 发布层检查通过，默认完成态已升级到 Step36。
 
-## 🧭 Step25~30 完成情况
+## 🧭 Step25~36 完成情况
 
 1. Step25：文档与完成态口径收敛，统一了 memory-bank / README / runbook / script 口径。
 2. Step26：近真实 raw ingest 与 Spark 关联分析增强完成。
@@ -49,6 +52,12 @@
 4. Step28：Leaflet + OpenStreetMap 页面内地图预览导航完成。
 5. Step29：ECharts 物业端图表化展示完成。
 6. Step30：增强验收与答辩材料升级完成，并成为新的默认完成态。
+7. Step31：Post-Step30 路线收敛完成。
+8. Step32：环境模板、preflight 与统一命令入口完成。
+9. Step33：CI 与最小自动回归完成。
+10. Step34：release bundle 与交付目录完成。
+11. Step35：安全与配置硬化完成。
+12. Step36：发布化总验收完成，并升级为新的默认完成态。
 
 ## 🏗️ 技术架构
 
@@ -75,13 +84,28 @@ git clone https://github.com/2696437448-cmyk/smart-parking-system.git
 cd smart-parking-system
 ```
 
-### 2. 安装 Python 依赖
+### 2. 准备环境模板
+
+```bash
+cp .env.example .env
+cp apps/frontend/.env.example apps/frontend/.env.local
+```
+
+如无自定义需求，可直接使用默认值。
+如需非 demo / 更安全的起点，请改用：
+
+```bash
+cp .env.secure.example .env
+cp apps/frontend/.env.example apps/frontend/.env.local
+```
+
+### 3. 安装 Python 依赖
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
 ```
 
-### 3. 安装前端依赖
+### 4. 安装前端依赖
 
 ```bash
 cd apps/frontend
@@ -89,43 +113,83 @@ npm install
 cd ../..
 ```
 
-### 4. 启动演示环境
+### 5. 启动演示环境
 
 ```bash
+./scripts/defense_demo.sh preflight
+# 如只验证脚本与环境模板，不要求 Docker daemon 已启动：
+make preflight-static
 ./scripts/defense_demo.sh start
 ```
 
-### 5. 打开业务页面
+### 6. 打开业务页面
 
 1. 业主端：`http://localhost:4173/owner/dashboard`
 2. 物业端：`http://localhost:4173/admin/monitor`
 
-### 6. 运行当前默认全量验收（Step30）
+### 7. 运行当前默认全量验收（Step36）
 
 ```bash
 ./scripts/defense_demo.sh acceptance
 # 或
-python3 scripts/test_step30_enhanced_acceptance.py
+make acceptance
+# 或
+make release-acceptance
+# 或
+python3 scripts/test_step36_release_acceptance.py
 ```
 
-### 7. 如需回看 Step24 基线验收
+### 8. 如需回看 Step30 / Step24 历史验收
 
 ```bash
+./scripts/defense_demo.sh acceptance-step30
+# 或
+make acceptance-step30
+# 或
+python3 scripts/test_step30_enhanced_acceptance.py
+
 ./scripts/defense_demo.sh acceptance-step24
 # 或
+make acceptance-step24
+# 或
 python3 scripts/test_step24_full_acceptance.py
+```
+
+### 9. 运行本地最小回归（对齐 Step33 CI）
+
+```bash
+make ci-smoke
+cd apps/frontend && npm run typecheck && npm run build
+```
+
+### 10. 生成交付包（Step34）
+
+```bash
+make release-bundle
+```
+
+生成物默认输出到 `deliverables/bundles/`。
+
+### 11. 运行安全扫描与配置硬化检查（Step35）
+
+```bash
+make security-scan
 ```
 
 ## 📚 项目展示与答辩材料
 
 1. 项目展示手册：`docs/defense_demo_runbook.md`
 2. 论文证据包：`reports/thesis_evidence_package.md`
-3. Step30 增强验收：`reports/step30_technical_acceptance.md`
-4. Step24 历史基线验收：`reports/step24_technical_acceptance.md`
-5. 执行计划与历史路线：`memory-bank/implementation-plan.md`
+3. Step36 发布化总验收：`reports/step36_technical_acceptance.md`
+4. Step30 增强验收：`reports/step30_technical_acceptance.md`
+5. Step24 历史基线验收：`reports/step24_technical_acceptance.md`
+6. 执行计划与历史路线：`memory-bank/implementation-plan.md`
+7. 交付物目录说明：`deliverables/README.md`
+8. 安全与配置硬化说明：`docs/security_hardening.md`
 
 ## 🛣️ 路线图说明
 
-1. `Step30` 是当前稳定默认完成态。
-2. `Step24` 保留为主链闭环的历史稳定基线。
-3. 后续如继续迭代，应在 Step30 之上进入新的增强步骤，而不是回退到 Step24 之前的口径。
+1. `Step36` 是当前稳定默认完成态。
+2. `Step30` 保留为功能与增强交付的历史稳定基线。
+3. `Step24` 保留为原始题目主链闭环的历史稳定基线。
+4. 后续如继续迭代，应在 Step36 之上进入新的增强步骤，而不是回退到 Step30 / Step24 之前的口径。

@@ -14,3 +14,13 @@ apps/frontend/dist/
 # Python cache
 __pycache__/
 *.pyc
+
+# Local env overrides
+.env
+.env.local
+.env.secure.local
+apps/frontend/.env.local
+
+# Generated deliverable bundles
+deliverables/bundles/*.tar.gz
+deliverables/bundles/*.manifest.txt

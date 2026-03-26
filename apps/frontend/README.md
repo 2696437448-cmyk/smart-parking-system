@@ -14,10 +14,13 @@ npm run dev
 
 ## 环境变量
 
-复制 `.env.example` 为 `.env`，可覆盖：
+复制 `.env.example` 为 `.env.local`，可覆盖：
 
+1. `VITE_GATEWAY_BASE_URL`
 1. `VITE_REALTIME_WS_URL`
 2. `VITE_GATEWAY_POLL_URL`
+
+如需整体项目的 secure 配置，请在仓库根目录使用 `.env.secure.example` 生成 `.env`，前端仍只保留本机的 `.env.local` 覆盖。
 
 ## 关键能力
 
