@@ -722,3 +722,220 @@
    - `progress.md` 已补齐本地 Git 元数据，后续可直接执行 push / PR。
 11. 剩余事项：
    - 如需完成远端 Git 闸门，还需推送分支、创建 PR，并把标签同步到远端。
+
+## 2026-03-25 Step 31（通过）
+
+1. 完成时间：2026-03-25 17:49（Asia/Shanghai）。
+2. 当前步骤：Step 31 - Post-Step30 路线收敛。
+3. 目标与范围：为 Step30 之后的迭代建立明确阶段路线，冻结“发布化增强”边界，不修改 Step30 默认完成态。
+4. 实际改动：
+   - 更新 `memory-bank/implementation-plan.md`
+   - 更新 `memory-bank/gap-matrix.md`
+   - 更新 `memory-bank/acceptance.md`
+   - 更新 `memory-bank/architecture.md`
+   - 更新 `README.md`
+   - 更新 `docs/defense_demo_runbook.md`
+   - 新增 `reports/step31_execution.md`
+5. 闸门结果：
+   - 文档已追加 Step31~36，且默认完成态仍保持为 `Step30`
+   - `git diff --check` -> pass
+6. Git 分支：`feat/step31-step36-release-hardening`。
+7. Git 提交：`defa32c` `feat: add release hardening foundation for step31-step35`。
+8. PR 信息：`#11 https://github.com/2696437448-cmyk/smart-parking-system/pull/11`。
+9. 标签信息：`step31-pass`。
+10. 回滚标签：`step30-pass`。
+11. 卡点与修复：
+   - 卡点：Step30 之后缺少明确后续路线，容易让默认完成态、增强阶段和交付阶段再次混淆。
+   - 修复：新增 Step31~36，冻结“Step30 仍是默认完成态，Step36 通过后才允许升级”。
+12. 下一阻塞：完成 Step32 环境模板、preflight 与统一命令入口的实际落地。
+
+## 2026-03-25 Step 32（通过）
+
+1. 完成时间：2026-03-25 17:49（Asia/Shanghai）。
+2. 当前步骤：Step 32 - 环境模板与 preflight 基线。
+3. 目标与范围：统一根目录环境模板、启动前检查、常用命令入口与 compose 环境变量覆盖能力。
+4. 实际改动：
+   - 新增 `.env.example`
+   - 更新 `.gitignore`
+   - 更新 `apps/frontend/.env.example`
+   - 新增 `scripts/preflight_check.sh`
+   - 新增 `Makefile`
+   - 更新 `scripts/defense_demo.sh`
+   - 更新 `infra/docker-compose.yml`
+   - 新增 `reports/step32_execution.md`
+5. 闸门结果：
+   - `./scripts/preflight_check.sh --static` -> `STEP32_PREFLIGHT_PASS`
+   - `make preflight-static` -> `STEP32_PREFLIGHT_PASS`
+   - `./scripts/preflight_check.sh` -> `STEP32_PREFLIGHT_FAIL`（原因：当前机器 `docker daemon not ready`，属于预期拦截）
+   - `git diff --check` -> pass
+6. Git 分支：`feat/step31-step36-release-hardening`。
+7. Git 提交：`defa32c` `feat: add release hardening foundation for step31-step35`。
+8. PR 信息：`#11 https://github.com/2696437448-cmyk/smart-parking-system/pull/11`。
+9. 标签信息：`step32-pass`。
+10. 回滚标签：`step30-pass`。
+11. 卡点与修复：
+   - 卡点：当前环境的 Docker daemon 未就绪，严格 preflight 无法通过。
+   - 修复：保留严格拦截语义，同时补 `--static` / `make preflight-static`，让脚本结构与仓库入口可在无 daemon 环境下先完成静态验证。
+12. 下一阻塞：进入 Step33，把关键闸门接入 CI 自动回归。
+
+## 2026-03-26 Step 33（通过）
+
+1. 完成时间：2026-03-26 10:54（Asia/Shanghai）。
+2. 当前步骤：Step 33 - CI 与回归自动化。
+3. 目标与范围：把当前本地可跑的关键静态闸门收敛到 CI，并让 CI 与本地共用一套最小回归入口。
+4. 实际改动：
+   - 新增 `.github/workflows/ci.yml`
+   - 新增 `scripts/test_step33_ci_smoke.py`
+   - 更新 `Makefile`
+   - 更新 `README.md`
+   - 更新 `memory-bank/implementation-plan.md`
+   - 更新 `memory-bank/gap-matrix.md`
+   - 更新 `memory-bank/acceptance.md`
+   - 更新 `memory-bank/architecture.md`
+   - 新增 `reports/step33_execution.md`
+   - 生成 `reports/step33_ci_smoke.json`
+5. 闸门结果：
+   - `make ci-smoke` -> pass
+   - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> pass
+   - `python3 scripts/test_step33_ci_smoke.py` -> `STEP33_GATE_PASS`
+   - `cd apps/frontend && npm run typecheck && npm run build` -> pass
+   - `reports/step33_ci_smoke.json` 显示 `overall_passed=true`
+6. Git 分支：`feat/step31-step36-release-hardening`。
+7. Git 提交：`defa32c` `feat: add release hardening foundation for step31-step35`。
+8. PR 信息：`#11 https://github.com/2696437448-cmyk/smart-parking-system/pull/11`。
+9. 标签信息：`step33-pass`。
+10. 回滚标签：`step30-pass`。
+11. 卡点与修复：
+   - 卡点：在当前 Codex 沙箱内直接运行 `make ci-smoke` 时，Step33 report 写入仓库路径被文件系统限制拦截。
+   - 修复：以正常文件系统权限重跑同一命令；项目代码本身不改语义，最终 smoke gate 通过并生成报告。
+12. 下一阻塞：进入 Step34，补 release bundle、交付目录与答辩资产版本化管理。
+
+## 2026-03-26 Step 34（通过）
+
+1. 完成时间：2026-03-26 13:32（Asia/Shanghai）。
+2. 当前步骤：Step 34 - 发布包与演示交付物。
+3. 目标与范围：补齐 release bundle、交付目录结构与答辩资产归档规范，不修改 Step30 默认完成态。
+4. 实际改动：
+   - 新增 `scripts/create_release_bundle.sh`
+   - 更新 `Makefile`
+   - 新增 `deliverables/README.md`
+   - 新增 `deliverables/bundles/.gitkeep`
+   - 新增 `deliverables/screenshots/.gitkeep`
+   - 新增 `deliverables/recordings/.gitkeep`
+   - 更新 `.gitignore`
+   - 更新 `README.md`
+   - 更新 `docs/defense_demo_runbook.md`
+   - 更新 `memory-bank/implementation-plan.md`
+   - 更新 `memory-bank/gap-matrix.md`
+   - 更新 `memory-bank/acceptance.md`
+   - 更新 `memory-bank/architecture.md`
+   - 新增 `reports/step34_execution.md`
+5. 闸门结果：
+   - `bash -n scripts/create_release_bundle.sh` -> pass
+   - `make release-bundle` -> `STEP34_BUNDLE_PASS`
+   - 最新 bundle manifest 与 tar 内容抽查通过
+   - `git diff --check` -> pass
+6. Git 分支：`feat/step31-step36-release-hardening`。
+7. Git 提交：`defa32c` `feat: add release hardening foundation for step31-step35`。
+8. PR 信息：`#11 https://github.com/2696437448-cmyk/smart-parking-system/pull/11`。
+9. 标签信息：`step34-pass`。
+10. 回滚标签：`step30-pass`。
+11. 卡点与修复：
+   - 卡点：首版打包脚本输出的 `manifest` 路径指向临时目录，打包结束后不可直接访问。
+   - 修复：将 manifest 额外导出到 `deliverables/bundles/*.manifest.txt` sidecar 文件，并重跑打包验证。
+12. 下一阻塞：进入 Step35，补敏感项扫描、配置分层与安全恢复建议。
+
+## 2026-03-26 Step 35（通过）
+
+1. 完成时间：2026-03-26 14:21（Asia/Shanghai）。
+2. 当前步骤：Step 35 - 安全与配置硬化。
+3. 目标与范围：收敛 demo 默认值、secure 模板与本地覆盖策略，补齐敏感项扫描与安全恢复说明。
+4. 实际改动：
+   - 新增 `.env.secure.example`
+   - 新增 `scripts/security_scan.py`
+   - 新增 `scripts/test_step35_security_config.py`
+   - 新增 `docs/security_hardening.md`
+   - 更新 `.env.example`
+   - 更新 `apps/frontend/.env.example`
+   - 更新 `infra/docker-compose.yml`
+   - 更新 `scripts/preflight_check.sh`
+   - 更新 `scripts/defense_demo.sh`
+   - 新增 `reports/step35_execution.md`
+   - 生成 `reports/step35_security_scan.json`
+   - 生成 `reports/step35_gate_results.json`
+5. 闸门结果：
+   - `make security-scan` -> pass
+   - `python3 scripts/security_scan.py` -> `STEP35_SECURITY_SCAN_PASS`
+   - `python3 scripts/test_step35_security_config.py` -> `STEP35_GATE_PASS`
+   - `reports/step35_security_scan.json` 显示 `finding_count=0`
+   - `reports/step35_gate_results.json` 显示 `overall_passed=true`
+6. Git 分支：`feat/step31-step36-release-hardening`。
+7. Git 提交：`defa32c` `feat: add release hardening foundation for step31-step35`。
+8. PR 信息：`#11 https://github.com/2696437448-cmyk/smart-parking-system/pull/11`。
+9. 标签信息：`step35-pass`。
+10. 回滚标签：`step30-pass`。
+11. 卡点与修复：
+   - 卡点：发布化阶段仍存在 demo 凭证、secure 模板和本地私有覆盖边界不清的问题。
+   - 修复：新增 secure env 模板、敏感项扫描、配置门禁与恢复文档，并将 RabbitMQ / Grafana 账号密码改为 env 参数化，不再在演示脚本中暴露默认密码。
+12. 下一阻塞：进入 Step36，完成发布化总验收并把默认完成态从 Step30 升级到 Step36。
+
+## 2026-03-26 Step 36（通过）
+
+1. 完成时间：2026-03-26 16:42（Asia/Shanghai）。
+2. 当前步骤：Step 36 - 发布化总验收。
+3. 目标与范围：在 Step30 功能闭环与 Step31~35 发布化增强之上，完成最终 release acceptance，并把默认完成态升级到 Step36。
+4. 实际改动：
+   - 更新 `Makefile`
+   - 更新 `README.md`
+   - 更新 `docs/defense_demo_runbook.md`
+   - 更新 `memory-bank/implementation-plan.md`
+   - 更新 `memory-bank/progress.md`
+   - 更新 `scripts/defense_demo.sh`
+   - 更新 `scripts/test_step33_ci_smoke.py`
+   - 更新 `reports/step36_technical_acceptance.md`
+   - 生成 `reports/step36_gate_results.json`
+   - 生成 `deliverables/bundles/smart-parking-step36-release-*.tar.gz`
+   - 生成 `deliverables/bundles/smart-parking-step36-release-*.manifest.txt`
+5. 闸门结果：
+   - `make ci-smoke` -> pass
+   - `make security-scan` -> pass
+   - `make release-bundle` -> pass
+   - `make release-acceptance` -> `STEP36_GATE_PASS`
+   - `reports/step36_gate_results.json` 显示 `overall_passed=true`
+6. Git 分支：`feat/step31-step36-release-hardening`。
+7. Git 提交：`1dc4c68` `test: record step36 release acceptance evidence`。
+8. PR 信息：`#11 https://github.com/2696437448-cmyk/smart-parking-system/pull/11`。
+9. 标签信息：`step36-pass`。
+10. 回滚标签：`step30-pass`。
+11. 卡点与修复：
+   - 卡点：首次 Step36 执行失败，`scripts/test_step33_ci_smoke.py` 仍把 README 路线检查硬编码为 `Step31~36`，与当前 `Step25~36 完成情况` 标题不一致。
+   - 修复：将 smoke gate 调整为匹配 post-Step30 路线文案后重跑 `make ci-smoke`，再执行 `make release-acceptance` 收口通过。
+12. 当前结论：
+   - `Step36` 已升级为当前稳定默认完成态。
+   - 最新 release bundle 已切换为 `step36` label，并记录当前分支 `feat/step31-step36-release-hardening`。
+
+## 2026-03-27 Step31~36 Git 收口（远端完成）
+
+1. 更新时间：2026-03-27 00:20（Asia/Shanghai）。
+2. 当前范围：为 Step31~36 发布化增强阶段补齐远端 Git 闸门收口，不再修改业务语义、验收结论与交付范围。
+3. 收口说明：
+   - 功能与证据主线已通过分支 `feat/step31-step36-release-hardening` 合并入 `main`。
+   - Step31~35 的发布化基础设施与证据由提交 `defa32c` 承载。
+   - Step36 发布化总验收证据由提交 `1dc4c68` 承载。
+   - 远端 `main` 已包含 PR #11 的 merge commit `a542e8d`。
+4. 本次验证：
+   - `git fetch origin` -> pass
+   - `git merge-base --is-ancestor 1dc4c68 origin/main` -> `STEP36_IN_MAIN`
+   - `git ls-remote --tags origin 'step3[1-6]-pass'` -> pass
+5. Git 分支：`feat/step31-step36-release-hardening`。
+6. Git 提交：
+   - `defa32c` `feat: add release hardening foundation for step31-step35`
+   - `1dc4c68` `test: record step36 release acceptance evidence`
+7. PR 信息：`#11 https://github.com/2696437448-cmyk/smart-parking-system/pull/11`。
+8. 标签信息：`step31-pass`, `step32-pass`, `step33-pass`, `step34-pass`, `step35-pass`, `step36-pass`（已推送远端）。
+9. 回滚标签：`step30-pass`。
+10. 收口结果：
+   - Step31~36 的分支、提交、PR、标签四项 Git 闸门已完成。
+   - `progress.md` 已补齐 Step31~36 的远端 Git 元数据，可直接作为当前默认完成态的审计记录。
+11. 后续说明：
+   - 如需继续迭代，应从 `origin/main` 新开后续步骤分支，不再在已合并的 Step31~36 分支上继续开发。
