@@ -1,0 +1,14 @@
+[
+  {
+    "region_id": "R1",
+    "vehicle_in_count": 3,
+    "vehicle_out_count": 0,
+    "net_vehicle_flow": 3
+  },
+  {
+    "region_id": "R2",
+    "vehicle_in_count": 0,
+    "vehicle_out_count": 3,
+    "net_vehicle_flow": -3
+  }
+]

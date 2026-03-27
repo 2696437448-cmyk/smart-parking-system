@@ -1,16 +1,19 @@
 {
-  "generated_at": "2026-03-17T05:57:27.098214+00:00",
+  "generated_at": "2026-03-24T02:09:22.842901+00:00",
   "engine": "spark",
-  "source_mode": "fallback_raw",
-  "feature_schema_version": "step11.v1",
+  "source_mode": "mysql_raw",
+  "feature_schema_version": "step26.v1",
   "inputs": {
-    "slot_status": "data/raw/slot_status.csv",
-    "vehicle_event": "data/raw/vehicle_event.csv",
-    "resident_pattern": "data/raw/resident_pattern.csv"
+    "slot_status": "mysql://sensor_event_raw",
+    "vehicle_event": "mysql://lpr_event_raw",
+    "resident_pattern": "mysql://resident_trip_raw"
   },
   "outputs": {
     "forecast_feature_table": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/processed/forecast_feature_table.csv",
-    "dispatch_input_table": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/processed/dispatch_input_table.csv"
+    "dispatch_input_table": "/Users/yanchen/VscodeProject/smart-parking-thesis/data/processed/dispatch_input_table.csv",
+    "occupancy_heatmap_summary": "reports/step26_occupancy_heatmap_summary.json",
+    "vehicle_flow_summary": "reports/step26_vehicle_flow_summary.json",
+    "resident_peak_summary": "reports/step26_resident_peak_summary.json"
   },
   "quality": {
     "timestamp_parse_success": {
@@ -18,11 +21,11 @@
       "vehicle_event": 1.0
     },
     "row_counts": {
-      "slot_status": 17280,
-      "vehicle_event": 1728,
-      "resident_pattern": 5040,
-      "forecast_feature_table": 864,
-      "dispatch_input_table": 864
+      "slot_status": 4,
+      "vehicle_event": 4,
+      "resident_pattern": 4,
+      "forecast_feature_table": 6,
+      "dispatch_input_table": 6
     }
   },
   "overall_passed": true

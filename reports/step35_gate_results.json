@@ -1,0 +1,102 @@
+{
+  "generated_at_utc": "2026-03-26T08:50:37.179065+00:00",
+  "overall_passed": true,
+  "checks": [
+    {
+      "name": "exists:.env.secure.example",
+      "passed": true
+    },
+    {
+      "name": "exists:docs/security_hardening.md",
+      "passed": true
+    },
+    {
+      "name": "exists:scripts/security_scan.py",
+      "passed": true
+    },
+    {
+      "name": "exists:scripts/test_step35_security_config.py",
+      "passed": true
+    },
+    {
+      "name": "root env warns about demo defaults",
+      "passed": true,
+      "path": ".env.example"
+    },
+    {
+      "name": "secure env uses rotate-me placeholders",
+      "passed": true,
+      "path": ".env.secure.example"
+    },
+    {
+      "name": "secure env includes grafana credentials",
+      "passed": true,
+      "path": ".env.secure.example"
+    },
+    {
+      "name": "secure env includes rabbitmq credentials",
+      "passed": true,
+      "path": ".env.secure.example"
+    },
+    {
+      "name": "compose parameterizes rabbit user",
+      "passed": true,
+      "path": "infra/docker-compose.yml"
+    },
+    {
+      "name": "compose parameterizes rabbit password",
+      "passed": true,
+      "path": "infra/docker-compose.yml"
+    },
+    {
+      "name": "compose parameterizes grafana user",
+      "passed": true,
+      "path": "infra/docker-compose.yml"
+    },
+    {
+      "name": "compose parameterizes grafana password",
+      "passed": true,
+      "path": "infra/docker-compose.yml"
+    },
+    {
+      "name": "demo script no longer prints default passwords",
+      "passed": true,
+      "path": "scripts/defense_demo.sh"
+    },
+    {
+      "name": "gitignore protects root .env",
+      "passed": true,
+      "path": ".gitignore"
+    },
+    {
+      "name": "gitignore protects frontend env local",
+      "passed": true,
+      "path": ".gitignore"
+    },
+    {
+      "name": "README mentions secure env template",
+      "passed": true,
+      "path": "README.md"
+    },
+    {
+      "name": "README mentions security scan command",
+      "passed": true,
+      "path": "README.md"
+    },
+    {
+      "name": "security doc includes rotation guidance",
+      "passed": true,
+      "path": "docs/security_hardening.md"
+    },
+    {
+      "name": "security doc includes recovery guidance",
+      "passed": true,
+      "path": "docs/security_hardening.md"
+    },
+    {
+      "name": "security_scan",
+      "passed": true,
+      "output_tail": "STEP35_SECURITY_SCAN_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step35_security_scan.json"
+    }
+  ]
+}

@@ -5,11 +5,30 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 COMPOSE_FILE="$ROOT_DIR/infra/docker-compose.yml"
 FRONTEND_DIR="$ROOT_DIR/apps/frontend"
 FRONTEND_PID_FILE="/tmp/smart_parking_frontend_preview.pid"
-PYTHON_BIN_DEFAULT="/Users/yanchen/PycharmProjects/quant-value-regression/.venv/bin/python"
+ENV_FILE="$ROOT_DIR/.env"
+if [[ -x "$ROOT_DIR/.venv/bin/python" ]]; then
+  PYTHON_BIN_DEFAULT="$ROOT_DIR/.venv/bin/python"
+else
+  PYTHON_BIN_DEFAULT="python3"
+fi
 PYTHON_BIN="${PYTHON_BIN:-$PYTHON_BIN_DEFAULT}"
+
+load_env_file() {
+  if [[ -f "$ENV_FILE" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$ENV_FILE"
+    set +a
+  fi
+}
 
 compose() {
   docker compose -f "$COMPOSE_FILE" "$@"
+}
+
+run_preflight() {
+  load_env_file
+  "$ROOT_DIR/scripts/preflight_check.sh"
 }
 
 wait_http() {
@@ -64,6 +83,7 @@ start_frontend_preview() {
 }
 
 start_stack() {
+  run_preflight
   echo "[defense-demo] starting services..."
   compose up -d gateway-service parking-service model-service realtime-service rabbitmq prometheus grafana mysql redis
 
@@ -79,12 +99,14 @@ start_stack() {
 
   start_frontend_preview
 
+  local rabbit_user="${RABBITMQ_DEFAULT_USER:-guest}"
+  local grafana_user="${GF_ADMIN_USER:-admin}"
   echo "[defense-demo] stack is ready"
   echo "[defense-demo] Owner UI: http://localhost:4173/owner/dashboard"
   echo "[defense-demo] Admin UI: http://localhost:4173/admin/monitor"
   echo "[defense-demo] Gateway health: http://localhost:8080/actuator/health"
-  echo "[defense-demo] RabbitMQ UI (ops): http://localhost:15672 (guest/guest)"
-  echo "[defense-demo] Grafana UI (ops): http://localhost:13000 (admin/admin)"
+  echo "[defense-demo] RabbitMQ UI (ops): http://localhost:15672 (user from .env: $rabbit_user)"
+  echo "[defense-demo] Grafana UI (ops): http://localhost:13000 (user from .env: $grafana_user)"
 }
 
 stop_stack() {
@@ -105,6 +127,8 @@ run_baseline() {
 }
 
 run_faults() {
+  load_env_file
+
   echo "[defense-demo] Step6 fallback fault injection..."
   compose stop model-service
   "$PYTHON_BIN" "$ROOT_DIR/scripts/test_step6_resilience.py"
@@ -113,10 +137,12 @@ run_faults() {
 
   echo "[defense-demo] Step7 MQ retry + DLQ fault injection..."
   "$PYTHON_BIN" "$ROOT_DIR/scripts/setup_rabbitmq.py"
+  local rabbit_user="${RABBITMQ_DEFAULT_USER:-guest}"
+  local rabbit_pass="${RABBITMQ_DEFAULT_PASS:-guest}"
   "$PYTHON_BIN" "$ROOT_DIR/services/dispatch_worker.py" \
     --api http://localhost:15672/api \
-    --user guest \
-    --password guest \
+    --user "$rabbit_user" \
+    --password "$rabbit_pass" \
     --max-retry 2 \
     --max-cycles 100 &
   local worker_pid=$!
@@ -140,9 +166,25 @@ run_faults() {
 }
 
 run_acceptance() {
-  echo "[defense-demo] running Step24 full acceptance..."
+  echo "[defense-demo] running Step36 release acceptance..."
+  "$PYTHON_BIN" "$ROOT_DIR/scripts/test_step36_release_acceptance.py"
+  echo "[defense-demo] Step36 release acceptance passed"
+}
+
+run_acceptance_enhanced() {
+  run_acceptance_step30
+}
+
+run_acceptance_step30() {
+  echo "[defense-demo] running Step30 enhanced acceptance..."
+  "$PYTHON_BIN" "$ROOT_DIR/scripts/test_step30_enhanced_acceptance.py"
+  echo "[defense-demo] Step30 enhanced acceptance passed"
+}
+
+run_acceptance_step24() {
+  echo "[defense-demo] running Step24 baseline acceptance..."
   "$PYTHON_BIN" "$ROOT_DIR/scripts/test_step24_full_acceptance.py"
-  echo "[defense-demo] full acceptance passed"
+  echo "[defense-demo] Step24 baseline acceptance passed"
 }
 
 run_acceptance_legacy() {
@@ -160,18 +202,33 @@ run_full() {
   echo "[defense-demo] full demo run passed"
 }
 
+run_full_enhanced() {
+  start_stack
+  run_baseline
+  run_faults
+  run_acceptance
+  run_acceptance_enhanced
+  stop_stack
+  echo "[defense-demo] full enhanced demo run passed"
+}
+
 usage() {
   cat <<USAGE
 Usage: ./scripts/defense_demo.sh <command>
 
 Commands:
-  start              Start backend stack + frontend business preview
-  baseline           Run contract + Step4 + Step5 + Step19B baseline checks
-  faults             Run Step6/7/8/9 fault-injection sequence
-  acceptance         Run Step24 full acceptance gates
-  acceptance-legacy  Run Step18 legacy acceptance gates
-  full               Run start + baseline + faults + acceptance + stop
-  stop               Stop and clean stack
+  preflight           Check local prerequisites before start/acceptance
+  start               Start backend stack + frontend business preview
+  baseline            Run contract + Step4 + Step5 + Step19B baseline checks
+  faults              Run Step6/7/8/9 fault-injection sequence
+  acceptance          Run default Step36 release acceptance gates
+  acceptance-enhanced Run historical Step30 enhanced acceptance gates
+  acceptance-step30   Run historical Step30 enhanced acceptance gates
+  acceptance-step24   Run historical Step24 full acceptance gates
+  acceptance-legacy   Run Step18 legacy acceptance gates
+  full                Run start + baseline + faults + acceptance + stop
+  full-enhanced       Run start + baseline + faults + Step36 + Step30 acceptance + stop
+  stop                Stop and clean stack
 USAGE
 }
 
@@ -185,6 +242,9 @@ main() {
     start)
       start_stack
       ;;
+    preflight)
+      run_preflight
+      ;;
     baseline)
       run_baseline
       ;;
@@ -194,11 +254,23 @@ main() {
     acceptance)
       run_acceptance
       ;;
+    acceptance-enhanced)
+      run_acceptance_enhanced
+      ;;
+    acceptance-step30)
+      run_acceptance_step30
+      ;;
+    acceptance-step24)
+      run_acceptance_step24
+      ;;
     acceptance-legacy)
       run_acceptance_legacy
       ;;
     full)
       run_full
+      ;;
+    full-enhanced)
+      run_full_enhanced
       ;;
     stop)
       stop_stack

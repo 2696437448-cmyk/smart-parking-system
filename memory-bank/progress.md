@@ -541,3 +541,184 @@
 10. 收口结果：
    - 远端 PR #9 已合并到 `main`，合并提交：`d29ed20`。
    - Step19A~24 标签已推送完成，各步 Git 元数据已回填到 `progress.md`。
+
+## 2026-03-24 Step 25（通过）
+
+1. 完成时间：2026-03-24 09:11（Asia/Shanghai）。
+2. 当前步骤：Step 25 - 文档与完成态口径收敛。
+3. 目标与范围：统一 README、runbook、memory-bank、demo script 的默认完成态与执行口径。
+4. 实际改动：
+   - 更新 `README.md`
+   - 更新 `docs/defense_demo_runbook.md`
+   - 更新 `memory-bank/acceptance.md`
+   - 更新 `memory-bank/architecture.md`
+   - 更新 `memory-bank/gap-matrix.md`
+   - 更新 `memory-bank/implementation-plan.md`
+   - 新增 `reports/step25_execution.md`
+5. 闸门结果：
+   - 文档口径统一升级为 `Step30` 默认完成态。
+6. Git 分支：`feat/step25-step30-enhancement`。
+7. Git 提交：`N/A（本轮尚未提交）`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step24-pass`。
+11. 卡点与修复：
+   - 卡点：原文档仍停留在“Step24 为默认完成态”。
+   - 修复：在 Step30 验收通过后统一升级默认完成态口径。
+12. 下一阻塞：补 raw ingest、App 壳层、地图导航、图表化与增强验收证据。
+
+## 2026-03-24 Step 26（通过）
+
+1. 完成时间：2026-03-24 09:11（Asia/Shanghai）。
+2. 当前步骤：Step 26 - 近真实数据接入与 Spark 关联分析增强。
+3. 目标与范围：补齐 raw ingest 接口、MySQL raw 表、Spark strict 分析输出。
+4. 实际改动：
+   - 新增 `services/parking-service/src/main/java/com/smartparking/parking/ParkingEnhancementController.java`
+   - 更新 `infra/docker-compose.yml`
+   - 更新 `openapi/smart-parking.yaml`
+   - 更新 `scripts/step11_etl.py`
+   - 新增 `scripts/test_step26_raw_ingest_analytics.py`
+   - 生成 `reports/step26_spark_quality.json`
+   - 生成 `reports/step26_occupancy_heatmap_summary.json`
+   - 生成 `reports/step26_vehicle_flow_summary.json`
+   - 生成 `reports/step26_resident_peak_summary.json`
+   - 新增 `reports/step26_execution.md`
+5. 闸门结果：
+   - `python3 scripts/test_step26_raw_ingest_analytics.py` -> `STEP26_GATE_PASS`
+   - 质量报告显示 `engine=spark`
+6. Git 分支：`feat/step25-step30-enhancement`。
+7. Git 提交：`N/A（本轮尚未提交）`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step24-pass`。
+11. 卡点与修复：
+   - 卡点：`ParkingEnhancementController` 缺失 `trace()` 导致服务编译失败；初版 Step26 gate 仍误走 Python fallback。
+   - 修复：补回 `trace()`，并将 Step26 gate 修正为 `Spark strict + mysql_raw`。
+12. 下一阻塞：完成 App 壳层与增强前端验收。
+
+## 2026-03-24 Step 27（通过）
+
+1. 完成时间：2026-03-24 09:11（Asia/Shanghai）。
+2. 当前步骤：Step 27 - App 壳层与移动优先业主端。
+3. 目标与范围：补齐 Capacitor Android 壳层与移动优先交付。
+4. 实际改动：
+   - 更新 `apps/frontend/package.json`
+   - 新增 `apps/frontend/package-lock.json`
+   - 新增 `apps/frontend/capacitor.config.ts`
+   - 新增 `apps/frontend/android/`
+   - 新增 `apps/frontend/src/pages/OwnerOrders.vue`
+   - 更新 `apps/frontend/src/App.vue`
+   - 更新 `apps/frontend/src/router.ts`
+   - 更新 `apps/frontend/src/styles.css`
+   - 新增 `scripts/test_step27_app_shell.py`
+   - 新增 `reports/step27_execution.md`
+5. 闸门结果：
+   - `npm run typecheck` -> pass
+   - `npm run build` -> pass
+   - `python3 scripts/test_step27_app_shell.py` -> `STEP27_GATE_PASS`
+6. Git 分支：`feat/step25-step30-enhancement`。
+7. Git 提交：`N/A（本轮尚未提交）`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step24-pass`。
+11. 卡点与修复：
+   - 卡点：npm 访问官方 registry 时证书链报错；ECharts 类型定义导致 `typecheck` 失败；Step27 gate 初版在检查时又执行 `cap:sync`。
+   - 修复：完成依赖重装、改用 `echarts/core` 引入、将 Step27 gate 改为纯校验。
+12. 下一阻塞：完成地图导航与物业图表验收。
+
+## 2026-03-24 Step 28（通过）
+
+1. 完成时间：2026-03-24 09:11（Asia/Shanghai）。
+2. 当前步骤：Step 28 - 地图导航增强。
+3. 目标与范围：补齐页面内地图预览、ETA、路线摘要与外部地图 fallback。
+4. 实际改动：
+   - 新增 `apps/frontend/src/components/MapPreview.vue`
+   - 更新 `apps/frontend/src/pages/OwnerNavigation.vue`
+   - 更新 `services/parking-service/src/main/java/com/smartparking/parking/ParkingBusinessExtensions.java`
+   - 新增 `scripts/test_step28_navigation_map.py`
+   - 新增 `reports/step28_execution.md`
+5. 闸门结果：
+   - `python3 scripts/test_step28_navigation_map.py` -> `STEP28_GATE_PASS`
+6. Git 分支：`feat/step25-step30-enhancement`。
+7. Git 提交：`N/A（本轮尚未提交）`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step24-pass`。
+11. 卡点与修复：
+   - 卡点：导航响应需兼容旧字段并扩展地图预览字段。
+   - 修复：保留 `map_url` 语义并补 `region_label`、`slot_display_name`、`route_summary`。
+12. 下一阻塞：补齐物业端图表数据与增强总验收。
+
+## 2026-03-24 Step 29（通过）
+
+1. 完成时间：2026-03-24 09:11（Asia/Shanghai）。
+2. 当前步骤：Step 29 - 物业端图表化展示。
+3. 目标与范围：补齐收益趋势、区域对比、占用率趋势、预测对照图。
+4. 实际改动：
+   - 新增 `apps/frontend/src/components/EChartPanel.vue`
+   - 更新 `apps/frontend/src/pages/AdminMonitor.vue`
+   - 新增 `scripts/test_step29_admin_charts.py`
+   - 新增 `reports/step29_execution.md`
+5. 闸门结果：
+   - `python3 scripts/test_step29_admin_charts.py` -> `STEP29_GATE_PASS`
+6. Git 分支：`feat/step25-step30-enhancement`。
+7. Git 提交：`N/A（本轮尚未提交）`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step24-pass`。
+11. 卡点与修复：
+   - 卡点：`revenue/trend` 在空账单状态下返回空数组，导致图表 gate 失败。
+   - 修复：Step29 gate 在验图前自带一笔确认账单种子数据，保证图表接口有真实业务输入。
+12. 下一阻塞：回放 Step24 基线并完成 Step30 总验收。
+
+## 2026-03-24 Step 30（通过）
+
+1. 完成时间：2026-03-24 09:11（Asia/Shanghai）。
+2. 当前步骤：Step 30 - 增强验收与答辩升级。
+3. 目标与范围：让 Step24 基线与 Step26~29 增强能力统一通过，并将默认完成态升级到 Step30。
+4. 实际改动：
+   - 新增 `scripts/test_step30_enhanced_acceptance.py`
+   - 生成 `reports/step30_gate_results.json`
+   - 新增 `reports/step30_technical_acceptance.md`
+   - 更新 `scripts/defense_demo.sh`
+   - 更新 `README.md`
+   - 更新 `docs/defense_demo_runbook.md`
+   - 更新 `memory-bank/*`
+5. 闸门结果：
+   - `python3 scripts/test_step24_full_acceptance.py` -> `STEP24_GATE_PASS`
+   - `python3 scripts/test_step30_enhanced_acceptance.py` -> `STEP30_GATE_PASS`
+   - `reports/step30_gate_results.json` 显示 `overall_passed=true`
+6. Git 分支：`feat/step25-step30-enhancement`。
+7. Git 提交：`N/A（本轮尚未提交）`。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step24-pass`。
+11. 卡点与修复：
+   - 卡点：Step18/24 历史基线被增强阶段 `mysql_raw` 小样本 ETL 误污染，且旧前端 token gate 与新页面结构存在兼容问题。
+   - 修复：将历史 Step11 gate 固定回文件输入；补齐 Step16/21 兼容 token；恢复 Step24 全量通过后再回放 Step30。
+12. 当前结论：`Step30` 已升级为默认稳定完成态，`Step24` 保留为历史主链基线。
+
+## 2026-03-24 Step25~30 Git 收口（本地完成）
+
+1. 更新时间：2026-03-24 15:26（Asia/Shanghai）。
+2. 当前范围：为 Step25~30 增强阶段补本地 Git 提交与标签收口，不再修改业务语义与验收结果。
+3. 收口说明：
+   - 本轮以分支 `feat/step25-step30-enhancement` 完成 Step25~30 的实现、文档与证据收口。
+   - `Step30` 继续作为当前稳定默认完成态，`Step24` 保留为历史主链基线。
+   - 本次仅完成本地 commit/tag 收口，远端 push 与 PR 仍待后续执行。
+4. 本次验证：
+   - `git diff --check` -> pass
+   - `python3 scripts/test_step24_full_acceptance.py` -> `STEP24_GATE_PASS`
+   - `python3 scripts/test_step30_enhanced_acceptance.py` -> `STEP30_GATE_PASS`
+5. Git 分支：`feat/step25-step30-enhancement`。
+6. Git 提交：
+   - `046f9f4` `feat(step30): implement enhancement delivery and gates`
+   - `d6664a5` `docs(step30): update evidence and default completion docs`
+7. PR 信息：`N/A（本轮未推送）`。
+8. 标签信息：`step25-pass`, `step26-pass`, `step27-pass`, `step28-pass`, `step29-pass`, `step30-pass`（本地标签）。
+9. 回滚标签：`step24-pass`。
+10. 收口结果：
+   - Step25~30 代码、文档、证据已完成本地提交收口。
+   - `progress.md` 已补齐本地 Git 元数据，后续可直接执行 push / PR。
+11. 剩余事项：
+   - 如需完成远端 Git 闸门，还需推送分支、创建 PR，并把标签同步到远端。

@@ -413,10 +413,12 @@ class BillingService {
 class OwnerAdminFacade {
     private final BillingService billingService;
     private final ReservationRepository reservationRepository;
+    private final GeoCatalogService geoCatalogService;
 
-    OwnerAdminFacade(BillingService billingService, ReservationRepository reservationRepository) {
+    OwnerAdminFacade(BillingService billingService, ReservationRepository reservationRepository, GeoCatalogService geoCatalogService) {
         this.billingService = billingService;
         this.reservationRepository = reservationRepository;
+        this.geoCatalogService = geoCatalogService;
     }
 
     List<Map<String, Object>> recommendations(String location, String preferredWindow) {
@@ -424,13 +426,15 @@ class OwnerAdminFacade {
         List<Map<String, Object>> items = new ArrayList<>();
         for (int i = 1; i <= 3; i++) {
             String slotId = String.format("%s-S%03d", region, i);
-            GeoPoint point = resolveGeoPoint(slotId, region);
+            GeoPoint point = geoCatalogService.resolveGeoPoint(slotId, region);
             Map<String, Object> item = new LinkedHashMap<>();
             item.put("slot_id", slotId);
             item.put("estimated_amount", billingService.previewAmount(region, slotId, preferredWindow));
             item.put("eta_minutes", etaMinutes(region, slotId));
             item.put("destination", geoPayload(point));
             item.put("map_url", mapUrl(point));
+            item.put("slot_display_name", point.displayName());
+            item.put("region_label", geoCatalogService.regionLabel(region));
             items.add(item);
         }
         return items;
@@ -463,13 +467,22 @@ class OwnerAdminFacade {
         if (row == null) {
             return null;
         }
-        GeoPoint point = resolveGeoPoint(row.slotId(), row.regionId());
+        GeoPoint point = geoCatalogService.resolveGeoPoint(row.slotId(), row.regionId());
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("order_id", row.orderId());
         payload.put("slot_id", row.slotId());
-        payload.put("eta_minutes", etaMinutes(row.regionId(), row.slotId()));
+        int etaMinutes = etaMinutes(row.regionId(), row.slotId());
+        payload.put("eta_minutes", etaMinutes);
         payload.put("map_url", mapUrl(point));
         payload.put("destination", geoPayload(point));
+        payload.put("region_label", geoCatalogService.regionLabel(row.regionId()));
+        payload.put("slot_display_name", point.displayName());
+        Map<String, Object> routeSummary = new LinkedHashMap<>();
+        routeSummary.put("distance_km", geoCatalogService.distanceKm(row.regionId(), row.slotId()));
+        routeSummary.put("route_mode", "walk_drive_mix");
+        routeSummary.put("summary", "进入社区后按路侧引导到达目标车位");
+        routeSummary.put("eta_minutes", etaMinutes);
+        payload.put("route_summary", routeSummary);
         return payload;
     }
 
@@ -502,37 +515,6 @@ class OwnerAdminFacade {
         return "R1";
     }
 
-    private GeoPoint resolveGeoPoint(String slotId, String region) {
-        double baseLat;
-        double baseLng;
-        switch (region) {
-            case "R1" -> {
-                baseLat = 31.2304;
-                baseLng = 121.4737;
-            }
-            case "R2" -> {
-                baseLat = 31.2243;
-                baseLng = 121.4768;
-            }
-            case "R3" -> {
-                baseLat = 31.2187;
-                baseLng = 121.4810;
-            }
-            default -> {
-                baseLat = 31.2304;
-                baseLng = 121.4737;
-            }
-        }
-        int index = 1;
-        try {
-            index = Integer.parseInt(slotId.split("-S", 2)[1]);
-        } catch (Exception ignored) {
-        }
-        double lat = baseLat + ((index % 5) - 2) * 0.0009;
-        double lng = baseLng + (((index / 5) % 5) - 2) * 0.0011;
-        return new GeoPoint(lat, lng, region + " 区车位 " + slotId);
-    }
-
     private int etaMinutes(String region, String slotId) {
         int slotIndex = 1;
         try {
@@ -551,7 +533,7 @@ class OwnerAdminFacade {
     }
 
     private String mapUrl(GeoPoint point) {
-        return "https://www.google.com/maps/dir/?api=1&destination=" + point.lat() + "," + point.lng();
+        return "https://www.openstreetmap.org/?mlat=" + point.lat() + "&mlon=" + point.lng() + "#map=18/" + point.lat() + "/" + point.lng();
     }
 }
 

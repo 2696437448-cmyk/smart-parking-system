@@ -1,0 +1,85 @@
+{
+  "generated_at_utc": "2026-03-26T08:50:36.836836+00:00",
+  "elapsed_seconds": 0.014,
+  "overall_passed": true,
+  "checks": [
+    {
+      "name": "exists:.github/workflows/ci.yml",
+      "passed": true
+    },
+    {
+      "name": "exists:.env.example",
+      "passed": true
+    },
+    {
+      "name": "exists:Makefile",
+      "passed": true
+    },
+    {
+      "name": "exists:scripts/preflight_check.sh",
+      "passed": true
+    },
+    {
+      "name": "exists:scripts/defense_demo.sh",
+      "passed": true
+    },
+    {
+      "name": "exists:reports/step30_gate_results.json",
+      "passed": true
+    },
+    {
+      "name": "exists:apps/frontend/package.json",
+      "passed": true
+    },
+    {
+      "name": "workflow_job:repo-smoke",
+      "passed": true
+    },
+    {
+      "name": "workflow_job:frontend-quality",
+      "passed": true
+    },
+    {
+      "name": "make target preflight-static",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
+    },
+    {
+      "name": "make target ci-smoke",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
+    },
+    {
+      "name": "demo script preflight command",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/scripts/defense_demo.sh"
+    },
+    {
+      "name": "README post-Step30 roadmap",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/README.md"
+    },
+    {
+      "name": "README preflight-static command",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/README.md"
+    },
+    {
+      "name": "frontend_script:typecheck",
+      "passed": true
+    },
+    {
+      "name": "frontend_script:build",
+      "passed": true
+    },
+    {
+      "name": "step30_report_overall_passed",
+      "passed": true
+    },
+    {
+      "name": "bash_syntax_check",
+      "passed": true,
+      "output_tail": ""
+    }
+  ]
+}
