@@ -64,7 +64,18 @@
 5. Step35：负责安全与配置硬化，已通过 `.env.secure.example`、security scan 与恢复文档收口。
 6. Step36：负责新的发布化总验收，已将默认完成态从 Step30 升级到 Step36。
 
-## 9. 默认完成态升级规则
+## 9. Step37 提示词驱动现代化层
+
+1. Step37 为 Step36 之后的默认优化入口，先补齐项目专用提示词库，再执行前后端现代化改造。
+2. `memory-bank/project-prompt-library.md` 负责统一 Product / Data Science / AI / Algorithm / Frontend / UI / Backend 六类任务的项目约束与输出格式。
+3. 前端已从单一演示壳演进为角色化布局：
+   - owner layout：移动优先预约、订单、导航
+   - admin layout：经营驾驶舱与实时状态
+4. 前端数据流已补统一 API 访问层，并把 owner/admin 页面请求逻辑抽离到专用数据模块。
+5. 后端新增视图聚合接口，用于减少前端多接口拼装，但不替换既有 owner/admin 接口。
+6. Step37 默认仍保持 Step36 核心业务、可靠性、地图与计费语义不变。
+
+## 10. 默认完成态升级规则
 
 1. 当前默认完成态已升级为 `Step36`。
 2. `Step30` 继续保留为功能与增强交付基线。

@@ -1,17 +1,34 @@
 import { createRouter, createWebHistory } from "vue-router";
-import OwnerDashboard from "./pages/OwnerDashboard.vue";
-import OwnerOrders from "./pages/OwnerOrders.vue";
-import OwnerNavigation from "./pages/OwnerNavigation.vue";
-import AdminMonitor from "./pages/AdminMonitor.vue";
+
+const OwnerLayout = () => import("./layouts/OwnerLayout.vue");
+const AdminLayout = () => import("./layouts/AdminLayout.vue");
+const OwnerDashboard = () => import("./pages/OwnerDashboard.vue");
+const OwnerOrders = () => import("./pages/OwnerOrders.vue");
+const OwnerNavigation = () => import("./pages/OwnerNavigation.vue");
+const AdminMonitor = () => import("./pages/AdminMonitor.vue");
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/", redirect: "/owner/dashboard" },
-    { path: "/owner/dashboard", component: OwnerDashboard },
-    { path: "/owner/orders", component: OwnerOrders },
-    { path: "/owner/navigation", component: OwnerNavigation },
-    { path: "/admin/monitor", component: AdminMonitor },
+    {
+      path: "/owner",
+      component: OwnerLayout,
+      children: [
+        { path: "", redirect: "/owner/dashboard" },
+        { path: "dashboard", component: OwnerDashboard },
+        { path: "orders", component: OwnerOrders },
+        { path: "navigation", component: OwnerNavigation },
+      ],
+    },
+    {
+      path: "/admin",
+      component: AdminLayout,
+      children: [
+        { path: "", redirect: "/admin/monitor" },
+        { path: "monitor", component: AdminMonitor },
+      ],
+    },
   ],
 });
 

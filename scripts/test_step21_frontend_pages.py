@@ -25,9 +25,14 @@ def assert_contains(path: Path, tokens: list[str]) -> None:
 def main() -> None:
     for rel in [
         "src/router.ts",
+        "src/layouts/OwnerLayout.vue",
+        "src/layouts/AdminLayout.vue",
         "src/pages/OwnerDashboard.vue",
+        "src/pages/OwnerOrders.vue",
         "src/pages/OwnerNavigation.vue",
         "src/pages/AdminMonitor.vue",
+        "src/services/owner.ts",
+        "src/services/admin.ts",
     ]:
         assert_exists(FRONTEND / rel)
 
@@ -36,10 +41,11 @@ def main() -> None:
     if "vue-router" not in deps:
         raise AssertionError("package dependency missing: vue-router")
 
-    assert_contains(FRONTEND / "src" / "router.ts", ["/owner/dashboard", "/owner/navigation", "/admin/monitor"])
-    assert_contains(FRONTEND / "src" / "pages" / "OwnerDashboard.vue", ["/api/v1/owner/recommendations", "/api/v1/owner/reservations", "/api/v1/owner/orders/"])
-    assert_contains(FRONTEND / "src" / "pages" / "OwnerNavigation.vue", ["/api/v1/owner/navigation/"])
-    assert_contains(FRONTEND / "src" / "pages" / "AdminMonitor.vue", ["/api/v1/admin/monitor/summary", "/api/v1/admin/revenue/summary"])
+    assert_contains(FRONTEND / "src" / "router.ts", ["/owner", '"dashboard"', '"navigation"', "/admin", '"monitor"'])
+    assert_contains(FRONTEND / "src" / "services" / "owner.ts", ["/api/v1/owner/dashboard", "/api/v1/owner/reservations", "/api/v1/owner/orders/", "/api/v1/owner/navigation/"])
+    assert_contains(FRONTEND / "src" / "services" / "admin.ts", ["/api/v1/admin/dashboard"])
+    assert_contains(FRONTEND / "src" / "pages" / "OwnerDashboard.vue", ["fetchOwnerDashboard", "reserveOwnerSlot"])
+    assert_contains(FRONTEND / "src" / "pages" / "AdminMonitor.vue", ["fetchAdminDashboard", "EChartPanel"])
 
     print("STEP21_GATE_PASS")
 

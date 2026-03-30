@@ -31,7 +31,7 @@ def main() -> None:
             raise AssertionError(f"missing app shell file: {path}")
 
     router_text = (FRONTEND / "src" / "router.ts").read_text(encoding="utf-8")
-    for token in ["/owner/dashboard", "/owner/orders", "/owner/navigation", "/admin/monitor"]:
+    for token in ["/owner", '"dashboard"', '"orders"', '"navigation"', "/admin", '"monitor"']:
         if token not in router_text:
             raise AssertionError(f"router missing token: {token}")
 

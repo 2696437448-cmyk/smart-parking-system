@@ -125,3 +125,15 @@
 1. 仓库可 clone 并读取完整项目文档、执行脚本与增强阶段材料。
 2. 每步继续满足 `branch created`、`commit exists`、`PR merged`、`tag created`。
 3. `progress.md` 继续记录 `branch`、`commit_id`、`PR链接/编号`、`tag`、`rollback_tag`。
+
+## 16. Step37 提示词体系与前后端现代化验收（已完成）
+
+1. 存在 `memory-bank/project-prompt-library.md`，且包含 Product / Data Science / AI / Algorithm / Frontend / UI / Backend 六个方向。
+2. 每个提示词章节均包含 `When to use`、`Read first`、`Project constraints`、`Expected output`、`Common anti-patterns`、`Repo-specific checklist`。
+3. `memory-bank/prompt-templates.md` 已明确要求结构优化、UI 改版、接口重构、性能优化、规划类任务先读取新提示词库。
+4. 前端已拆分为角色化布局，Owner / Admin 不再共用单一演示壳。
+5. 前端已引入统一 API 访问层与页面级数据模块，不再由主要页面直接管理全部请求细节。
+6. 样式体系已从单一大样式表重构为分层样式入口。
+7. 路由已改为按页懒加载，Admin 图表页与导航页的重依赖不再全部进入首屏主包。
+8. 后端新增 owner / admin 视图聚合接口，但旧接口继续兼容。
+9. `scripts/test_step37_prompt_frontend_modernization.py` 可通过。

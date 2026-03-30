@@ -1,31 +1,13 @@
 [
   {
     "region_id": "R1",
-    "hour_bucket": 1,
+    "hour_bucket": 7,
     "avg_occupancy_rate": 1.0,
     "sample_count": 1
   },
   {
-    "region_id": "R1",
-    "hour_bucket": 2,
-    "avg_occupancy_rate": 0.5,
-    "sample_count": 2
-  },
-  {
-    "region_id": "R1",
-    "hour_bucket": 6,
-    "avg_occupancy_rate": 0.5,
-    "sample_count": 2
-  },
-  {
     "region_id": "R2",
-    "hour_bucket": 2,
-    "avg_occupancy_rate": 0.0,
-    "sample_count": 2
-  },
-  {
-    "region_id": "R2",
-    "hour_bucket": 6,
+    "hour_bucket": 8,
     "avg_occupancy_rate": 0.0,
     "sample_count": 1
   }

@@ -939,3 +939,45 @@
    - `progress.md` 已补齐 Step31~36 的远端 Git 元数据，可直接作为当前默认完成态的审计记录。
 11. 后续说明：
    - 如需继续迭代，应从 `origin/main` 新开后续步骤分支，不再在已合并的 Step31~36 分支上继续开发。
+
+## 2026-03-30 Step 37（通过）
+
+1. 完成时间：2026-03-30 16:09（Asia/Shanghai）。
+2. 当前步骤：Step 37 - 提示词驱动的现代化优化入口。
+3. 目标与范围：在 Step36 默认完成态之上建立项目专用提示词体系，并完成第一轮前后端结构与 UI 现代化改造，不改动 Spark / LSTM / Hungarian 核心语义。
+4. 实际改动：
+   - 新增 `memory-bank/project-prompt-library.md`
+   - 更新 `memory-bank/prompt-templates.md`
+   - 更新 `memory-bank/implementation-plan.md`
+   - 更新 `memory-bank/acceptance.md`
+   - 更新 `memory-bank/architecture.md`
+   - 更新 `memory-bank/gap-matrix.md`
+   - 新增 `services/parking-service/src/main/java/com/smartparking/parking/ParkingDashboardViewController.java`
+   - 更新 `services/parking-service/src/main/java/com/smartparking/parking/ParkingBusinessExtensions.java`
+   - 新增 owner / admin 聚合视图接口
+   - 新增前端布局、服务层、共享组件、分层样式与路由懒加载
+   - 新增 `scripts/test_step37_prompt_frontend_modernization.py`
+   - 新增执行证据 `reports/step37_execution.md`
+5. 闸门结果：
+   - `cd apps/frontend && npm run typecheck` -> pass
+   - `cd apps/frontend && npm run build` -> pass
+   - `python3 scripts/test_step21_frontend_pages.py` -> `STEP21_GATE_PASS`
+   - `python3 scripts/test_step27_app_shell.py` -> `STEP27_GATE_PASS`
+   - `python3 scripts/test_step28_navigation_map.py` -> `STEP28_GATE_PASS`
+   - `python3 scripts/test_step29_admin_charts.py` -> `STEP29_GATE_PASS`
+   - `python3 scripts/test_step37_prompt_frontend_modernization.py` -> `STEP37_GATE_PASS`
+   - `make ci-smoke` -> pass
+   - `python3 scripts/test_step30_enhanced_acceptance.py` -> `STEP30_GATE_PASS`
+   - `python3 scripts/test_step36_release_acceptance.py` -> `STEP36_GATE_PASS`
+6. Git 分支：`main`。
+7. Git 提交：`N/A`（当前会话未提交）。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step36-pass`。
+11. 卡点与修复：
+   - 卡点：历史前端 gate 默认按“页面文件内直连接口 + 扁平路由”假设编写，重构后产生误报。
+   - 修复：将 Step21 / Step27 / Step29 脚本调整为识别服务层、角色化布局与嵌套路由；同时保留旧接口兼容。
+   - 卡点：Step37 种子预约与现有预约窗口冲突，首次触发 409。
+   - 修复：Step37 gate 改为自动轮询可用车位，保持一致性保护语义不变。
+12. 下一阻塞：
+   - 如需继续推进 Post-Step36，建议进入 Step38，聚焦前端 bundle 深拆分、业主端小程序入口或更细粒度 owner/admin BFF 接口。

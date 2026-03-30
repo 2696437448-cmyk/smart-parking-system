@@ -136,3 +136,10 @@
 2. 当前：已通过 Step36 发布化总验收并升级默认完成态。
 3. 证据：`reports/step36_gate_results.json`、`reports/step36_technical_acceptance.md`。
 4. 判定：已完成。
+
+### 5.6 Step37 提示词驱动现代化入口
+
+1. 目标：为 Step36 之后的优化建立统一提示词入口，并完成第一轮前后端现代化改造。
+2. 当前：已新增项目专用提示词库、owner/admin 聚合视图接口、角色化前端布局与样式分层。
+3. 证据：`memory-bank/project-prompt-library.md`、`reports/step37_execution.md`、`scripts/test_step37_prompt_frontend_modernization.py`。
+4. 判定：已完成。
