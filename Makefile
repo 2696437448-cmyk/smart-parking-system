@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: help preflight preflight-static ci-smoke security-scan release-bundle release-acceptance start stop baseline faults acceptance acceptance-enhanced acceptance-step30 acceptance-step24 acceptance-legacy typecheck build step30
+.PHONY: help preflight preflight-static ci-smoke security-scan release-bundle release-acceptance start stop baseline faults acceptance acceptance-enhanced acceptance-step30 acceptance-step24 acceptance-legacy typecheck build step30 step37-check
 
 help:
 	@echo "Smart Parking common commands"
@@ -21,6 +21,7 @@ help:
 	@echo "  make typecheck          # frontend typecheck"
 	@echo "  make build              # frontend build"
 	@echo "  make step30             # historical Step30 enhanced acceptance shortcut"
+	@echo "  make step37-check       # run Step37 prompt/frontend modernization gate"
 
 preflight:
 	./scripts/preflight_check.sh
@@ -76,3 +77,6 @@ build:
 	cd apps/frontend && npm run build
 
 step30: acceptance-step30
+
+step37-check:
+	python3 scripts/test_step37_prompt_frontend_modernization.py

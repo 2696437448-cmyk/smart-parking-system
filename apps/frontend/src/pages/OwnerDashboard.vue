@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import MetricCard from "../components/MetricCard.vue";
+import SectionHeader from "../components/SectionHeader.vue";
+import { fetchOwnerDashboard, getStoredOrderId, reserveOwnerSlot, setStoredOrderId } from "../services/owner";
+import type { OwnerDashboardView, RecommendationItem } from "../types/dashboard";
 
 const router = useRouter();
-const gatewayBase = import.meta.env.VITE_GATEWAY_BASE_URL ?? "http://localhost:8080";
-const ORDER_STORAGE_KEY = "smartParkingCurrentOrderId";
-const OWNER_ORDER_DETAIL_API_BASE = "/api/v1/owner/orders/";
 
 function pad(value: number): string {
   return value.toString().padStart(2, "0");
@@ -25,42 +26,24 @@ const location = ref("R1");
 const windowStart = ref(toLocalInput(now));
 const windowEnd = ref(toLocalInput(plusMinutes(now, 60)));
 const loading = ref(false);
-const recommendations = ref<Array<Record<string, any>>>([]);
+const dashboard = ref<OwnerDashboardView | null>(null);
 const errorText = ref("");
-const activeOrderId = ref(localStorage.getItem(ORDER_STORAGE_KEY) ?? "");
 
 const preferredWindow = computed(() => `${windowStart.value}:00/${windowEnd.value}:00`);
-const activeSummary = computed(() => {
-  if (!activeOrderId.value) {
-    return "暂无进行中的预约，可直接创建新预约。";
-  }
-  return `当前进行中订单：${activeOrderId.value}`;
-});
-
-async function readJson(url: string, options: RequestInit = {}) {
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      "X-Trace-Id": `frontend-owner-${Date.now()}`,
-      ...(options.headers ?? {}),
-    },
-  });
-  const payload = await response.json();
-  if (!response.ok) {
-    throw new Error(payload.error ?? `http_${response.status}`);
-  }
-  return payload;
-}
+const recommendations = computed<RecommendationItem[]>(() => dashboard.value?.recommendations ?? []);
+const latestOrder = computed(() => dashboard.value?.latest_order ?? null);
+const activeSummary = computed(() => dashboard.value?.journey.message ?? "正在准备推荐车位。");
 
 async function loadRecommendations() {
   loading.value = true;
   errorText.value = "";
   try {
-    const url = new URL(`${gatewayBase}/api/v1/owner/recommendations`);
-    url.searchParams.set("location", location.value);
-    url.searchParams.set("preferred_window", preferredWindow.value);
-    const payload = await readJson(url.toString());
-    recommendations.value = payload.results ?? [];
+    dashboard.value = await fetchOwnerDashboard({
+      location: location.value,
+      preferredWindow: preferredWindow.value,
+      userId: userId.value,
+      orderId: getStoredOrderId(),
+    });
   } catch (error) {
     errorText.value = `推荐加载失败: ${String(error)}`;
   } finally {
@@ -72,23 +55,15 @@ async function reserve(slotId: string) {
   loading.value = true;
   errorText.value = "";
   try {
-    const payload = await readJson(`${gatewayBase}/api/v1/owner/reservations`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Idempotency-Key": `reserve-${userId.value}-${slotId}-${windowStart.value}`,
-      },
-      body: JSON.stringify({
-        user_id: userId.value,
-        preferred_window: preferredWindow.value,
-        location: location.value,
-        slot_id: slotId,
-      }),
+    const payload = await reserveOwnerSlot({
+      userId: userId.value,
+      preferredWindow: preferredWindow.value,
+      location: location.value,
+      slotId,
     });
     const orderId = String(payload.order_id ?? payload.reservation_id ?? "");
     if (orderId) {
-      activeOrderId.value = orderId;
-      localStorage.setItem(ORDER_STORAGE_KEY, orderId);
+      setStoredOrderId(orderId);
       await router.push({ path: "/owner/orders", query: { orderId } });
     }
   } catch (error) {
@@ -99,7 +74,8 @@ async function reserve(slotId: string) {
 }
 
 function openOrders() {
-  void router.push({ path: "/owner/orders", query: activeOrderId.value ? { orderId: activeOrderId.value } : {} });
+  const orderId = latestOrder.value?.order_id ?? getStoredOrderId();
+  void router.push({ path: "/owner/orders", query: orderId ? { orderId } : {} });
 }
 
 onMounted(() => {
@@ -108,32 +84,52 @@ onMounted(() => {
 </script>
 
 <template>
-  <section class="page-grid owner-page-grid">
+  <section class="page-grid owner-page-grid owner-dashboard">
     <article class="panel hero-card owner-hero">
-      <p class="eyebrow">Owner App</p>
-      <h3>移动优先预约入口</h3>
-      <p class="muted">
-        这一页负责推荐与预约创建；订单详情、账单与结算从“订单”页继续完成。
-      </p>
-      <div class="hero-metrics">
-        <div class="metric-pill">
-          <span class="metric-label">区域</span>
-          <strong>{{ location }}</strong>
-        </div>
-        <div class="metric-pill wide">
-          <span class="metric-label">状态</span>
-          <strong>{{ activeSummary }}</strong>
-        </div>
-      </div>
+      <SectionHeader
+        eyebrow="Owner Journey"
+        title="预约与出行首页"
+        subtitle="把区域推荐、账单提示和下一步动作收敛成一套移动优先入口。"
+        :badge="dashboard?.summary.region_label ?? '智慧停车'"
+      />
+      <p class="hero-note">{{ activeSummary }}</p>
       <div class="action-row">
         <button class="primary" type="button" @click="openOrders">查看订单</button>
         <button type="button" @click="loadRecommendations">刷新推荐</button>
       </div>
+      <div class="metric-grid compact-metric-grid">
+        <MetricCard
+          label="目标区域"
+          :value="dashboard?.summary.region_id ?? location"
+          :note="dashboard?.summary.region_label ?? '社区停车区'"
+          tone="accent"
+        />
+        <MetricCard
+          label="候选车位"
+          :value="dashboard?.summary.recommendation_count ?? recommendations.length"
+          note="按预约窗口与区域生成"
+          tone="calm"
+        />
+        <MetricCard
+          label="计费单位"
+          :value="`${dashboard?.billing_rule.unit_minutes ?? 15} 分钟`"
+          :note="dashboard?.billing_rule.timezone ?? 'Asia/Shanghai'"
+        />
+        <MetricCard
+          label="最近订单"
+          :value="dashboard?.summary.latest_order_id || '暂无'"
+          :note="dashboard?.summary.latest_billing_status ?? 'NONE'"
+        />
+      </div>
     </article>
 
     <article class="panel form-panel">
-      <h3>预约参数</h3>
-      <div class="field-grid compact-grid">
+      <SectionHeader
+        eyebrow="Reservation Inputs"
+        title="预约参数"
+        subtitle="保持演示可控，同时把真实业务入口聚焦在区域、时间窗和车位选择。"
+      />
+      <div class="form-grid">
         <label>
           <span>用户 ID</span>
           <input v-model="userId" type="text" />
@@ -155,19 +151,27 @@ onMounted(() => {
           <input v-model="windowEnd" type="datetime-local" />
         </label>
       </div>
-      <p class="muted">当前预约窗口：{{ preferredWindow }}</p>
+      <div class="detail-list compact-detail">
+        <p><strong>当前预约窗口</strong> {{ preferredWindow }}</p>
+        <p><strong>计费规则</strong> {{ dashboard?.billing_rule.rounding_mode ?? "CEIL_TO_UNIT" }}</p>
+      </div>
       <p v-if="errorText" class="error-text">{{ errorText }}</p>
     </article>
 
     <article class="panel recommendation-panel">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Slot Suggestions</p>
-          <h3>推荐车位</h3>
-        </div>
-        <span class="pill ghost">{{ recommendations.length }} 个候选</span>
+      <SectionHeader
+        eyebrow="Slot Suggestions"
+        title="推荐车位"
+        subtitle="展示可预约车位、预计费用、距离和导航目标，减少在多个页面之间来回切换。"
+        :badge="`${recommendations.length} 个候选`"
+      />
+      <div v-if="latestOrder" class="detail-card journey-card">
+        <p class="metric-label">最近订单</p>
+        <strong>{{ latestOrder.order_id }}</strong>
+        <p>{{ latestOrder.slot_id }} / {{ latestOrder.region_id }}</p>
+        <p>账单状态：{{ latestOrder.billing_status }}</p>
       </div>
-      <div class="recommend-list mobile-cards">
+      <div class="recommend-grid">
         <button
           v-for="item in recommendations"
           :key="String(item.slot_id)"
@@ -182,8 +186,12 @@ onMounted(() => {
           </div>
           <p>{{ item.region_label ?? item.slot_id }}</p>
           <p>ETA：{{ item.eta_minutes }} 分钟</p>
-          <p>{{ item.destination?.display_name }}</p>
+          <p>{{ item.destination?.display_name ?? "社区车位入口" }}</p>
         </button>
+      </div>
+      <div v-if="!recommendations.length && !loading" class="empty-state">
+        <p class="metric-label">暂无推荐结果</p>
+        <p class="muted">请调整区域或预约窗口后重试。</p>
       </div>
     </article>
   </section>

@@ -131,3 +131,10 @@
 - 输出：Step36 发布化验收脚本与报告、新的默认交付 runbook、升级后的默认完成态口径。
 - 验证：Step30 历史功能基线继续通过，且 CI / security scan / release bundle / latest bundle 检查通过。
 - 证据：`reports/step36_gate_results.json`、`reports/step36_technical_acceptance.md`。
+
+## Step37 - 提示词驱动的现代化优化入口（已完成）
+
+- 目标：在 Step36 默认完成态之上建立新的提示词驱动优化入口，并完成第一轮前后端现代化改造。
+- 输出：项目专用提示词库、统一 prompt 入口、业主/物业视图聚合接口、前端结构拆分、UI 设计升级、路由级懒加载与新的 Step37 验收脚本。
+- 验证：提示词文档覆盖 6 个方向；前端 `typecheck` / `build` 通过；Step21 / Step27 / Step28 / Step29 相关能力不退化；新视图接口可用且旧接口继续兼容。
+- 证据：`memory-bank/project-prompt-library.md`、`reports/step37_execution.md`、`scripts/test_step37_prompt_frontend_modernization.py`。

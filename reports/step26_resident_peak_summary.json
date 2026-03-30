@@ -3,12 +3,12 @@
     "region_id": "R1",
     "peak_hour_bucket": 8,
     "avg_trip_probability": 0.71,
-    "sample_count": 3
+    "sample_count": 1
   },
   {
     "region_id": "R2",
     "peak_hour_bucket": 18,
     "avg_trip_probability": 0.62,
-    "sample_count": 3
+    "sample_count": 1
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-24T02:09:38.845394+00:00",
+  "generated_at": "2026-03-30T08:08:37.890347+00:00",
   "engine": "spark",
   "source_mode": "mysql_raw",
   "feature_schema_version": "step26.v1",
@@ -21,11 +21,11 @@
       "vehicle_event": 1.0
     },
     "row_counts": {
-      "slot_status": 6,
-      "vehicle_event": 6,
-      "resident_pattern": 6,
-      "forecast_feature_table": 8,
-      "dispatch_input_table": 8
+      "slot_status": 2,
+      "vehicle_event": 2,
+      "resident_pattern": 2,
+      "forecast_feature_table": 2,
+      "dispatch_input_table": 2
     }
   },
   "overall_passed": true

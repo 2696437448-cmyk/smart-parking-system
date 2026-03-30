@@ -1,9 +1,7 @@
 import { onBeforeUnmount, onMounted, ref } from "vue";
+import { runtimeConfig } from "../services/runtime";
 import { useRealtimeStore } from "../stores/realtime";
 import type { RealtimeSnapshot } from "../types/realtime";
-
-const DEFAULT_WS = "ws://localhost:8090/ws/status";
-const DEFAULT_POLL = "http://localhost:8080/api/v1/admin/realtime/status";
 
 function parseSnapshot(input: unknown): Partial<RealtimeSnapshot> {
   if (!input || typeof input !== "object") {
@@ -18,8 +16,8 @@ export function useRealtimeChannel() {
   const pollTimer = ref<number | null>(null);
   const reconnectTimer = ref<number | null>(null);
 
-  const wsUrl = import.meta.env.VITE_REALTIME_WS_URL ?? DEFAULT_WS;
-  const pollUrl = import.meta.env.VITE_GATEWAY_POLL_URL ?? DEFAULT_POLL;
+  const wsUrl = runtimeConfig.realtimeWsUrl;
+  const pollUrl = runtimeConfig.realtimePollUrl;
 
   async function fetchPolling() {
     try {

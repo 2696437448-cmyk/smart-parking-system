@@ -173,6 +173,22 @@ class BillingRepository {
         }
     }
 
+    BillingRecordRow findLatestByUserId(String userId) {
+        String sql = """
+                SELECT order_id, reservation_id, user_id, slot_id, region_id, started_at, ended_at,
+                       billable_minutes, estimated_amount, final_amount, billing_status, recognized_on
+                FROM billing_records
+                WHERE user_id = ?
+                ORDER BY updated_at DESC, created_at DESC
+                LIMIT 1
+                """;
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper(), userId);
+        } catch (EmptyResultDataAccessException ex) {
+            return null;
+        }
+    }
+
     BillingRecordRow confirmFinalBill(String orderId, String endedAt, int billableMinutes, double finalAmount, String recognizedOn) {
         String sql = """
                 UPDATE billing_records
@@ -276,6 +292,13 @@ class BillingService {
 
     BillingRecordRow getOrder(String orderId) {
         return billingRepository.findByOrderId(orderId);
+    }
+
+    BillingRecordRow getLatestOrderForUser(String userId) {
+        if (!StringUtils.hasText(userId)) {
+            return null;
+        }
+        return billingRepository.findLatestByUserId(userId);
     }
 
     List<Map<String, Object>> summarizeRevenue(String date, String regionId) {
