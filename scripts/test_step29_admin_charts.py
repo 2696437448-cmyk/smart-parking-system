@@ -104,21 +104,28 @@ def main() -> None:
     status, dashboard_payload = request(f"/api/v1/admin/dashboard?date={datetime.now(timezone.utc).date().isoformat()}")
     assert status == 200, dashboard_payload
     assert isinstance(dashboard_payload.get("summary"), dict), dashboard_payload
+    assert isinstance(dashboard_payload.get("highlights"), dict), dashboard_payload
     sections = dashboard_payload.get("sections")
     assert isinstance(sections, dict), dashboard_payload
     for key in ["revenue_summary", "revenue_trend", "occupancy_trend", "forecast_compare"]:
         assert isinstance(sections.get(key), list) and sections.get(key), (key, dashboard_payload)
+    assert isinstance(dashboard_payload.get("degraded_metadata"), dict), dashboard_payload
 
     admin_page = (FRONTEND / "src" / "pages" / "AdminMonitor.vue").read_text(encoding="utf-8")
+    admin_view_model = (FRONTEND / "src" / "composables" / "useAdminDashboardView.ts").read_text(encoding="utf-8")
     admin_service = (FRONTEND / "src" / "services" / "admin.ts").read_text(encoding="utf-8")
     chart_component = (FRONTEND / "src" / "components" / "EChartPanel.vue").read_text(encoding="utf-8")
-    for token in ["fetchAdminDashboard", "EChartPanel"]:
+
+    for token in ["useAdminDashboardView", "EChartPanel", "ViewStateNotice"]:
         if token not in admin_page:
             raise AssertionError(f"AdminMonitor.vue missing token: {token}")
+    for token in ["fetchAdminDashboard", "useRealtimeChannel", "useViewState", "state.markDegraded"]:
+        if token not in admin_view_model:
+            raise AssertionError(f"useAdminDashboardView.ts missing token: {token}")
     for token in ["/api/v1/admin/dashboard"]:
         if token not in admin_service:
             raise AssertionError(f"admin.ts missing token: {token}")
-    for token in ["echarts", "chart-canvas"]:
+    for token in ["echarts/core", "BarChart", "chart-canvas"]:
         if token not in chart_component:
             raise AssertionError(f"EChartPanel.vue missing token: {token}")
     print("STEP29_GATE_PASS")

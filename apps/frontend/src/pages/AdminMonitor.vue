@@ -1,41 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
-import EChartPanel from "../components/EChartPanel.vue";
+import { computed, defineAsyncComponent } from "vue";
 import MetricCard from "../components/MetricCard.vue";
 import SectionHeader from "../components/SectionHeader.vue";
-import { useRealtimeStore } from "../stores/realtime";
-import { useRealtimeChannel } from "../composables/useRealtimeChannel";
-import { fetchAdminDashboard } from "../services/admin";
-import type { AdminDashboardView } from "../types/dashboard";
+import ViewStateNotice from "../components/ViewStateNotice.vue";
+import { useAdminDashboardView } from "../composables/useAdminDashboardView";
 
-const store = useRealtimeStore();
-const { reconnect } = useRealtimeChannel();
-const dashboard = ref<AdminDashboardView | null>(null);
-const loading = ref(false);
-const errorText = ref("");
-let timer: number | null = null;
-
-const statusClass = computed(() => (store.mode === "realtime" ? "status-realtime" : "status-degraded"));
-
-function today(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
-async function refreshBusinessViews() {
-  loading.value = true;
-  errorText.value = "";
-  try {
-    dashboard.value = await fetchAdminDashboard({
-      date: today(),
-      trendDays: 7,
-      trendLimit: 12,
-    });
-  } catch (error) {
-    errorText.value = `物业视图刷新失败: ${String(error)}`;
-  } finally {
-    loading.value = false;
-  }
-}
+const EChartPanel = defineAsyncComponent(() => import("../components/EChartPanel.vue"));
+const { dashboard, busy, state, statusClass, updatedAtText, lastErrorText, refreshBusinessViews, reconnect, store } = useAdminDashboardView();
 
 const revenueTrendOption = computed(() => ({
   tooltip: { trigger: "axis" },
@@ -72,19 +43,6 @@ const forecastCompareOption = computed(() => ({
     { name: "实际", type: "line", smooth: true, data: (dashboard.value?.sections.forecast_compare ?? []).map((item) => Number(item.actual_gap ?? 0)), itemStyle: { color: "#9c6644" } },
   ],
 }));
-
-onMounted(() => {
-  void refreshBusinessViews();
-  timer = window.setInterval(() => {
-    void refreshBusinessViews();
-  }, 8000);
-});
-
-onBeforeUnmount(() => {
-  if (timer !== null) {
-    window.clearInterval(timer);
-  }
-});
 </script>
 
 <template>
@@ -102,10 +60,10 @@ onBeforeUnmount(() => {
         :badge="dashboard?.summary.dispatch_strategy ?? 'hungarian_optimal'"
       />
       <div class="action-row">
-        <button class="primary" type="button" :disabled="loading" @click="refreshBusinessViews">刷新业务数据</button>
-        <button type="button" @click="reconnect">手动重连</button>
+        <button class="primary" type="button" :disabled="busy" @click="refreshBusinessViews">刷新业务数据</button>
+        <button type="button" :disabled="busy" @click="reconnect">手动重连</button>
       </div>
-      <p v-if="errorText" class="error-text">{{ errorText }}</p>
+      <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" />
     </article>
 
     <article class="panel summary-panel">
@@ -130,13 +88,15 @@ onBeforeUnmount(() => {
         <MetricCard label="峰值占用率" :value="`${Number((dashboard?.highlights.peak_occupancy ?? 0) * 100).toFixed(1)}%`" note="occupancy trend 最高值" />
       </div>
       <div class="detail-list compact-detail">
-        <p><strong>诊断入口</strong> Grafana {{ dashboard?.diagnostic_links?.grafana ?? "N/A" }}</p>
-        <p><strong>消息入口</strong> RabbitMQ {{ dashboard?.diagnostic_links?.rabbitmq ?? "N/A" }}</p>
-        <p><strong>降级说明</strong> {{ dashboard?.degraded_metadata?.realtime_transport ?? "websocket_with_polling_fallback" }}</p>
+        <p><strong>最近更新</strong> {{ updatedAtText }}</p>
+        <p><strong>最近错误</strong> {{ lastErrorText }}</p>
+        <p><strong>诊断入口</strong> Grafana {{ dashboard?.diagnostic_links?.grafana ?? 'N/A' }}</p>
+        <p><strong>消息入口</strong> RabbitMQ {{ dashboard?.diagnostic_links?.rabbitmq ?? 'N/A' }}</p>
+        <p><strong>降级说明</strong> {{ dashboard?.degraded_metadata?.realtime_transport ?? 'websocket_with_polling_fallback' }}</p>
       </div>
     </article>
 
-    <div class="chart-cluster">
+    <div class="chart-cluster" v-if="dashboard">
       <EChartPanel title="日收益趋势" subtitle="最近 7 天收入变化" :option="revenueTrendOption" />
       <EChartPanel title="区域收益对比" subtitle="按区域对比当日收入" :option="regionCompareOption" />
       <EChartPanel title="车位占用率趋势" subtitle="来自 ETL / forecast 输出" :option="occupancyOption" />
