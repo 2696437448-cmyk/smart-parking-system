@@ -981,3 +981,80 @@
    - 修复：Step37 gate 改为自动轮询可用车位，保持一致性保护语义不变。
 12. 下一阻塞：
    - 如需继续推进 Post-Step36，建议进入 Step38，聚焦前端 bundle 深拆分、业主端小程序入口或更细粒度 owner/admin BFF 接口。
+
+## 2026-03-31 Step 38（通过）
+
+1. 完成时间：2026-03-31 15:32（Asia/Shanghai）。
+2. 当前步骤：Step 38 - dashboard 合同与体验收敛。
+3. 目标与范围：在 Step37 现代化入口之上，收敛 owner/admin dashboard OpenAPI 契约、页面级数据编排层与统一页面状态表达，不改动既有业务 URL 与核心语义。
+4. 实际改动：
+   - 更新 `openapi/smart-parking.yaml`，正式纳入 owner/admin dashboard 契约与 schema。
+   - 新增 `apps/frontend/src/composables/useOwnerDashboardView.ts`、`useOwnerOrderView.ts`、`useOwnerNavigationView.ts`、`useAdminDashboardView.ts`。
+   - 新增 `apps/frontend/src/composables/useOrderContext.ts`、`useViewState.ts` 与 `apps/frontend/src/components/ViewStateNotice.vue`。
+   - 更新 owner/admin 页面与 `apps/frontend/src/types/dashboard.ts`。
+   - 新增 `scripts/test_step38_dashboard_contract_and_viewmodels.py` 与 `reports/step38_execution.md`。
+5. 闸门结果：
+   - `python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml` -> pass
+   - `python3 scripts/test_step38_dashboard_contract_and_viewmodels.py` -> `STEP38_GATE_PASS`
+6. Git 分支：`feat/step37-prompt-ui-modernization`。
+7. Git 提交：`N/A`（当前会话未提交；工作区基于 `ba7e128`）。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step36-pass`。
+11. 卡点与修复：
+   - 卡点：页面逻辑继续下沉后，历史前端 gate 仍假设“页面文件内直连接口”。
+   - 修复：同步更新 Step21 / Step29 / Step33 脚本，使其识别 view-model、共享状态组件与新的 CI 入口。
+12. 下一阻塞：进入 Step39，完成 dashboard 聚合层模块化、请求/实时通道硬化与 ECharts 包体收敛。
+
+## 2026-03-31 Step 39（通过）
+
+1. 完成时间：2026-03-31 15:48（Asia/Shanghai）。
+2. 当前步骤：Step 39 - dashboard 聚合层与性能硬化。
+3. 目标与范围：保持 dashboard URL 与业务语义不变，把聚合逻辑从 controller 中抽离，并完成前端请求、实时通道与图表包体硬化。
+4. 实际改动：
+   - 新增 `services/parking-service/src/main/java/com/smartparking/parking/ParkingDashboardViewModules.java`，形成 `DashboardQueryService`、`OwnerDashboardAssembler`、`AdminDashboardAssembler`、`DashboardViewService`。
+   - 收敛 `apps/frontend/src/services/http.ts` 与 `apps/frontend/src/composables/useRealtimeChannel.ts` 的 trace、错误解析与 reconnect/polling 生命周期。
+   - 更新 `apps/frontend/src/components/EChartPanel.vue` 与 `apps/frontend/vite.config.ts`，拆分 `vendor-zrender` / `vendor-echarts`，消除默认 build warning。
+   - 新增 `scripts/test_step39_dashboard_hardening.py` 与 `reports/step39_execution.md`。
+5. 闸门结果：
+   - `cd apps/frontend && npm run typecheck` -> pass
+   - `cd apps/frontend && npm run build` -> pass（无 chunk size warning）
+   - `python3 scripts/test_step39_dashboard_hardening.py` -> `STEP39_GATE_PASS`
+6. Git 分支：`feat/step37-prompt-ui-modernization`。
+7. Git 提交：`N/A`（当前会话未提交；工作区基于 `ba7e128`）。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step36-pass`。
+11. 卡点与修复：
+   - 卡点：ECharts 通过 `import()` 整模块后，bundler 无法 tree-shake，导致 `vendor-echarts-shared` 超过 500 kB。
+   - 修复：改为 admin 异步组件内部静态按需导入图表模块，并在 Vite 中拆出 `vendor-zrender` / `vendor-echarts`。
+12. 下一阻塞：进入 Step40，完成综合验收脚本、release bundle 收口与默认完成态升级。
+
+## 2026-03-31 Step 40（通过）
+
+1. 完成时间：2026-03-31 16:05（Asia/Shanghai）。
+2. 当前步骤：Step 40 - 综合验收与默认完成态升级。
+3. 目标与范围：串联 Step30 / Step36 / Step37 与 Step38 / Step39 新 gate，升级新的默认完成态，并统一 README / runbook / memory-bank / deliverables 口径。
+4. 实际改动：
+   - 新增 `scripts/test_step40_release_acceptance.py` 与 `reports/step40_technical_acceptance.md`。
+   - 更新 `Makefile`、`.github/workflows/ci.yml`、`scripts/defense_demo.sh`、`scripts/create_release_bundle.sh`。
+   - 更新 README、runbook、memory-bank、deliverables 文档为 Step40 口径。
+   - release bundle 默认 label 升级为 `step40`，同时保留 Step36 历史锚点说明。
+5. 闸门结果：
+   - `make step38-check` -> pass
+   - `make step39-check` -> pass
+   - `python3 scripts/test_step40_release_acceptance.py --static-only` -> `STEP40_GATE_PASS`
+   - `./scripts/defense_demo.sh start` -> stack ready
+   - `python3 scripts/test_step40_release_acceptance.py` -> `STEP40_GATE_PASS`
+   - `./scripts/defense_demo.sh stop` -> stack stopped
+6. Git 分支：`feat/step38-step40-dashboard-hardening`。
+7. Git 提交：`N/A`（待本轮 Step38-Step40 分支收口提交后回填）。
+8. PR 信息：`N/A`。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step36-pass`。
+11. 卡点与修复：
+   - 卡点：Step40 需要同时兼顾“新默认完成态”与“历史验收入口仍可访问”。
+   - 修复：默认入口切换到 Step40，同时保留 `acceptance-step36`、`acceptance-step30`、`acceptance-step24`。
+12. 当前结论：
+   - `Step40` 已升级为当前稳定默认完成态。
+   - `Step36` 继续保留为发布化稳定锚点与回滚说明。

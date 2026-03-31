@@ -1,4 +1,4 @@
-# Project Prompt Library (Step37)
+# Project Prompt Library (Step40)
 
 > This library adapts high-signal prompt patterns to `smart-parking-thesis`.
 > Use it as the first memory entrypoint for planning, refactoring, UI redesign, interface shaping, and repo modernization tasks.
@@ -21,7 +21,7 @@
 ### Project constraints
 
 - The system serves two product surfaces: owner experience and admin experience.
-- The current stable baseline is `Step36`; proposals must not invalidate Step36 acceptance.
+- The current stable baseline is `Step40`; proposals must not invalidate Step40 acceptance.
 - Keep the existing business backbone: reservation, billing, navigation, monitoring, revenue, reliability.
 - Do not propose platform pivots as a default solution when the same goal can be reached through additive changes.
 
@@ -46,7 +46,7 @@
 - Preserve owner flow: recommendation -> reservation -> billing -> navigation
 - Preserve admin flow: monitoring -> revenue -> occupancy -> forecast interpretation
 - Preserve reliability story: idempotency, fallback, DLQ, realtime degradation
-- Map every new idea back to an existing `memory-bank` step or a new Post-Step36 step
+- Map every new idea back to an existing `memory-bank` step or a new Post-Step40 step
 
 ## 2. Data Science
 
@@ -246,7 +246,7 @@
 
 - Core topology stays: `gateway-service + parking-service + model-service + realtime-service + frontend-app`.
 - Existing business semantics and public flows must remain compatible.
-- Step24 / Step30 / Step36 evidence must stay meaningful after the change.
+- Step24 / Step30 / Step36 / Step40 evidence must stay meaningful after the change.
 - Additive view-model endpoints are preferred over breaking existing APIs.
 
 ### Expected output

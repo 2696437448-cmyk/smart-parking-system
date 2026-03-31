@@ -12,8 +12,8 @@ For any task related to code structure, frontend redesign, backend interface sha
    - Algorithm
    - Frontend / UI
    - Backend
-3. Keep `Step36` as the stability baseline unless the current step explicitly defines a newer accepted baseline.
-4. Prefer additive changes over replacements when existing Step36 behavior can be preserved.
+3. Keep `Step40` as the stability baseline unless the current step explicitly defines a newer accepted baseline.
+4. Prefer additive changes over replacements when existing Step40 behavior can be preserved.
 
 ## 1. Execute one plan step
 
@@ -27,7 +27,7 @@ Execute only Step N in memory-bank/implementation-plan.md.
 Constraints:
 - Do not execute Step N+1.
 - Keep API schema unchanged unless explicitly required by this step.
-- Preserve Step36-approved behaviors unless this step explicitly introduces an additive upgrade.
+- Preserve Step40-approved behaviors unless this step explicitly introduces an additive upgrade.
 - Provide changed files and local verification commands.
 - For algorithm-core or cross-service integration tasks, reserve 1.5x effort and list blockers first.
 - Update memory-bank/progress.md and memory-bank/architecture.md.
@@ -96,5 +96,5 @@ Use this routing before writing code or plans:
 If a task spans multiple areas:
 1) choose the primary execution chapter
 2) name secondary chapters explicitly
-3) preserve Step36 baseline unless the current accepted step says otherwise
+3) preserve Step40 baseline unless the current accepted step says otherwise
 ```

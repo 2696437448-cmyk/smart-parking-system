@@ -1,0 +1,61 @@
+{
+  "generated_at_utc": "2026-03-31T08:32:52.273964+00:00",
+  "overall_passed": true,
+  "steps": [
+    {
+      "name": "openapi_validation",
+      "command": "python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml",
+      "passed": true,
+      "elapsed_seconds": 0.111,
+      "output_tail": "openapi_validation_passed spec=openapi/smart-parking.yaml"
+    },
+    {
+      "name": "exists:services/parking-service/src/main/java/com/smartparking/parking/ParkingDashboardViewController.java",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:services/parking-service/src/main/java/com/smartparking/parking/ParkingDashboardViewModules.java",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "backend_dashboard_modules",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "frontend_typecheck",
+      "command": "npm run typecheck",
+      "passed": true,
+      "elapsed_seconds": 2.84,
+      "output_tail": "> smart-parking-frontend@0.3.0 typecheck\n> vue-tsc --noEmit"
+    },
+    {
+      "name": "frontend_build_warning_free",
+      "command": "npm run build",
+      "passed": true,
+      "elapsed_seconds": 2.699,
+      "output_tail": "dist/assets/AdminLayout-BXiZpX3g.js                                       1.20 kB │ gzip:   0.87 kB\ndist/assets/OwnerLayout-DLpf64f-.js                                       1.22 kB │ gzip:   0.76 kB\ndist/assets/useOrderContext-BO5qDi_V.js                                   1.72 kB │ gzip:   0.75 kB\ndist/assets/index-CBEmz7A6.js                                             3.34 kB │ gzip:   1.56 kB\ndist/assets/OwnerNavigation-BBvaqpTr.js                                   3.58 kB │ gzip:   2.02 kB\ndist/assets/useViewState-DIDdnrrZ.js                                      3.71 kB │ gzip:   1.99 kB\ndist/assets/OwnerOrders-CZjQ-cT6.js                                       4.09 kB │ gzip:   2.28 kB\ndist/assets/OwnerDashboard-CEiaPglU.js                                    6.83 kB │ gzip:   3.45 kB\ndist/assets/AdminMonitor-BCpUx_MQ.js                                     10.25 kB │ gzip:   4.51 kB\ndist/assets/vendor-vue-BSABWYwr.js                                       95.56 kB │ gzip:  37.25 kB\ndist/assets/vendor-leaflet-Qxmb5mNE.js                                  149.76 kB │ gzip:  43.33 kB\ndist/assets/vendor-zrender-Cv4prEms.js                                  170.42 kB │ gzip:  56.05 kB\ndist/assets/vendor-echarts-C-Q5kK9T.js                                  335.25 kB │ gzip: 113.23 kB\n✓ built in 2.29s"
+    },
+    {
+      "name": "frontend_hardening_sources",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "owner_dashboard_runtime_smoke",
+      "command": "GET /api/v1/owner/dashboard",
+      "passed": true,
+      "elapsed_seconds": 0.0,
+      "output_tail": "{\"status\": 200, \"trace\": \"step39-1617ff8f\"}"
+    },
+    {
+      "name": "admin_dashboard_runtime_smoke",
+      "command": "GET /api/v1/admin/dashboard",
+      "passed": true,
+      "elapsed_seconds": 0.0,
+      "output_tail": "{\"status\": 200, \"trace\": \"step39-21819af8\"}"
+    }
+  ]
+}

@@ -10,9 +10,10 @@
 
 ## 📌 当前状态
 
-1. 当前稳定默认完成态：`Step36`。
-2. 含义：在 `Step30` 功能闭环基础上，新增发布化增强层并完成验收，覆盖环境模板、preflight、CI、release bundle、安全扫描与发布化总验收。
+1. 当前稳定默认完成态：`Step40`。
+2. 含义：在 `Step36` 发布化稳定基线与 `Step37` 现代化起点之上，完成 Step38 合同与体验收敛、Step39 dashboard 聚合层与性能硬化、Step40 综合验收与默认完成态升级。
 3. 历史稳定基线：
+   - `Step36`：发布化稳定锚点与默认回滚参考
    - `Step30`：功能与增强交付基线
    - `Step24`：原始题目主链闭环基线
 4. 当前默认业务入口：
@@ -23,30 +24,28 @@
 
 本项目聚焦社区停车场“找位难、调度乱、共享计费难落地、超卖风险高”的实际痛点。系统采用 **Java + Python + Vue3** 混合微服务架构，通过：
 
-1. Spark ETL 融合 IoT 车位传感器、车辆进出事件、业主出行规律数据；
-2. 轻量 LSTM 预测供需缺口；
-3. 确定性 Hungarian 算法进行全局匹配；
-4. 一致性三重防护（幂等 + 分布式锁 + DB 唯一约束）保障高并发稳定性；
-5. 共享计费、收益统计、地图导航、App 壳层与图表化物业端补齐完整业务闭环。
+1. Spark ETL 融合 IoT 车位传感器、车辆进出事件、业主出行规律数据。
+2. 轻量 LSTM 预测供需缺口。
+3. 确定性 Hungarian 算法进行全局匹配。
+4. 一致性三重防护（幂等 + 分布式锁 + DB 唯一约束）保障高并发稳定性。
+5. 共享计费、收益统计、地图导航、App 壳层、dashboard 聚合接口与图表化物业端补齐完整业务闭环。
 
-## 🎯 Step36 默认完成态
+## 🎯 Step40 默认完成态
 
-1. **并发一致性**：并发预约场景实现“零超卖、零重复有效写入”。
-2. **高可用降级**：模型服务故障时自动降级，接口保持可解释可用。
-3. **数据工程主链**：ETL 支持 Spark strict 验收，不再以 Python fallback 冒充通过。
-4. **算法可复现**：调度优化输出对同输入稳定一致，不依赖随机 `hash()`。
-5. **业务闭环**：预约、预估计费、订单结算、收益汇总、导航引导完整打通。
-6. **近真实数据接入**：raw ingest 已覆盖 `sensor_event_raw`、`lpr_event_raw`、`resident_trip_raw`，并可产出区域热度、车辆流向、出行高峰摘要。
-7. **跨端交付**：前端已具备 `Vue + Capacitor` Android 壳层与移动优先业主端页面。
-8. **地图导航增强**：导航页支持 Leaflet + OpenStreetMap 页面内地图预览，并保留外部地图 fallback。
-9. **物业图表化**：收益趋势、区域对比、占用率趋势、预测对照图全部进入物业业务页。
-10. **增强验收收口**：Step24 基线与 Step26~29 增强闸门已统一通过。
-11. **发布化基线**：根目录环境模板、preflight、CI smoke、security scan、release bundle 已补齐。
-12. **发布化总验收**：Step30 历史功能基线继续保持通过，Step33/35/34 发布层检查通过，默认完成态已升级到 Step36。
+1. `Step21 / Step27 / Step28 / Step29 / Step30 / Step36 / Step37` 已通过行为保持兼容，不因新优化线而退化。
+2. `/api/v1/owner/dashboard` 与 `/api/v1/admin/dashboard` 已正式纳入 `openapi/smart-parking.yaml`，合同覆盖查询参数、`summary/highlights/sections`、`billing_rule`、`latest_order`、`diagnostic_links`、`degraded_metadata`、`trace_id`、`service`。
+3. 前端页面逻辑已从路由页继续下沉到页面级数据编排层：`useOwnerDashboardView`、`useOwnerOrderView`、`useOwnerNavigationView`、`useAdminDashboardView`。
+4. Owner/Admin 页面统一使用 `ViewStateNotice + useViewState` 表达 `loading / error / empty / degraded / stale`，不再各写一套页面状态分支。
+5. Owner 推荐、订单、导航页面共享 `useOrderContext` 的订单恢复策略、动作禁用策略与错误回退策略。
+6. `parking-service` 已把 dashboard 组装逻辑从 controller 抽离到 `ParkingDashboardViewModules.java`，形成 query / assembler / view service 分层。
+7. 前端 `requestJson` 与实时通道已完成硬化，统一非 JSON 错误处理、trace 透传、轮询与 reconnect 生命周期。
+8. Admin 图表仅在经营页按需加载；`npm run build` 不再出现 ECharts chunk size warning。
+9. Makefile 与 GitHub Actions 已纳入 `make step38-check`、`make step39-check`、`make step40-check`。
+10. 默认验收入口已升级为 `Step40`，同时保留 `Step36 / Step30 / Step24` 历史验收入口。
 
-## 🧭 Step25~36 完成情况
+## 🧭 Step25~40 完成情况
 
-1. Step25：文档与完成态口径收敛，统一了 memory-bank / README / runbook / script 口径。
+1. Step25：文档与完成态口径收敛，统一 memory-bank / README / runbook / script 口径。
 2. Step26：近真实 raw ingest 与 Spark 关联分析增强完成。
 3. Step27：`Vue + Capacitor` App 壳层与移动优先业主端完成。
 4. Step28：Leaflet + OpenStreetMap 页面内地图预览导航完成。
@@ -57,17 +56,21 @@
 9. Step33：CI 与最小自动回归完成。
 10. Step34：release bundle 与交付目录完成。
 11. Step35：安全与配置硬化完成。
-12. Step36：发布化总验收完成，并升级为新的默认完成态。
+12. Step36：发布化总验收完成，并升级为稳定默认完成态。
+13. Step37：提示词体系、角色化布局、聚合接口与第一轮现代化改造完成。
+14. Step38：dashboard OpenAPI 契约、页面级 view-model 与统一页面状态表达完成。
+15. Step39：dashboard 聚合层模块化、HTTP/实时通道硬化、ECharts 包体优化完成。
+16. Step40：综合验收、默认完成态升级、Step40 报告与 release bundle 收口完成。
 
 ## 🏗️ 技术架构
 
 | 服务名称 | 技术栈 | 职责描述 |
 | :--- | :--- | :--- |
 | **Gateway Service** | Java (Spring Cloud Gateway + Resilience4j) | 路由转发、TraceID 透传、熔断、降级、CORS 放行 |
-| **Parking Service** | Java (Spring Boot) | 预约主链、共享计费、账单、收益统计、导航与 raw ingest |
+| **Parking Service** | Java (Spring Boot) | 预约主链、共享计费、账单、收益统计、导航、dashboard 聚合与 raw ingest |
 | **Model Service** | Python 3.11 | 供需预测（LSTM-Lite）、调度优化（Hungarian）、模型版本激活/回滚 |
-| **Realtime Service** | Python 3.11 | WebSocket 实时状态推送 |
-| **Frontend** | Vue3 + TypeScript + Pinia + Vue Router + Leaflet + ECharts + Capacitor | 业主端 / 物业端业务页面、地图、图表与 App 壳层 |
+| **Realtime Service** | Python 3.11 | WebSocket 实时状态推送与降级伴生能力 |
+| **Frontend** | Vue3 + TypeScript + Pinia + Vue Router + Leaflet + ECharts + Capacitor | 业主端 / 物业端业务页面、地图、图表、view-model、App 壳层 |
 
 ## 🚀 快速开始
 
@@ -91,43 +94,36 @@ cp .env.example .env
 cp apps/frontend/.env.example apps/frontend/.env.local
 ```
 
-如无自定义需求，可直接使用默认值。
-如需非 demo / 更安全的起点，请改用：
+如需更安全的起点，可改用：
 
 ```bash
 cp .env.secure.example .env
 cp apps/frontend/.env.example apps/frontend/.env.local
 ```
 
-### 3. 安装 Python 依赖
+### 3. 安装依赖
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
-```
-
-### 4. 安装前端依赖
-
-```bash
 cd apps/frontend
 npm install
 cd ../..
 ```
 
-### 5. 启动演示环境
+### 4. 启动演示环境
 
 ```bash
 ./scripts/defense_demo.sh preflight
-# 如只验证脚本与环境模板，不要求 Docker daemon 已启动：
 make preflight-static
 ./scripts/defense_demo.sh start
 ```
 
-### 6. 打开业务页面
+### 5. 打开业务页面
 
 1. 业主端：`http://localhost:4173/owner/dashboard`
 2. 物业端：`http://localhost:4173/admin/monitor`
 
-### 7. 运行当前默认全量验收（Step36）
+### 6. 运行当前默认验收（Step40）
 
 ```bash
 ./scripts/defense_demo.sh acceptance
@@ -136,22 +132,30 @@ make acceptance
 # 或
 make release-acceptance
 # 或
-python3 scripts/test_step36_release_acceptance.py
+python3 scripts/test_step40_release_acceptance.py
 ```
 
-### 8. 如需回看 Step30 / Step24 历史验收
+### 7. 运行 Step38 / Step39 增量 gate
 
 ```bash
+make step38-check
+make step39-check
+make step40-check
+```
+
+### 8. 如需回看 Step36 / Step30 / Step24 历史验收
+
+```bash
+./scripts/defense_demo.sh acceptance-step36
+make acceptance-step36
+python3 scripts/test_step36_release_acceptance.py
+
 ./scripts/defense_demo.sh acceptance-step30
-# 或
 make acceptance-step30
-# 或
 python3 scripts/test_step30_enhanced_acceptance.py
 
 ./scripts/defense_demo.sh acceptance-step24
-# 或
 make acceptance-step24
-# 或
 python3 scripts/test_step24_full_acceptance.py
 ```
 
@@ -162,15 +166,15 @@ make ci-smoke
 cd apps/frontend && npm run typecheck && npm run build
 ```
 
-### 10. 生成交付包（Step34）
+### 10. 生成交付包
 
 ```bash
 make release-bundle
 ```
 
-生成物默认输出到 `deliverables/bundles/`。
+生成物默认输出到 `deliverables/bundles/`，默认 label 为 `step40`。
 
-### 11. 运行安全扫描与配置硬化检查（Step35）
+### 11. 运行安全扫描与配置硬化检查
 
 ```bash
 make security-scan
@@ -180,16 +184,19 @@ make security-scan
 
 1. 项目展示手册：`docs/defense_demo_runbook.md`
 2. 论文证据包：`reports/thesis_evidence_package.md`
-3. Step36 发布化总验收：`reports/step36_technical_acceptance.md`
-4. Step30 增强验收：`reports/step30_technical_acceptance.md`
-5. Step24 历史基线验收：`reports/step24_technical_acceptance.md`
-6. 执行计划与历史路线：`memory-bank/implementation-plan.md`
-7. 交付物目录说明：`deliverables/README.md`
-8. 安全与配置硬化说明：`docs/security_hardening.md`
+3. Step40 综合验收：`reports/step40_technical_acceptance.md`
+4. Step39 执行报告：`reports/step39_execution.md`
+5. Step38 执行报告：`reports/step38_execution.md`
+6. Step36 发布化总验收：`reports/step36_technical_acceptance.md`
+7. Step30 增强验收：`reports/step30_technical_acceptance.md`
+8. 执行计划与历史路线：`memory-bank/implementation-plan.md`
+9. 交付物目录说明：`deliverables/README.md`
+10. 安全与配置硬化说明：`docs/security_hardening.md`
 
 ## 🛣️ 路线图说明
 
-1. `Step36` 是当前稳定默认完成态。
-2. `Step30` 保留为功能与增强交付的历史稳定基线。
-3. `Step24` 保留为原始题目主链闭环的历史稳定基线。
-4. 后续如继续迭代，应在 Step36 之上进入新的增强步骤，而不是回退到 Step30 / Step24 之前的口径。
+1. `Step40` 是当前稳定默认完成态。
+2. `Step36` 继续保留为发布化稳定锚点与默认回滚参考。
+3. `Step30` 保留为功能与增强交付基线。
+4. `Step24` 保留为原始题目主链闭环基线。
+5. 后续迭代应继续建立在 `Step40` 之上，优先 additive change，而不是回退到 `Step36 / Step30 / Step24` 之前的口径。

@@ -1,0 +1,108 @@
+{
+  "generated_at_utc": "2026-03-31T08:32:46.513134+00:00",
+  "overall_passed": true,
+  "steps": [
+    {
+      "name": "openapi_validation",
+      "command": "python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml",
+      "passed": true,
+      "elapsed_seconds": 0.11,
+      "output_tail": "openapi_validation_passed spec=openapi/smart-parking.yaml"
+    },
+    {
+      "name": "owner_dashboard_query_params",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "admin_dashboard_query_params",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "owner_dashboard_schema_ref",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "admin_dashboard_schema_ref",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "owner_dashboard_required_props",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "admin_dashboard_required_props",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/components/ViewStateNotice.vue",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/composables/useViewState.ts",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/composables/useOrderContext.ts",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/composables/useOwnerDashboardView.ts",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/composables/useOwnerOrderView.ts",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/composables/useOwnerNavigationView.ts",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/composables/useAdminDashboardView.ts",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/pages/OwnerDashboard.vue",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/pages/OwnerOrders.vue",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/pages/OwnerNavigation.vue",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/pages/AdminMonitor.vue",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "exists:apps/frontend/src/types/dashboard.ts",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    },
+    {
+      "name": "frontend_view_models_and_states",
+      "passed": true,
+      "elapsed_seconds": 0.0
+    }
+  ]
+}
