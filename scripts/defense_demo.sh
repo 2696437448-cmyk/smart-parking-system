@@ -166,13 +166,19 @@ run_faults() {
 }
 
 run_acceptance() {
-  echo "[defense-demo] running Step36 release acceptance..."
-  "$PYTHON_BIN" "$ROOT_DIR/scripts/test_step36_release_acceptance.py"
-  echo "[defense-demo] Step36 release acceptance passed"
+  echo "[defense-demo] running Step40 release acceptance..."
+  "$PYTHON_BIN" "$ROOT_DIR/scripts/test_step40_release_acceptance.py"
+  echo "[defense-demo] Step40 release acceptance passed"
 }
 
 run_acceptance_enhanced() {
-  run_acceptance_step30
+  run_acceptance
+}
+
+run_acceptance_step36() {
+  echo "[defense-demo] running historical Step36 release acceptance..."
+  "$PYTHON_BIN" "$ROOT_DIR/scripts/test_step36_release_acceptance.py"
+  echo "[defense-demo] historical Step36 release acceptance passed"
 }
 
 run_acceptance_step30() {
@@ -207,7 +213,7 @@ run_full_enhanced() {
   run_baseline
   run_faults
   run_acceptance
-  run_acceptance_enhanced
+  run_acceptance_step30
   stop_stack
   echo "[defense-demo] full enhanced demo run passed"
 }
@@ -221,13 +227,14 @@ Commands:
   start               Start backend stack + frontend business preview
   baseline            Run contract + Step4 + Step5 + Step19B baseline checks
   faults              Run Step6/7/8/9 fault-injection sequence
-  acceptance          Run default Step36 release acceptance gates
-  acceptance-enhanced Run historical Step30 enhanced acceptance gates
+  acceptance          Run default Step40 release acceptance gates
+  acceptance-enhanced Alias for current default Step40 acceptance
+  acceptance-step36   Run historical Step36 release acceptance gates
   acceptance-step30   Run historical Step30 enhanced acceptance gates
   acceptance-step24   Run historical Step24 full acceptance gates
   acceptance-legacy   Run Step18 legacy acceptance gates
-  full                Run start + baseline + faults + acceptance + stop
-  full-enhanced       Run start + baseline + faults + Step36 + Step30 acceptance + stop
+  full                Run start + baseline + faults + Step40 acceptance + stop
+  full-enhanced       Run start + baseline + faults + Step40 + Step30 acceptance + stop
   stop                Stop and clean stack
 USAGE
 }
@@ -256,6 +263,9 @@ main() {
       ;;
     acceptance-enhanced)
       run_acceptance_enhanced
+      ;;
+    acceptance-step36)
+      run_acceptance_step36
       ;;
     acceptance-step30)
       run_acceptance_step30
