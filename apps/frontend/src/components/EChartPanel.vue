@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { BarChart, LineChart } from "echarts/charts";
 import { GridComponent, LegendComponent, TitleComponent, TooltipComponent } from "echarts/components";
-import { init, type EChartsType, use } from "echarts/core";
+import { init, use, type EChartsType } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 

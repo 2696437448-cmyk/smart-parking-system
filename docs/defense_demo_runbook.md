@@ -1,22 +1,23 @@
-# 答辩演示手册（Step36 默认完成态）
+# 答辩演示手册（Step40 默认完成态）
 
 ## 1. 当前演示基线
 
-1. 当前默认演示基线为 `Step36`。
-2. 含义：主链业务闭环、近真实数据接入、App 壳层、地图导航增强、物业端图表化，以及环境模板、CI、security scan、release bundle 与发布化总验收均已通过。
+1. 当前默认演示基线为 `Step40`。
+2. 含义：主链业务闭环、近真实数据接入、App 壳层、地图导航增强、物业端图表化、发布化基线、dashboard 合同收敛、view-model 下沉、聚合层模块化与综合验收均已通过。
 3. 历史基线：
+   - `Step36`：发布化稳定锚点
    - `Step30`：功能与增强交付基线
    - `Step24`：主链基线
 
 ## 2. 目标与时长
 
-1. 目标：在 10~15 分钟内完成“业务页面 + 数据接入 + 技术链路 + 增强验收”的完整演示。
+1. 目标：在 10~15 分钟内完成“业务页面 + dashboard 合同解释 + 数据接入 + 技术链路 + 综合验收”的完整演示。
 2. 节奏：
    - 启动环境并打开业务页面
-   - 展示业主端预约 / 账单 / 导航 / App 壳层
-   - 展示物业端监控 / 收益趋势 / 区域对比 / 预测图表
-   - 说明 Step26 raw ingest 与 Spark 关联分析
-   - 运行默认 Step36 验收收口
+   - 展示业主端推荐 / 订单 / 账单 / 导航的连续旅程
+   - 展示物业端经营驾驶舱、实时标签与降级说明
+   - 说明 Step38/39 如何收敛合同、状态表达和聚合层
+   - 运行默认 Step40 验收收口
 
 ## 3. 演示前检查
 
@@ -45,40 +46,43 @@
 ./scripts/defense_demo.sh faults
 ```
 
-4. 运行默认 Step36 发布化验收
+4. 运行默认 Step40 综合验收
 ```bash
 ./scripts/defense_demo.sh acceptance
 # 或
 make acceptance
+# 或
+python3 scripts/test_step40_release_acceptance.py
 ```
 
-5. 如需回放 Step30 增强验收
+5. 运行 Step38 / Step39 增量 gate
+```bash
+make step38-check
+make step39-check
+make step40-check
+```
+
+6. 如需回放 Step36 发布化稳定基线
+```bash
+./scripts/defense_demo.sh acceptance-step36
+# 或
+make acceptance-step36
+```
+
+7. 如需回放 Step30 / Step24 历史基线
 ```bash
 ./scripts/defense_demo.sh acceptance-step30
-# 或
-make acceptance-step30
-```
-
-6. 如需回放 Step24 主链基线
-```bash
 ./scripts/defense_demo.sh acceptance-step24
-# 或
-make acceptance-step24
 ```
 
-7. 停止清理
+8. 停止清理
 ```bash
 ./scripts/defense_demo.sh stop
 ```
 
-8. 如需导出当前交付包
+9. 导出当前交付包
 ```bash
 make release-bundle
-```
-
-9. 如需做交付前安全检查
-```bash
-make security-scan
 ```
 
 ## 5. 默认展示地址
@@ -93,22 +97,22 @@ make security-scan
 ## 6. 推荐演示顺序
 
 1. 业主端业务链路
-   - 查看推荐车位
-   - 创建预约
-   - 查看预估金额
+   - 查看推荐车位与统一页面状态提示
+   - 创建预约并进入订单页
+   - 查看预估金额与计费规则
    - 完成订单并展示最终账单
-   - 打开导航页并展示页面内地图预览
+   - 打开导航页并展示页面内地图预览与外部地图 fallback
 
 2. 物业端业务链路
-   - 查看资源监控摘要
-   - 查看日收益趋势与区域收益对比
+   - 查看经营摘要、趋势图与 highlights
+   - 展示实时 / 降级标签、来源、更新时间、失败原因
    - 查看占用率趋势与预测值 vs 实际值图表
-   - 展示实时状态与降级标签
+   - 强调 Grafana / RabbitMQ 仍是技术诊断页，不混充业务页
 
-3. 数据接入与分析链路
-   - 说明 `sensor_event_raw / lpr_event_raw / resident_trip_raw`
-   - 展示 Step26 产出的占用热度、车流摘要、出行高峰摘要
-   - 强调严格验收时 ETL 仍以 `engine=spark` 通过
+3. 合同与架构解释链路
+   - 说明 `/api/v1/owner/dashboard` 与 `/api/v1/admin/dashboard` 已进入 OpenAPI
+   - 展示前端 `useOwnerDashboardView` / `useAdminDashboardView` 等页面级数据编排层
+   - 说明 `ParkingDashboardViewModules.java` 如何拆分 query / assembler / view service
 
 4. 技术故障链路
    - Step6：停 `model-service`，展示降级响应。
@@ -118,5 +122,5 @@ make security-scan
 
 5. 验收收口
    - 运行 `./scripts/defense_demo.sh acceptance`
-   - 强调默认完成态已从 Step30 升级为 Step36
+   - 强调默认完成态已从 Step36 升级为 Step40
    - 如需交付归档，再执行 `make release-bundle`

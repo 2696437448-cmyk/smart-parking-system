@@ -1,27 +1,32 @@
 SHELL := /bin/bash
 
-.PHONY: help preflight preflight-static ci-smoke security-scan release-bundle release-acceptance start stop baseline faults acceptance acceptance-enhanced acceptance-step30 acceptance-step24 acceptance-legacy typecheck build step30 step37-check
+.PHONY: help preflight preflight-static ci-smoke security-scan release-bundle release-acceptance release-acceptance-step36 start stop baseline faults acceptance acceptance-enhanced acceptance-step36 acceptance-step30 acceptance-step24 acceptance-legacy typecheck build step30 step37-check step38-check step39-check step40-check
 
 help:
 	@echo "Smart Parking common commands"
-	@echo "  make preflight          # check local prerequisites and env templates"
-	@echo "  make preflight-static   # validate repo/env templates without requiring Docker daemon"
-	@echo "  make ci-smoke           # run static preflight + OpenAPI + Step33 CI smoke gate"
-	@echo "  make security-scan      # run Step35 security scan and config hardening gate"
-	@echo "  make release-bundle     # generate a versioned release bundle under deliverables/bundles"
-	@echo "  make release-acceptance # run Step36 release acceptance"
-	@echo "  make start              # start services + frontend business preview"
-	@echo "  make stop               # stop services + preview"
-	@echo "  make baseline           # run baseline gates"
-	@echo "  make faults             # run fault injection sequence"
-	@echo "  make acceptance         # run default Step36 release acceptance"
-	@echo "  make acceptance-step30  # run historical Step30 enhanced acceptance"
-	@echo "  make acceptance-step24  # run historical Step24 baseline acceptance"
-	@echo "  make acceptance-legacy  # run historical Step18 legacy acceptance"
-	@echo "  make typecheck          # frontend typecheck"
-	@echo "  make build              # frontend build"
-	@echo "  make step30             # historical Step30 enhanced acceptance shortcut"
-	@echo "  make step37-check       # run Step37 prompt/frontend modernization gate"
+	@echo "  make preflight               # check local prerequisites and env templates"
+	@echo "  make preflight-static        # validate repo/env templates without requiring Docker daemon"
+	@echo "  make ci-smoke                # run static preflight + OpenAPI + Step33 CI smoke gate"
+	@echo "  make security-scan           # run Step35 security scan and config hardening gate"
+	@echo "  make step38-check            # run Step38 dashboard contract + view-model gate"
+	@echo "  make step39-check            # run Step39 dashboard hardening gate"
+	@echo "  make step40-check            # run CI-friendly Step40 static acceptance"
+	@echo "  make release-bundle          # generate a versioned release bundle under deliverables/bundles"
+	@echo "  make release-acceptance      # run Step40 release acceptance"
+	@echo "  make release-acceptance-step36 # run historical Step36 release acceptance"
+	@echo "  make start                   # start services + frontend business preview"
+	@echo "  make stop                    # stop services + preview"
+	@echo "  make baseline                # run baseline gates"
+	@echo "  make faults                  # run fault injection sequence"
+	@echo "  make acceptance              # run default Step40 release acceptance"
+	@echo "  make acceptance-step36       # run historical Step36 release acceptance"
+	@echo "  make acceptance-step30       # run historical Step30 enhanced acceptance"
+	@echo "  make acceptance-step24       # run historical Step24 baseline acceptance"
+	@echo "  make acceptance-legacy       # run historical Step18 legacy acceptance"
+	@echo "  make typecheck               # frontend typecheck"
+	@echo "  make build                   # frontend build"
+	@echo "  make step30                  # historical Step30 enhanced acceptance shortcut"
+	@echo "  make step37-check            # run Step37 prompt/frontend modernization gate"
 
 preflight:
 	./scripts/preflight_check.sh
@@ -37,10 +42,22 @@ security-scan:
 	python3 scripts/security_scan.py
 	python3 scripts/test_step35_security_config.py
 
+step38-check:
+	python3 scripts/test_step38_dashboard_contract_and_viewmodels.py
+
+step39-check:
+	python3 scripts/test_step39_dashboard_hardening.py
+
+step40-check:
+	python3 scripts/test_step40_release_acceptance.py --static-only
+
 release-bundle:
 	./scripts/create_release_bundle.sh
 
 release-acceptance:
+	python3 scripts/test_step40_release_acceptance.py
+
+release-acceptance-step36:
 	python3 scripts/test_step36_release_acceptance.py
 
 start:
@@ -60,6 +77,9 @@ acceptance:
 
 acceptance-enhanced:
 	./scripts/defense_demo.sh acceptance-enhanced
+
+acceptance-step36:
+	./scripts/defense_demo.sh acceptance-step36
 
 acceptance-step30:
 	./scripts/defense_demo.sh acceptance-step30

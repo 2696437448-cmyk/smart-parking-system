@@ -33,7 +33,7 @@ def assert_text(path: Path, pattern: str, description: str) -> dict[str, object]
     text = path.read_text(encoding="utf-8")
     matched = re.search(pattern, text, flags=re.MULTILINE) is not None
     if not matched:
-      raise AssertionError(f"{description} missing in {path}")
+        raise AssertionError(f"{description} missing in {path}")
     return {"name": description, "passed": True, "path": str(path)}
 
 
@@ -47,6 +47,9 @@ def main() -> None:
         ROOT / "Makefile",
         ROOT / "scripts" / "preflight_check.sh",
         ROOT / "scripts" / "defense_demo.sh",
+        ROOT / "scripts" / "test_step38_dashboard_contract_and_viewmodels.py",
+        ROOT / "scripts" / "test_step39_dashboard_hardening.py",
+        ROOT / "scripts" / "test_step40_release_acceptance.py",
         ROOT / "reports" / "step30_gate_results.json",
         ROOT / "apps" / "frontend" / "package.json",
     ]
@@ -64,11 +67,22 @@ def main() -> None:
         if not present:
             raise AssertionError(f"workflow job missing: {job}")
 
+    workflow_text = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    for token in ["make step38-check", "make step39-check", "make step40-check"]:
+        present = token in workflow_text
+        checks.append({"name": f"workflow_token:{token}", "passed": present})
+        if not present:
+            raise AssertionError(f"workflow missing token: {token}")
+
     checks.append(assert_text(ROOT / "Makefile", r"^preflight-static:", "make target preflight-static"))
     checks.append(assert_text(ROOT / "Makefile", r"^ci-smoke:", "make target ci-smoke"))
-    checks.append(assert_text(ROOT / "scripts" / "defense_demo.sh", r"preflight", "demo script preflight command"))
-    checks.append(assert_text(ROOT / "README.md", r"Step(?:25|31)~36", "README post-Step30 roadmap"))
-    checks.append(assert_text(ROOT / "README.md", r"make preflight-static", "README preflight-static command"))
+    checks.append(assert_text(ROOT / "Makefile", r"^step38-check:", "make target step38-check"))
+    checks.append(assert_text(ROOT / "Makefile", r"^step39-check:", "make target step39-check"))
+    checks.append(assert_text(ROOT / "Makefile", r"^step40-check:", "make target step40-check"))
+    checks.append(assert_text(ROOT / "scripts" / "defense_demo.sh", r"acceptance-step36", "demo script acceptance-step36 command"))
+    checks.append(assert_text(ROOT / "README.md", r"Step25~40", "README Step25~40 roadmap"))
+    checks.append(assert_text(ROOT / "README.md", r"make step38-check", "README step38 command"))
+    checks.append(assert_text(ROOT / "README.md", r"python3 scripts/test_step40_release_acceptance.py", "README step40 command"))
 
     package = json.loads((ROOT / "apps" / "frontend" / "package.json").read_text(encoding="utf-8"))
     scripts = package.get("scripts", {})
@@ -84,7 +98,7 @@ def main() -> None:
     if not step30_ok:
         raise AssertionError("step30 gate report must remain overall_passed=true")
 
-    ok, output = run("bash -n scripts/defense_demo.sh scripts/preflight_check.sh")
+    ok, output = run("bash -n scripts/defense_demo.sh scripts/preflight_check.sh scripts/create_release_bundle.sh")
     checks.append({"name": "bash_syntax_check", "passed": ok, "output_tail": "\n".join(output.splitlines()[-10:])})
     if not ok:
         raise AssertionError("bash syntax check failed")

@@ -1,86 +1,25 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
 import MetricCard from "../components/MetricCard.vue";
 import SectionHeader from "../components/SectionHeader.vue";
-import { fetchOwnerDashboard, getStoredOrderId, reserveOwnerSlot, setStoredOrderId } from "../services/owner";
-import type { OwnerDashboardView, RecommendationItem } from "../types/dashboard";
+import ViewStateNotice from "../components/ViewStateNotice.vue";
+import { useOwnerDashboardView } from "../composables/useOwnerDashboardView";
 
-const router = useRouter();
-
-function pad(value: number): string {
-  return value.toString().padStart(2, "0");
-}
-
-function toLocalInput(date: Date): string {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function plusMinutes(base: Date, minutes: number): Date {
-  return new Date(base.getTime() + minutes * 60 * 1000);
-}
-
-const now = new Date();
-const userId = ref("owner-app-001");
-const location = ref("R1");
-const windowStart = ref(toLocalInput(now));
-const windowEnd = ref(toLocalInput(plusMinutes(now, 60)));
-const loading = ref(false);
-const dashboard = ref<OwnerDashboardView | null>(null);
-const errorText = ref("");
-
-const preferredWindow = computed(() => `${windowStart.value}:00/${windowEnd.value}:00`);
-const recommendations = computed<RecommendationItem[]>(() => dashboard.value?.recommendations ?? []);
-const latestOrder = computed(() => dashboard.value?.latest_order ?? null);
-const activeSummary = computed(() => dashboard.value?.journey.message ?? "正在准备推荐车位。");
-
-async function loadRecommendations() {
-  loading.value = true;
-  errorText.value = "";
-  try {
-    dashboard.value = await fetchOwnerDashboard({
-      location: location.value,
-      preferredWindow: preferredWindow.value,
-      userId: userId.value,
-      orderId: getStoredOrderId(),
-    });
-  } catch (error) {
-    errorText.value = `推荐加载失败: ${String(error)}`;
-  } finally {
-    loading.value = false;
-  }
-}
-
-async function reserve(slotId: string) {
-  loading.value = true;
-  errorText.value = "";
-  try {
-    const payload = await reserveOwnerSlot({
-      userId: userId.value,
-      preferredWindow: preferredWindow.value,
-      location: location.value,
-      slotId,
-    });
-    const orderId = String(payload.order_id ?? payload.reservation_id ?? "");
-    if (orderId) {
-      setStoredOrderId(orderId);
-      await router.push({ path: "/owner/orders", query: { orderId } });
-    }
-  } catch (error) {
-    errorText.value = `预约失败: ${String(error)}`;
-  } finally {
-    loading.value = false;
-  }
-}
-
-function openOrders() {
-  const orderId = latestOrder.value?.order_id ?? getStoredOrderId();
-  void router.push({ path: "/owner/orders", query: orderId ? { orderId } : {} });
-}
-
-onMounted(() => {
-  void loadRecommendations();
-});
+const {
+  userId,
+  location,
+  windowStart,
+  windowEnd,
+  busy,
+  dashboard,
+  state,
+  preferredWindow,
+  recommendations,
+  latestOrder,
+  activeSummary,
+  loadRecommendations,
+  reserveAndOpenOrders,
+  openOrders,
+} = useOwnerDashboardView();
 </script>
 
 <template>
@@ -94,8 +33,8 @@ onMounted(() => {
       />
       <p class="hero-note">{{ activeSummary }}</p>
       <div class="action-row">
-        <button class="primary" type="button" @click="openOrders">查看订单</button>
-        <button type="button" @click="loadRecommendations">刷新推荐</button>
+        <button class="primary" type="button" :disabled="busy" @click="openOrders">查看订单</button>
+        <button type="button" :disabled="busy" @click="loadRecommendations">刷新推荐</button>
       </div>
       <div class="metric-grid compact-metric-grid">
         <MetricCard
@@ -153,9 +92,9 @@ onMounted(() => {
       </div>
       <div class="detail-list compact-detail">
         <p><strong>当前预约窗口</strong> {{ preferredWindow }}</p>
-        <p><strong>计费规则</strong> {{ dashboard?.billing_rule.rounding_mode ?? "CEIL_TO_UNIT" }}</p>
+        <p><strong>计费规则</strong> {{ dashboard?.billing_rule.rounding_mode ?? 'CEIL_TO_UNIT' }}</p>
       </div>
-      <p v-if="errorText" class="error-text">{{ errorText }}</p>
+      <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" />
     </article>
 
     <article class="panel recommendation-panel">
@@ -177,8 +116,8 @@ onMounted(() => {
           :key="String(item.slot_id)"
           class="recommend-card"
           type="button"
-          :disabled="loading"
-          @click="reserve(String(item.slot_id))"
+          :disabled="busy"
+          @click="reserveAndOpenOrders(String(item.slot_id))"
         >
           <div class="card-topline">
             <p class="card-title">{{ item.slot_display_name ?? item.slot_id }}</p>
@@ -186,10 +125,10 @@ onMounted(() => {
           </div>
           <p>{{ item.region_label ?? item.slot_id }}</p>
           <p>ETA：{{ item.eta_minutes }} 分钟</p>
-          <p>{{ item.destination?.display_name ?? "社区车位入口" }}</p>
+          <p>{{ item.destination?.display_name ?? '社区车位入口' }}</p>
         </button>
       </div>
-      <div v-if="!recommendations.length && !loading" class="empty-state">
+      <div v-if="!recommendations.length && state.tone !== 'loading'" class="empty-state">
         <p class="metric-label">暂无推荐结果</p>
         <p class="muted">请调整区域或预约窗口后重试。</p>
       </div>

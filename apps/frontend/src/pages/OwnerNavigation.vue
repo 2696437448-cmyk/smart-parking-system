@@ -1,32 +1,11 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { defineAsyncComponent } from "vue";
 import SectionHeader from "../components/SectionHeader.vue";
-import MapPreview from "../components/MapPreview.vue";
-import { fetchNavigation, getStoredOrderId } from "../services/owner";
-import type { NavigationView } from "../types/dashboard";
+import ViewStateNotice from "../components/ViewStateNotice.vue";
+import { useOwnerNavigationView } from "../composables/useOwnerNavigationView";
 
-const route = useRoute();
-
-const navigation = ref<NavigationView | null>(null);
-const errorText = ref("");
-const orderId = computed(() => String(route.query.orderId ?? getStoredOrderId() ?? ""));
-const routeSummaryText = computed(() => navigation.value?.route_summary?.summary ?? "请先创建订单，再进入导航页。");
-
-async function loadNavigation() {
-  if (!orderId.value) {
-    return;
-  }
-  try {
-    navigation.value = await fetchNavigation(orderId.value);
-  } catch (error) {
-    errorText.value = `导航信息加载失败: ${String(error)}`;
-  }
-}
-
-watch(orderId, () => {
-  void loadNavigation();
-}, { immediate: true });
+const MapPreview = defineAsyncComponent(() => import("../components/MapPreview.vue"));
+const { navigation, destinationTitle, routeSummaryText, state } = useOwnerNavigationView();
 </script>
 
 <template>
@@ -39,7 +18,7 @@ watch(orderId, () => {
         :badge="navigation ? `ETA ${navigation.eta_minutes} 分钟` : '等待订单'"
       />
       <p class="hero-note">{{ routeSummaryText }}</p>
-      <p v-if="errorText" class="error-text">{{ errorText }}</p>
+      <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" />
       <div v-if="navigation" class="detail-list compact-detail">
         <p><strong>订单号</strong> {{ navigation.order_id }}</p>
         <p><strong>目标车位</strong> {{ navigation.slot_display_name ?? navigation.slot_id }}</p>
@@ -49,7 +28,7 @@ watch(orderId, () => {
         <p><strong>距离</strong> {{ navigation.route_summary?.distance_km }} km</p>
         <a class="primary inline-link" :href="String(navigation.map_url)" target="_blank" rel="noreferrer">打开外部地图</a>
       </div>
-      <div v-else-if="!errorText" class="empty-state">
+      <div v-else-if="state.tone !== 'loading'" class="empty-state">
         <p class="metric-label">等待订单</p>
         <p class="muted">请先创建预约，再进入导航页查看路径。</p>
       </div>
@@ -65,7 +44,7 @@ watch(orderId, () => {
       <MapPreview
         :lat="Number(navigation.destination?.lat ?? 0)"
         :lng="Number(navigation.destination?.lng ?? 0)"
-        :title="String(navigation.slot_display_name ?? navigation.destination?.display_name ?? '目标车位')"
+        :title="destinationTitle"
       />
     </article>
   </section>

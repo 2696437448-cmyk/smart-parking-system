@@ -1,6 +1,6 @@
 {
-  "generated_at_utc": "2026-03-30T08:09:01.906263+00:00",
-  "elapsed_seconds": 0.011,
+  "generated_at_utc": "2026-03-31T08:32:45.320256+00:00",
+  "elapsed_seconds": 0.014,
   "overall_passed": true,
   "checks": [
     {
@@ -24,6 +24,18 @@
       "passed": true
     },
     {
+      "name": "exists:scripts/test_step38_dashboard_contract_and_viewmodels.py",
+      "passed": true
+    },
+    {
+      "name": "exists:scripts/test_step39_dashboard_hardening.py",
+      "passed": true
+    },
+    {
+      "name": "exists:scripts/test_step40_release_acceptance.py",
+      "passed": true
+    },
+    {
       "name": "exists:reports/step30_gate_results.json",
       "passed": true
     },
@@ -40,6 +52,18 @@
       "passed": true
     },
     {
+      "name": "workflow_token:make step38-check",
+      "passed": true
+    },
+    {
+      "name": "workflow_token:make step39-check",
+      "passed": true
+    },
+    {
+      "name": "workflow_token:make step40-check",
+      "passed": true
+    },
+    {
       "name": "make target preflight-static",
       "passed": true,
       "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
@@ -50,17 +74,37 @@
       "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
     },
     {
-      "name": "demo script preflight command",
+      "name": "make target step38-check",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
+    },
+    {
+      "name": "make target step39-check",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
+    },
+    {
+      "name": "make target step40-check",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
+    },
+    {
+      "name": "demo script acceptance-step36 command",
       "passed": true,
       "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/scripts/defense_demo.sh"
     },
     {
-      "name": "README post-Step30 roadmap",
+      "name": "README Step25~40 roadmap",
       "passed": true,
       "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/README.md"
     },
     {
-      "name": "README preflight-static command",
+      "name": "README step38 command",
+      "passed": true,
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/README.md"
+    },
+    {
+      "name": "README step40 command",
       "passed": true,
       "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/README.md"
     },

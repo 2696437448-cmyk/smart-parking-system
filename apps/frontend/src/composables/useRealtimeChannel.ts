@@ -1,5 +1,5 @@
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { runtimeConfig } from "../services/runtime";
+import { buildTraceHeaders, runtimeConfig } from "../services/runtime";
 import { useRealtimeStore } from "../stores/realtime";
 import type { RealtimeSnapshot } from "../types/realtime";
 
@@ -10,30 +10,60 @@ function parseSnapshot(input: unknown): Partial<RealtimeSnapshot> {
   return input as Partial<RealtimeSnapshot>;
 }
 
+function parsePayload(text: string): Partial<RealtimeSnapshot> {
+  try {
+    return parseSnapshot(JSON.parse(text));
+  } catch {
+    return {};
+  }
+}
+
 export function useRealtimeChannel() {
   const store = useRealtimeStore();
   const wsRef = ref<WebSocket | null>(null);
   const pollTimer = ref<number | null>(null);
   const reconnectTimer = ref<number | null>(null);
+  const pollInFlight = ref(false);
 
   const wsUrl = runtimeConfig.realtimeWsUrl;
   const pollUrl = runtimeConfig.realtimePollUrl;
+  let activePollController: AbortController | null = null;
+  let socketGeneration = 0;
 
   async function fetchPolling() {
+    if (pollInFlight.value) {
+      return;
+    }
+    pollInFlight.value = true;
+    const controller = new AbortController();
+    activePollController = controller;
     try {
       const resp = await fetch(pollUrl, {
-        headers: {
-          "X-Trace-Id": `frontend-poll-${Date.now()}`,
-        },
+        signal: controller.signal,
+        headers: buildTraceHeaders("realtime-polling", { Accept: "application/json" }),
       });
+      const payload = parsePayload(await resp.text());
       if (!resp.ok) {
         store.markDegraded(`polling_http_${resp.status}`, "polling");
         return;
       }
-      const data = parseSnapshot(await resp.json());
-      store.applySnapshot(data, "polling", "degraded");
+      store.applySnapshot(payload, "polling", "degraded");
     } catch (err) {
-      store.markDegraded(`polling_error_${String(err)}`, "polling");
+      if (!controller.signal.aborted) {
+        store.markDegraded(`polling_error_${String(err)}`, "polling");
+      }
+    } finally {
+      if (activePollController === controller) {
+        activePollController = null;
+      }
+      pollInFlight.value = false;
+    }
+  }
+
+  function cancelPollingRequest() {
+    if (activePollController) {
+      activePollController.abort();
+      activePollController = null;
     }
   }
 
@@ -42,6 +72,7 @@ export function useRealtimeChannel() {
       window.clearInterval(pollTimer.value);
       pollTimer.value = null;
     }
+    cancelPollingRequest();
   }
 
   function startPolling() {
@@ -52,6 +83,13 @@ export function useRealtimeChannel() {
     pollTimer.value = window.setInterval(() => {
       void fetchPolling();
     }, 2000);
+  }
+
+  function clearReconnectTimer() {
+    if (reconnectTimer.value !== null) {
+      window.clearTimeout(reconnectTimer.value);
+      reconnectTimer.value = null;
+    }
   }
 
   function scheduleReconnect() {
@@ -65,14 +103,25 @@ export function useRealtimeChannel() {
   }
 
   function closeWebSocket() {
-    if (wsRef.value) {
-      wsRef.value.close();
-      wsRef.value = null;
+    if (!wsRef.value) {
+      return;
     }
+    const socket = wsRef.value;
+    wsRef.value = null;
+    socket.onopen = null;
+    socket.onmessage = null;
+    socket.onerror = null;
+    socket.onclose = null;
+    socket.close();
   }
 
   function connectWebSocket() {
+    clearReconnectTimer();
+    stopPolling();
+    socketGeneration += 1;
+    const generation = socketGeneration;
     closeWebSocket();
+
     try {
       wsRef.value = new WebSocket(wsUrl);
     } catch (err) {
@@ -83,6 +132,9 @@ export function useRealtimeChannel() {
     }
 
     wsRef.value.onopen = () => {
+      if (generation !== socketGeneration) {
+        return;
+      }
       stopPolling();
       store.connected = true;
       store.mode = "realtime";
@@ -91,6 +143,9 @@ export function useRealtimeChannel() {
     };
 
     wsRef.value.onmessage = (event) => {
+      if (generation !== socketGeneration) {
+        return;
+      }
       try {
         const payload = parseSnapshot(JSON.parse(event.data));
         store.applySnapshot(payload, "websocket", "realtime");
@@ -101,11 +156,17 @@ export function useRealtimeChannel() {
     };
 
     wsRef.value.onerror = () => {
+      if (generation !== socketGeneration) {
+        return;
+      }
       store.markDegraded("ws_transport_error", "polling");
       startPolling();
     };
 
     wsRef.value.onclose = () => {
+      if (generation !== socketGeneration) {
+        return;
+      }
       store.markDegraded("ws_closed", "polling");
       startPolling();
       scheduleReconnect();
@@ -113,11 +174,9 @@ export function useRealtimeChannel() {
   }
 
   function stop() {
+    clearReconnectTimer();
     stopPolling();
-    if (reconnectTimer.value !== null) {
-      window.clearTimeout(reconnectTimer.value);
-      reconnectTimer.value = null;
-    }
+    socketGeneration += 1;
     closeWebSocket();
   }
 

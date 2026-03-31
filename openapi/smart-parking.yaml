@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Smart Parking API
   version: 0.3.0
-  description: Step25-Step30 enhancement contract on top of the Step24 baseline.
+  description: Step40 integrated contract on top of the Step36-Step37 baseline.
 servers:
   - url: http://localhost:8080
     description: gateway
@@ -50,6 +50,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RecommendationResponse'
+
+  /api/v1/owner/dashboard:
+    get:
+      summary: Get owner dashboard view
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: location
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: preferred_window
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: user_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: order_id
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Owner dashboard view
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OwnerDashboardResponse'
 
   /api/v1/owner/orders/{order_id}:
     get:
@@ -243,6 +276,40 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ForecastCompareResponse'
+
+  /api/v1/admin/dashboard:
+    get:
+      summary: Get admin dashboard view
+      parameters:
+        - $ref: '#/components/parameters/XTraceId'
+        - name: date
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: region_id
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: trend_days
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: trend_limit
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Admin dashboard view
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDashboardResponse'
 
   /internal/v1/model/predict:
     post:
@@ -682,6 +749,148 @@ components:
         currency:
           type: string
         trace_id:
+          type: string
+
+    OwnerJourneyState:
+      type: object
+      required: [state, message]
+      properties:
+        state:
+          type: string
+        message:
+          type: string
+
+    OwnerDashboardSummary:
+      type: object
+      required: [region_id, region_label, recommendation_count, latest_order_id, latest_billing_status, latest_amount]
+      properties:
+        region_id:
+          type: string
+        region_label:
+          type: string
+        recommendation_count:
+          type: integer
+        latest_order_id:
+          type: string
+        latest_billing_status:
+          type: string
+        latest_amount:
+          type: number
+
+    OwnerDashboardResponse:
+      type: object
+      required: [location, preferred_window, user_id, summary, journey, billing_rule, recommendations, trace_id, service]
+      properties:
+        location:
+          type: string
+        preferred_window:
+          type: string
+        user_id:
+          type: string
+        summary:
+          $ref: '#/components/schemas/OwnerDashboardSummary'
+        journey:
+          $ref: '#/components/schemas/OwnerJourneyState'
+        billing_rule:
+          $ref: '#/components/schemas/BillingRule'
+        latest_order:
+          nullable: true
+          allOf:
+            - $ref: '#/components/schemas/OwnerOrderDetail'
+        recommendations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecommendationItem'
+        trace_id:
+          type: string
+        service:
+          type: string
+
+    AdminDashboardSummary:
+      type: object
+      required: [date, region_id, active_reservations, occupancy_rate, revenue_total, dispatch_strategy, business_view]
+      properties:
+        date:
+          type: string
+        region_id:
+          type: string
+        active_reservations:
+          type: integer
+        occupancy_rate:
+          type: number
+        revenue_total:
+          type: number
+        dispatch_strategy:
+          type: string
+        business_view:
+          type: boolean
+
+    AdminDashboardHighlights:
+      type: object
+      required: [region_count, revenue_points, forecast_points, peak_occupancy]
+      properties:
+        region_count:
+          type: integer
+        revenue_points:
+          type: integer
+        forecast_points:
+          type: integer
+        peak_occupancy:
+          type: number
+
+    AdminDashboardSections:
+      type: object
+      required: [revenue_summary, revenue_trend, occupancy_trend, forecast_compare]
+      properties:
+        revenue_summary:
+          type: array
+          items:
+            $ref: '#/components/schemas/RegionRevenueSummary'
+        revenue_trend:
+          type: array
+          items:
+            $ref: '#/components/schemas/RevenueTrendPoint'
+        occupancy_trend:
+          type: array
+          items:
+            $ref: '#/components/schemas/OccupancyTrendPoint'
+        forecast_compare:
+          type: array
+          items:
+            $ref: '#/components/schemas/ForecastComparePoint'
+
+    DegradedMetadata:
+      type: object
+      required: [realtime_transport, chart_mode, data_sources]
+      properties:
+        realtime_transport:
+          type: string
+        chart_mode:
+          type: string
+        data_sources:
+          type: array
+          items:
+            type: string
+
+    AdminDashboardResponse:
+      type: object
+      required: [summary, highlights, sections, diagnostic_links, degraded_metadata, trace_id, service]
+      properties:
+        summary:
+          $ref: '#/components/schemas/AdminDashboardSummary'
+        highlights:
+          $ref: '#/components/schemas/AdminDashboardHighlights'
+        sections:
+          $ref: '#/components/schemas/AdminDashboardSections'
+        diagnostic_links:
+          type: object
+          additionalProperties:
+            type: string
+        degraded_metadata:
+          $ref: '#/components/schemas/DegradedMetadata'
+        trace_id:
+          type: string
+        service:
           type: string
 
     RevenueSummaryResponse:

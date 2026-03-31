@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Step21 gate: routed owner/admin frontend pages exist."""
+"""Step21 gate: routed owner/admin frontend pages and page-level view models exist."""
 
 from __future__ import annotations
 
@@ -33,19 +33,57 @@ def main() -> None:
         "src/pages/AdminMonitor.vue",
         "src/services/owner.ts",
         "src/services/admin.ts",
+        "src/components/ViewStateNotice.vue",
+        "src/composables/useViewState.ts",
+        "src/composables/useOrderContext.ts",
+        "src/composables/useOwnerDashboardView.ts",
+        "src/composables/useOwnerOrderView.ts",
+        "src/composables/useOwnerNavigationView.ts",
+        "src/composables/useAdminDashboardView.ts",
     ]:
         assert_exists(FRONTEND / rel)
 
     pkg = json.loads((FRONTEND / "package.json").read_text(encoding="utf-8"))
     deps = pkg.get("dependencies", {})
-    if "vue-router" not in deps:
-        raise AssertionError("package dependency missing: vue-router")
+    for dependency in ["vue-router", "pinia"]:
+        if dependency not in deps:
+            raise AssertionError(f"package dependency missing: {dependency}")
 
-    assert_contains(FRONTEND / "src" / "router.ts", ["/owner", '"dashboard"', '"navigation"', "/admin", '"monitor"'])
-    assert_contains(FRONTEND / "src" / "services" / "owner.ts", ["/api/v1/owner/dashboard", "/api/v1/owner/reservations", "/api/v1/owner/orders/", "/api/v1/owner/navigation/"])
+    assert_contains(
+        FRONTEND / "src" / "router.ts",
+        ["/owner", '"dashboard"', '"orders"', '"navigation"', "/admin", '"monitor"'],
+    )
+    assert_contains(
+        FRONTEND / "src" / "services" / "owner.ts",
+        ["/api/v1/owner/dashboard", "/api/v1/owner/reservations", "/api/v1/owner/orders/", "/api/v1/owner/navigation/"],
+    )
     assert_contains(FRONTEND / "src" / "services" / "admin.ts", ["/api/v1/admin/dashboard"])
-    assert_contains(FRONTEND / "src" / "pages" / "OwnerDashboard.vue", ["fetchOwnerDashboard", "reserveOwnerSlot"])
-    assert_contains(FRONTEND / "src" / "pages" / "AdminMonitor.vue", ["fetchAdminDashboard", "EChartPanel"])
+
+    assert_contains(FRONTEND / "src" / "pages" / "OwnerDashboard.vue", ["useOwnerDashboardView", "ViewStateNotice"])
+    assert_contains(FRONTEND / "src" / "pages" / "OwnerOrders.vue", ["useOwnerOrderView", "ViewStateNotice"])
+    assert_contains(FRONTEND / "src" / "pages" / "OwnerNavigation.vue", ["useOwnerNavigationView", "ViewStateNotice"])
+    assert_contains(FRONTEND / "src" / "pages" / "AdminMonitor.vue", ["useAdminDashboardView", "EChartPanel", "ViewStateNotice"])
+
+    assert_contains(
+        FRONTEND / "src" / "composables" / "useOwnerDashboardView.ts",
+        ["fetchOwnerDashboard", "reserveOwnerSlot", "useOrderContext", "useViewState"],
+    )
+    assert_contains(
+        FRONTEND / "src" / "composables" / "useOwnerOrderView.ts",
+        ["fetchOrderDetail", "completeOrder", "useOrderContext", "useViewState"],
+    )
+    assert_contains(
+        FRONTEND / "src" / "composables" / "useOwnerNavigationView.ts",
+        ["fetchNavigation", "useOrderContext", "useViewState"],
+    )
+    assert_contains(
+        FRONTEND / "src" / "composables" / "useAdminDashboardView.ts",
+        ["fetchAdminDashboard", "useRealtimeChannel", "useViewState"],
+    )
+    assert_contains(
+        FRONTEND / "src" / "composables" / "useViewState.ts",
+        ['"loading"', '"ready"', '"empty"', '"error"', '"degraded"', '"stale"'],
+    )
 
     print("STEP21_GATE_PASS")
 

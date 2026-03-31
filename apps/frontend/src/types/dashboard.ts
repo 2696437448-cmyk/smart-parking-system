@@ -1,8 +1,26 @@
+export interface ServiceEnvelope {
+  trace_id: string;
+  service: string;
+}
+
 export interface BillingRuleView {
   timezone: string;
   unit_minutes: number;
   rounding_mode: string;
   effective_window: string;
+}
+
+export interface DestinationPoint {
+  lat: number;
+  lng: number;
+  display_name: string;
+}
+
+export interface RouteSummaryView {
+  distance_km: number;
+  route_mode: string;
+  summary: string;
+  eta_minutes: number;
 }
 
 export interface RecommendationItem {
@@ -11,15 +29,11 @@ export interface RecommendationItem {
   estimated_amount: number;
   eta_minutes: number;
   region_label?: string;
-  destination?: {
-    lat: number;
-    lng: number;
-    display_name: string;
-  };
+  destination?: DestinationPoint;
   map_url: string;
 }
 
-export interface OrderDetail {
+export interface OrderDetail extends ServiceEnvelope {
   order_id: string;
   reservation_id: string;
   user_id: string;
@@ -35,27 +49,18 @@ export interface OrderDetail {
   billing_rule?: BillingRuleView;
 }
 
-export interface NavigationView {
+export interface NavigationView extends ServiceEnvelope {
   order_id: string;
   slot_id: string;
   eta_minutes: number;
   map_url: string;
   region_label: string;
   slot_display_name?: string;
-  destination?: {
-    lat: number;
-    lng: number;
-    display_name: string;
-  };
-  route_summary?: {
-    distance_km: number;
-    route_mode: string;
-    summary: string;
-    eta_minutes: number;
-  };
+  destination?: DestinationPoint;
+  route_summary?: RouteSummaryView;
 }
 
-export interface OwnerDashboardView {
+export interface OwnerDashboardView extends ServiceEnvelope {
   location: string;
   preferred_window: string;
   user_id: string;
@@ -104,7 +109,7 @@ export interface ForecastComparePoint {
   actual_gap: number;
 }
 
-export interface AdminDashboardView {
+export interface AdminDashboardView extends ServiceEnvelope {
   summary: {
     date: string;
     region_id: string;
