@@ -6,6 +6,7 @@ const props = defineProps<{
   lat: number;
   lng: number;
   title: string;
+  caption?: string;
 }>();
 
 const root = ref<HTMLElement | null>(null);
@@ -52,5 +53,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="root" class="map-preview"></div>
+  <div class="map-preview-frame">
+    <div ref="root" class="map-preview"></div>
+    <p v-if="caption" class="map-caption">{{ caption }}</p>
+  </div>
 </template>

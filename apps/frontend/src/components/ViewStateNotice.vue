@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { ViewStateTone } from "../composables/useViewState";
+import StatusBadge from "./StatusBadge.vue";
 
 const props = defineProps<{
   tone: ViewStateTone;
   title: string;
   message: string;
   detail?: string;
+  badge?: string;
 }>();
 
 const toneLabel = computed(() => {
@@ -25,13 +27,28 @@ const toneLabel = computed(() => {
       return "已更新";
   }
 });
+
+const badgeTone = computed(() => {
+  switch (props.tone) {
+    case "error":
+      return "warn";
+    case "degraded":
+      return "warn";
+    case "ready":
+      return "calm";
+    case "loading":
+      return "default";
+    default:
+      return "accent";
+  }
+});
 </script>
 
 <template>
   <article class="state-notice" :data-tone="tone">
     <div class="state-notice-head">
       <p class="eyebrow">View State</p>
-      <span class="pill ghost">{{ toneLabel }}</span>
+      <StatusBadge :label="badge ?? toneLabel" :tone="badgeTone" />
     </div>
     <strong>{{ title }}</strong>
     <p>{{ message }}</p>

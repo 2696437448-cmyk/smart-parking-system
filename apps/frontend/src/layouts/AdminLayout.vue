@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
+import StatusBadge from "../components/StatusBadge.vue";
 </script>
 
 <template>
-  <div class="experience-shell admin-shell">
+  <div class="experience-shell admin-shell admin-shell-refined">
     <aside class="admin-rail">
       <p class="eyebrow">Admin Experience</p>
       <h1>物业经营驾驶舱</h1>
@@ -11,9 +12,9 @@ import { RouterLink, RouterView } from "vue-router";
         实时状态、收益趋势、区域经营对比和预测解释统一进入业务视图，技术诊断入口保持为备用。
       </p>
       <div class="chip-row">
-        <span class="pill">ECharts</span>
-        <span class="pill">Pinia</span>
-        <span class="pill">WebSocket / Polling</span>
+        <StatusBadge label="ECharts" tone="accent" />
+        <StatusBadge label="Pinia" tone="default" />
+        <StatusBadge label="WebSocket / Polling" tone="calm" />
       </div>
       <nav class="admin-nav" aria-label="admin navigation">
         <RouterLink to="/admin/monitor">经营驾驶舱</RouterLink>
@@ -29,9 +30,9 @@ import { RouterLink, RouterView } from "vue-router";
             <p>以聚合视图接口驱动页面，让前端聚焦展示层，让管理端更适合日常观察与答辩演示。</p>
           </div>
           <div class="chip-row">
-            <span class="pill">Business Charts</span>
-            <span class="pill">Realtime Aware</span>
-            <span class="pill">View-Model API</span>
+            <StatusBadge label="Business Charts" tone="accent" />
+            <StatusBadge label="Realtime Aware" tone="default" />
+            <StatusBadge label="View-Model API" tone="calm" />
           </div>
         </div>
       </header>

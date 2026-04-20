@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import StatusBadge from "./StatusBadge.vue";
+
 defineProps<{
   eyebrow: string;
   title: string;
   subtitle?: string;
   badge?: string;
+  badgeTone?: "default" | "accent" | "calm" | "warn";
 }>();
 </script>
 
@@ -14,6 +17,6 @@ defineProps<{
       <h3>{{ title }}</h3>
       <p v-if="subtitle" class="muted section-subtitle">{{ subtitle }}</p>
     </div>
-    <span v-if="badge" class="pill ghost">{{ badge }}</span>
+    <StatusBadge v-if="badge" :label="badge" :tone="badgeTone ?? 'accent'" />
   </div>
 </template>

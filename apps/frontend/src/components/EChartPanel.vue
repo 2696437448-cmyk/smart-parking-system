@@ -11,6 +11,7 @@ const props = defineProps<{
   title: string;
   option: Record<string, unknown>;
   subtitle?: string;
+  note?: string;
 }>();
 
 const root = ref<HTMLElement | null>(null);
@@ -61,5 +62,6 @@ onBeforeUnmount(() => {
       <p v-if="subtitle" class="muted chart-subtitle">{{ subtitle }}</p>
     </div>
     <div ref="root" class="chart-canvas"></div>
+    <p v-if="note" class="muted chart-note">{{ note }}</p>
   </article>
 </template>

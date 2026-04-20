@@ -3,6 +3,24 @@
   grid-column: 1 / -1;
 }
 
+.owner-hero,
+.admin-hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.owner-hero::after,
+.admin-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -60px -100px auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(29, 127, 140, 0.12), transparent 68%);
+  pointer-events: none;
+}
+
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -24,12 +42,26 @@
   gap: var(--space-4);
 }
 
+.owner-dashboard .recommendation-panel,
+.owner-orders .order-panel,
+.owner-navigation .nav-info-card,
+.admin-dashboard .summary-panel,
+.admin-dashboard .insight-panel {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 252, 254, 0.86));
+}
+
 .nav-page-grid {
   grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
 }
 
 .map-panel .map-preview {
   margin-top: var(--space-4);
+}
+
+.route-line-list {
+  display: grid;
+  gap: 8px;
+  margin-top: var(--space-3);
 }
 
 @media (max-width: 960px) {

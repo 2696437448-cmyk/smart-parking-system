@@ -10,6 +10,11 @@
   padding: var(--space-5) var(--space-5) 96px;
 }
 
+.owner-shell-refined,
+.admin-shell-refined {
+  position: relative;
+}
+
 .admin-shell {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
@@ -32,7 +37,7 @@
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 30px;
   padding: var(--space-5);
-  box-shadow: var(--shadow-panel);
+  box-shadow: var(--shadow-strong);
   backdrop-filter: blur(10px);
 }
 
@@ -91,7 +96,8 @@
   border-radius: var(--radius-pill);
   text-decoration: none;
   border: 1px solid rgba(18, 50, 74, 0.1);
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow: 0 12px 24px rgba(18, 50, 74, 0.05);
 }
 
 .admin-nav a {
@@ -129,6 +135,7 @@
   color: rgba(255, 249, 243, 0.9);
   border-color: transparent;
   background: transparent;
+  box-shadow: none;
 }
 
 .page-grid {

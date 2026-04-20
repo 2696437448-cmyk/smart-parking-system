@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-03-31T08:32:46.513134+00:00",
+  "generated_at_utc": "2026-04-20T07:23:44.075728+00:00",
   "overall_passed": true,
   "steps": [
     {
       "name": "openapi_validation",
       "command": "python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml",
       "passed": true,
-      "elapsed_seconds": 0.11,
+      "elapsed_seconds": 0.124,
       "output_tail": "openapi_validation_passed spec=openapi/smart-parking.yaml"
     },
     {

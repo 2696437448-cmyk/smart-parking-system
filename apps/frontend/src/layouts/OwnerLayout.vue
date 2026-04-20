@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from "vue-router";
+import StatusBadge from "../components/StatusBadge.vue";
 
 const tabs = [
   { to: "/owner/dashboard", label: "推荐" },
@@ -9,7 +10,7 @@ const tabs = [
 </script>
 
 <template>
-  <div class="experience-shell owner-shell">
+  <div class="experience-shell owner-shell owner-shell-refined">
     <header class="shell-banner owner-banner">
       <p class="eyebrow">Owner Experience</p>
       <div class="shell-banner-row">
@@ -20,9 +21,9 @@ const tabs = [
           </p>
         </div>
         <div class="chip-row">
-          <span class="pill">Capacitor Ready</span>
-          <span class="pill">Leaflet Map</span>
-          <span class="pill">Billing Flow</span>
+          <StatusBadge label="Capacitor Ready" tone="accent" />
+          <StatusBadge label="Leaflet Map" tone="default" />
+          <StatusBadge label="Billing Flow" tone="calm" />
         </div>
       </div>
     </header>
