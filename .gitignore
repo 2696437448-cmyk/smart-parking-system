@@ -10,6 +10,7 @@ apps/frontend/dist/
 *.iml
 .idea/
 .vscode/
+.worktrees/
 
 # Python cache
 __pycache__/
