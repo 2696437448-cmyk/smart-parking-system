@@ -53,13 +53,16 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <article class="panel chart-panel">
-    <div class="chart-head">
+  <article class="chart-panel-shell" v-motion-slide-visible-once-bottom>
+    <div class="chart-head chart-panel-head">
       <div>
         <p class="eyebrow">Business Chart</p>
         <h3>{{ title }}</h3>
       </div>
-      <p v-if="subtitle" class="muted chart-subtitle">{{ subtitle }}</p>
+      <div class="chart-panel-side">
+        <p v-if="subtitle" class="muted chart-subtitle">{{ subtitle }}</p>
+        <a-tag color="cyan">Live Chart</a-tag>
+      </div>
     </div>
     <div ref="root" class="chart-canvas"></div>
     <p v-if="note" class="muted chart-note">{{ note }}</p>

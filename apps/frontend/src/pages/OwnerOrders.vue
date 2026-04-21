@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import ActionBar from "../components/ActionBar.vue";
 import KeyValueList from "../components/KeyValueList.vue";
 import MetricCard from "../components/MetricCard.vue";
 import SectionHeader from "../components/SectionHeader.vue";
@@ -15,23 +14,23 @@ const orderMetaItems = computed(() => ownerOrderMetaItems(orderDetail.value));
 </script>
 
 <template>
-  <section class="page-grid owner-page-grid owner-orders">
-    <article class="panel hero-card">
+  <section class="page-grid owner-page-grid owner-orders order-task-flow">
+    <article class="panel hero-card" v-motion-slide-visible-once-bottom>
       <SectionHeader
-        eyebrow="Order Center"
-        title="订单与账单"
-        subtitle="查看预约结果、计费规则与最终账单，并从这里进入导航引导。"
+        eyebrow="Order Task Flow"
+        title="订单与账单任务流"
+        subtitle="让订单状态、金额信息和下一步动作形成清晰顺序，而不是平铺展示。"
         :badge="orderDetail?.billing_status ?? 'WAITING'"
         badge-tone="accent"
       />
       <p class="hero-note">{{ orderStatusNote }}</p>
-      <ActionBar align="between">
-        <button class="primary" type="button" :disabled="busy" @click="loadOrder">刷新订单</button>
-        <button type="button" :disabled="busy || !orderDetail" @click="openNavigation">查看导航</button>
-      </ActionBar>
+      <a-space class="action-row" wrap size="medium">
+        <a-button type="primary" :loading="busy" @click="loadOrder">刷新订单</a-button>
+        <a-button :disabled="busy || !orderDetail" @click="openNavigation">查看导航</a-button>
+      </a-space>
     </article>
 
-    <article class="panel order-panel">
+    <article class="panel order-panel" v-motion-slide-visible-once-top>
       <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" :badge="state.badge" />
       <div v-if="orderDetail" class="detail-list order-stack">
         <div class="order-inline-status">
@@ -45,7 +44,7 @@ const orderMetaItems = computed(() => ownerOrderMetaItems(orderDetail.value));
           <MetricCard label="结算日期" :value="orderDetail.recognized_on || '未结算'" :note="orderDetail.billing_rule?.timezone ?? 'Asia/Shanghai'" />
         </div>
         <KeyValueList :items="orderMetaItems" />
-        <button class="primary" type="button" :disabled="busy" @click="finishOrder">完成停车并结算</button>
+        <a-button type="primary" class="settle-action" :loading="busy" @click="finishOrder">完成停车并结算</a-button>
       </div>
       <div v-else-if="state.tone !== 'loading'" class="empty-state">
         <p class="metric-label">暂无订单</p>

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import type { ViewStateTone } from "../composables/useViewState";
-import StatusBadge from "./StatusBadge.vue";
 
 const props = defineProps<{
   tone: ViewStateTone;
@@ -14,32 +13,17 @@ const props = defineProps<{
 const toneLabel = computed(() => {
   switch (props.tone) {
     case "loading":
-      return "加载中";
+      return "系统同步中";
     case "empty":
-      return "空数据";
+      return "暂无业务数据";
     case "error":
-      return "错误";
+      return "状态异常";
     case "degraded":
-      return "已降级";
+      return "已进入降级链路";
     case "stale":
-      return "待刷新";
+      return "数据待刷新";
     default:
-      return "已更新";
-  }
-});
-
-const badgeTone = computed(() => {
-  switch (props.tone) {
-    case "error":
-      return "warn";
-    case "degraded":
-      return "warn";
-    case "ready":
-      return "calm";
-    case "loading":
-      return "default";
-    default:
-      return "accent";
+      return "状态稳定";
   }
 });
 </script>
@@ -48,10 +32,11 @@ const badgeTone = computed(() => {
   <article class="state-notice" :data-tone="tone">
     <div class="state-notice-head">
       <p class="eyebrow">View State</p>
-      <StatusBadge :label="badge ?? toneLabel" :tone="badgeTone" />
+      <a-tag color="cyan">{{ badge ?? toneLabel }}</a-tag>
     </div>
-    <strong>{{ title }}</strong>
-    <p>{{ message }}</p>
+    <a-alert :title="title" show-icon>
+      {{ message }}
+    </a-alert>
     <p v-if="detail" class="muted state-detail">{{ detail }}</p>
   </article>
 </template>

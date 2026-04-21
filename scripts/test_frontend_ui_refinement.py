@@ -9,19 +9,19 @@ ROOT = Path(__file__).resolve().parents[1]
 FRONTEND = ROOT / "apps" / "frontend"
 
 REQUIRED_FILES = [
-    "src/components/ActionBar.vue",
-    "src/components/KeyValueList.vue",
-    "src/components/StatusBadge.vue",
+    "src/components/MetricCard.vue",
+    "src/components/SectionHeader.vue",
+    "src/components/ViewStateNotice.vue",
     "src/presenters/format.ts",
     "src/presenters/owner.ts",
     "src/presenters/admin.ts",
 ]
 
 REQUIRED_TOKENS = {
-    "src/pages/OwnerDashboard.vue": ["ActionBar", "StatusBadge", "ownerDashboardHero"],
-    "src/pages/OwnerOrders.vue": ["KeyValueList", "StatusBadge"],
-    "src/pages/OwnerNavigation.vue": ["KeyValueList", "routeSummaryLines"],
-    "src/pages/AdminMonitor.vue": ["ActionBar", "adminChartCards", "StatusBadge"],
+    "src/pages/OwnerDashboard.vue": ["owner-smart-grid", "a-form", "a-button", "智能预约中枢"],
+    "src/pages/OwnerOrders.vue": ["order-task-flow", "a-button", "订单与账单任务流"],
+    "src/pages/OwnerNavigation.vue": ["navigation-task-panel", "MapPreview", "目标车位导航"],
+    "src/pages/AdminMonitor.vue": ["operations-cockpit", "EChartPanel", "停车运营驾驶舱"],
 }
 
 

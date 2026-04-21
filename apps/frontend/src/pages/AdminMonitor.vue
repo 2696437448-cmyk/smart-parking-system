@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from "vue";
-import ActionBar from "../components/ActionBar.vue";
 import MetricCard from "../components/MetricCard.vue";
 import SectionHeader from "../components/SectionHeader.vue";
-import StatusBadge from "../components/StatusBadge.vue";
 import ViewStateNotice from "../components/ViewStateNotice.vue";
 import { adminChartCards, adminStatusSummary } from "../presenters/admin";
 import { formatCurrency, formatPercent } from "../presenters/format";
@@ -53,32 +51,32 @@ const adminSummary = computed(() => adminStatusSummary(dashboard.value));
 </script>
 
 <template>
-  <section class="page-grid admin-page-grid admin-dashboard">
-    <article class="panel hero-card admin-hero">
-      <div class="status-bar" :class="statusClass">
-        <span>{{ store.modeLabel }}</span>
-        <span>/</span>
-        <span>{{ store.sourceLabel }}</span>
+  <section class="page-grid admin-page-grid admin-dashboard operations-cockpit">
+    <article class="panel hero-card admin-hero" v-motion-slide-visible-once-bottom>
+      <div class="shell-status-strip">
+        <a-tag color="cyan">{{ store.modeLabel }}</a-tag>
+        <a-tag color="arcoblue">{{ store.sourceLabel }}</a-tag>
+        <a-tag color="gold">{{ adminSummary.degradedHint }}</a-tag>
       </div>
       <SectionHeader
-        eyebrow="Business Dashboard"
-        title="物业经营驾驶舱"
-        subtitle="前端通过聚合接口一次获取经营视图，实时状态仍保持 WebSocket 优先、Polling 降级。"
+        eyebrow="Operations Cockpit"
+        title="停车运营驾驶舱"
+        subtitle="聚合接口、实时通道和解释层统一进入经营观察面板，让页面更像正在运行的系统。"
         :badge="adminSummary.dispatchBadge"
         badge-tone="accent"
       />
-      <ActionBar align="between">
-        <button class="primary" type="button" :disabled="busy" @click="refreshBusinessViews">刷新业务数据</button>
-        <button type="button" :disabled="busy" @click="reconnect">手动重连</button>
-      </ActionBar>
+      <a-space class="action-row" wrap size="medium">
+        <a-button type="primary" :loading="busy" @click="refreshBusinessViews">刷新业务数据</a-button>
+        <a-button :loading="busy" @click="reconnect">手动重连</a-button>
+      </a-space>
       <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" :badge="state.badge" />
     </article>
 
-    <article class="panel summary-panel">
+    <article class="panel summary-panel kpi-signal-grid" v-motion-slide-visible-once-top>
       <div class="metric-grid">
         <MetricCard label="实时占用率" :value="store.occupancyRatePercent" :note="`${store.sourceLabel} / ${store.modeLabel}`" tone="accent" eyebrow="Realtime" />
-        <MetricCard label="活动预约" :value="dashboard?.summary.active_reservations ?? store.activeReservations" note="预约主链当前负载" />
         <MetricCard label="今日收益" :value="formatCurrency(dashboard?.summary.revenue_total)" note="billing_records 汇总" tone="calm" />
+        <MetricCard label="活动预约" :value="dashboard?.summary.active_reservations ?? store.activeReservations" note="预约主链当前负载" />
         <MetricCard label="调度策略" :value="dashboard?.summary.dispatch_strategy ?? 'hungarian_optimal'" note="保持 Step19B 确定性" />
       </div>
       <div class="summary-card-grid">
@@ -90,13 +88,12 @@ const adminSummary = computed(() => adminStatusSummary(dashboard.value));
       </div>
     </article>
 
-    <article class="panel insight-panel">
+    <article class="panel insight-panel" v-motion-slide-visible-once-top>
       <SectionHeader
         eyebrow="Operational Highlights"
         title="视图聚合摘要"
         subtitle="让业务页聚焦解释，而不是让页面自己拼多个接口。"
         :badge="adminSummary.degradedHint"
-        badge-tone="default"
       />
       <div class="metric-grid compact-metric-grid">
         <MetricCard label="覆盖区域" :value="dashboard?.highlights.region_count ?? 0" note="收益区域摘要数" />
@@ -105,9 +102,9 @@ const adminSummary = computed(() => adminStatusSummary(dashboard.value));
         <MetricCard label="峰值占用率" :value="formatPercent(dashboard?.highlights.peak_occupancy)" note="occupancy trend 最高值" />
       </div>
       <div class="insight-badges">
-        <StatusBadge :label="store.modeLabel" tone="calm" />
-        <StatusBadge :label="store.sourceLabel" tone="default" />
-        <StatusBadge :label="adminSummary.degradedHint" tone="accent" />
+        <a-tag color="cyan">{{ store.modeLabel }}</a-tag>
+        <a-tag color="arcoblue">{{ store.sourceLabel }}</a-tag>
+        <a-tag color="gold">{{ adminSummary.degradedHint }}</a-tag>
       </div>
       <div class="detail-list compact-detail">
         <p><strong>最近更新</strong> {{ updatedAtText }}</p>
@@ -118,7 +115,7 @@ const adminSummary = computed(() => adminStatusSummary(dashboard.value));
       </div>
     </article>
 
-    <div class="chart-cluster" v-if="dashboard">
+    <div class="chart-cluster" v-if="dashboard" v-motion-slide-visible-once-bottom>
       <EChartPanel title="日收益趋势" subtitle="最近 7 天收入变化" note="用于观察订单结算与收入起伏。" :option="revenueTrendOption" />
       <EChartPanel title="区域收益对比" subtitle="按区域对比当日收入" note="用于解释不同区域的经营贡献。" :option="regionCompareOption" />
       <EChartPanel title="车位占用率趋势" subtitle="来自 ETL / forecast 输出" note="用于观察高峰期车位占用状态。" :option="occupancyOption" />

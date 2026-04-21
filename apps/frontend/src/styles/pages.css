@@ -3,6 +3,12 @@
   grid-column: 1 / -1;
 }
 
+.owner-smart-grid,
+.order-task-flow,
+.navigation-task-panel {
+  gap: 20px;
+}
+
 .owner-hero,
 .admin-hero {
   position: relative;
@@ -37,6 +43,15 @@
   gap: var(--space-4);
 }
 
+.operations-cockpit {
+  gap: 24px;
+}
+
+.kpi-signal-grid {
+  display: grid;
+  gap: 16px;
+}
+
 .insight-panel {
   display: grid;
   gap: var(--space-4);
@@ -47,7 +62,7 @@
 .owner-navigation .nav-info-card,
 .admin-dashboard .summary-panel,
 .admin-dashboard .insight-panel {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(249, 252, 254, 0.86));
+  background: linear-gradient(180deg, rgba(10, 24, 42, 0.94), rgba(8, 20, 34, 0.86));
 }
 
 .nav-page-grid {
@@ -64,9 +79,28 @@
   margin-top: var(--space-3);
 }
 
+.smart-form-grid :deep(.arco-form-item-content-flex) {
+  width: 100%;
+}
+
+.recommend-card,
+.summary-mini-card {
+  background: linear-gradient(180deg, rgba(11, 25, 43, 0.9), rgba(7, 16, 29, 0.88));
+  border: 1px solid rgba(55, 215, 255, 0.14);
+}
+
+.recommend-action,
+.settle-action {
+  margin-top: var(--space-3);
+}
+
 @media (max-width: 960px) {
   .chart-cluster,
   .nav-page-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kpi-signal-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 }

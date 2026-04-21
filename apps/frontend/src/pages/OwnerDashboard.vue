@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import ActionBar from "../components/ActionBar.vue";
 import MetricCard from "../components/MetricCard.vue";
 import SectionHeader from "../components/SectionHeader.vue";
 import StatusBadge from "../components/StatusBadge.vue";
@@ -31,21 +30,21 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
 </script>
 
 <template>
-  <section class="page-grid owner-page-grid owner-dashboard">
-    <article class="panel hero-card owner-hero">
+  <section class="page-grid owner-page-grid owner-dashboard owner-smart-grid">
+    <article class="panel hero-card owner-hero" v-motion-slide-visible-once-bottom>
       <SectionHeader
         :eyebrow="heroSummary.eyebrow"
-        title="预约与出行首页"
-        subtitle="把区域推荐、账单提示和下一步动作收敛成一套移动优先入口，让首页直接承接停车旅程。"
+        title="智能预约中枢"
+        subtitle="把推荐、账单和下一步动作收束到同一屏，让首页直接承担停车旅程入口。"
         :badge="heroSummary.badge"
         badge-tone="accent"
       />
       <p class="hero-note">{{ activeSummary }}</p>
       <p class="muted hero-support">{{ heroSummary.helper }}</p>
-      <ActionBar align="between" class="hero-actions">
-        <button class="primary" type="button" :disabled="busy" @click="openOrders">查看订单</button>
-        <button type="button" :disabled="busy" @click="loadRecommendations">刷新推荐</button>
-      </ActionBar>
+      <a-space class="hero-actions" wrap size="medium">
+        <a-button type="primary" :loading="busy" @click="openOrders">查看订单</a-button>
+        <a-button status="normal" :loading="busy" @click="loadRecommendations">刷新推荐</a-button>
+      </a-space>
       <div class="metric-grid compact-metric-grid">
         <MetricCard
           label="目标区域"
@@ -77,36 +76,33 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
       </div>
     </article>
 
-    <article class="panel form-panel">
+    <article class="panel form-panel" v-motion-slide-visible-once-left>
       <SectionHeader
         eyebrow="Reservation Inputs"
         title="预约参数"
-        subtitle="保持演示可控，同时把真实业务入口聚焦在区域、时间窗和车位选择。"
+        subtitle="保留真实业务入口，同时把区域、时间窗和车位选择收进统一表单面板。"
         badge="可调整"
-        badge-tone="default"
       />
-      <div class="form-grid">
-        <label>
-          <span>用户 ID</span>
-          <input v-model="userId" type="text" />
-        </label>
-        <label>
-          <span>区域</span>
-          <select v-model="location">
-            <option value="R1">R1</option>
-            <option value="R2">R2</option>
-            <option value="R3">R3</option>
-          </select>
-        </label>
-        <label>
-          <span>开始时间</span>
-          <input v-model="windowStart" type="datetime-local" />
-        </label>
-        <label>
-          <span>结束时间</span>
-          <input v-model="windowEnd" type="datetime-local" />
-        </label>
-      </div>
+      <a-form layout="vertical" class="smart-form-grid" :model="{ userId, location, windowStart, windowEnd }">
+        <div class="form-grid">
+          <a-form-item label="用户 ID">
+            <a-input v-model="userId" placeholder="owner-step40-demo" />
+          </a-form-item>
+          <a-form-item label="区域">
+            <a-select v-model="location">
+              <a-option value="R1">R1</a-option>
+              <a-option value="R2">R2</a-option>
+              <a-option value="R3">R3</a-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="开始时间">
+            <input v-model="windowStart" type="datetime-local" />
+          </a-form-item>
+          <a-form-item label="结束时间">
+            <input v-model="windowEnd" type="datetime-local" />
+          </a-form-item>
+        </div>
+      </a-form>
       <div class="detail-list compact-detail">
         <p><strong>当前预约窗口</strong> {{ preferredWindow }}</p>
         <p><strong>计费规则</strong> {{ dashboard?.billing_rule.rounding_mode ?? 'CEIL_TO_UNIT' }}</p>
@@ -114,11 +110,11 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
       <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" :badge="state.badge" />
     </article>
 
-    <article class="panel recommendation-panel">
+    <article class="panel recommendation-panel" v-motion-slide-visible-once-right>
       <SectionHeader
         eyebrow="Slot Suggestions"
         title="推荐车位"
-        subtitle="展示可预约车位、预计费用、距离和导航目标，减少在多个页面之间来回切换。"
+        subtitle="把候选车位、预计费用、到达时间和导航入口整合成可直接决策的推荐卡。"
         :badge="`${recommendations.length} 个候选`"
         badge-tone="accent"
       />
@@ -132,13 +128,10 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
         <p>账单状态：{{ latestOrder.billing_status }}</p>
       </div>
       <div class="recommend-grid">
-        <button
+        <article
           v-for="item in recommendations"
           :key="String(item.slot_id)"
           class="recommend-card"
-          type="button"
-          :disabled="busy"
-          @click="reserveAndOpenOrders(String(item.slot_id))"
         >
           <div class="card-topline">
             <p class="card-title">{{ item.slot_display_name ?? item.slot_id }}</p>
@@ -148,7 +141,10 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
           <p>{{ item.region_label ?? item.slot_id }}</p>
           <p>ETA：{{ item.eta_minutes }} 分钟</p>
           <p>{{ item.destination?.display_name ?? '社区车位入口' }}</p>
-        </button>
+          <a-button type="primary" class="recommend-action" :loading="busy" @click="reserveAndOpenOrders(String(item.slot_id))">
+            预约并查看订单
+          </a-button>
+        </article>
       </div>
       <div v-if="!recommendations.length && state.tone !== 'loading'" class="empty-state">
         <p class="metric-label">暂无推荐结果</p>
