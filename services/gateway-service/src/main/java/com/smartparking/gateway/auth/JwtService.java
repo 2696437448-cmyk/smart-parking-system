@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -12,6 +14,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 
+@Service
 public class JwtService {
 
     public record AuthClaims(
@@ -27,7 +30,12 @@ public class JwtService {
     private final AuthProperties properties;
     private final Clock clock;
 
-    public JwtService(AuthProperties properties, Clock clock) {
+    @Autowired
+    public JwtService(AuthProperties properties) {
+        this(properties, Clock.systemUTC());
+    }
+
+    JwtService(AuthProperties properties, Clock clock) {
         this.properties = properties;
         this.clock = clock;
     }

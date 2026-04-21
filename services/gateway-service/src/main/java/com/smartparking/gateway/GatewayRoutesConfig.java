@@ -1,5 +1,6 @@
 package com.smartparking.gateway;
 
+import com.smartparking.gateway.auth.AuthGatewayFilterFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
@@ -21,10 +22,11 @@ public class GatewayRoutesConfig {
     }
 
     @Bean
-    public RouteLocator routeLocator(RouteLocatorBuilder builder) {
+    public RouteLocator routeLocator(RouteLocatorBuilder builder, AuthGatewayFilterFactory authGatewayFilterFactory) {
         return builder.routes()
                 .route("parking-route", r -> r
                         .path("/api/v1/owner/**", "/api/v1/admin/**", "/internal/v1/ingest/**")
+                        .filters(f -> f.filter(authGatewayFilterFactory.apply(new AuthGatewayFilterFactory.Config())))
                         .uri(parkingBaseUrl))
                 .route("model-route", r -> r
                         .path("/internal/v1/model/**", "/internal/v1/dispatch/**")
