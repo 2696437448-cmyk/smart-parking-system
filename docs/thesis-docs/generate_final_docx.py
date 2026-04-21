@@ -364,7 +364,20 @@ def configure_document(doc: Document) -> None:
 
 
 def extract_meta(lines: list[str]) -> dict[str, str]:
-    wanted = ["中文题目", "英文题目", "学院（部）", "专业班级", "学生姓名", "指导教师", "完成日期"]
+    wanted = [
+        "中文题目",
+        "英文题目",
+        "学院（部）",
+        "专业",
+        "班级",
+        "学号",
+        "学生姓名",
+        "指导教师",
+        "职称",
+        "届别",
+        "完成日期",
+        "专业班级",
+    ]
     meta: dict[str, str] = {}
     for key in wanted:
         for idx, line in enumerate(lines):
@@ -374,25 +387,32 @@ def extract_meta(lines: list[str]) -> dict[str, str]:
                         meta[key] = value.strip().strip("`")
                         break
                 break
+    if "专业" not in meta and "专业班级" in meta:
+        meta["专业"] = meta["专业班级"]
+    if "班级" not in meta:
+        meta["班级"] = meta.get("专业班级", "")
     return meta
 
 
 def add_cover(doc: Document, meta: dict[str, str]) -> None:
-    for _ in range(4):
-        doc.add_paragraph()
-    add_center_title(doc, "[学校名称]本科毕业设计说明书", size=20)
     for _ in range(3):
+        doc.add_paragraph()
+    add_center_title(doc, "本科毕业设计说明书", size=20, space_after=8)
+    add_center_title(doc, f"（{meta.get('届别', '2026届')}）", size=16, bold=False, space_after=24)
+    for _ in range(2):
         doc.add_paragraph()
     add_center_title(doc, meta["中文题目"], size=18)
     add_center_title(doc, meta["英文题目"], size=14, bold=False)
     for _ in range(3):
         doc.add_paragraph()
     fields = [
-        ("学院（部）", meta["学院（部）"]),
-        ("专业班级", meta["专业班级"]),
-        ("学生姓名", meta["学生姓名"]),
-        ("指导教师", meta["指导教师"]),
-        ("完成日期", meta["完成日期"]),
+        ("学  院", meta.get("学院（部）", "")),
+        ("专  业", meta.get("专业", "")),
+        ("班  级", meta.get("班级", "")),
+        ("学  号", meta.get("学号", "")),
+        ("姓  名", meta.get("学生姓名", "")),
+        ("指导教师", meta.get("指导教师", "")),
+        ("职  称", meta.get("职称", "")),
     ]
     for label, value in fields:
         p = doc.add_paragraph()
@@ -400,6 +420,12 @@ def add_cover(doc: Document, meta: dict[str, str]) -> None:
         p.paragraph_format.space_after = Pt(10)
         run = p.add_run(f"{label}：{value}")
         set_run_font(run, size=14)
+    doc.add_paragraph()
+    date_paragraph = doc.add_paragraph()
+    date_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    date_paragraph.paragraph_format.space_before = Pt(18)
+    run = date_paragraph.add_run(meta.get("完成日期", ""))
+    set_run_font(run, size=14)
     doc.add_page_break()
 
 
