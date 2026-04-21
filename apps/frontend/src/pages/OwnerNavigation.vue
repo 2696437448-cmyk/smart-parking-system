@@ -25,7 +25,7 @@ const routeSummaryTextLines = computed(() => routeSummaryLines(navigation.value)
       />
       <p class="hero-note">{{ routeSummaryText }}</p>
       <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" :badge="state.badge" />
-      <div v-if="navigation" class="detail-list compact-detail">
+      <div v-if="navigation" class="detail-list compact-detail navigation-summary-stack">
         <div class="navigation-badge-row">
           <a-tag color="cyan">{{ navigation.region_label }}</a-tag>
           <a-tag color="arcoblue">{{ navigation.slot_display_name ?? navigation.slot_id }}</a-tag>
@@ -42,7 +42,7 @@ const routeSummaryTextLines = computed(() => routeSummaryLines(navigation.value)
       </div>
     </article>
 
-    <article class="panel map-panel" v-if="navigation" v-motion-slide-visible-once-right>
+    <article class="panel map-panel navigation-map-stage" v-if="navigation" v-motion-slide-visible-once-right>
       <SectionHeader
         eyebrow="Leaflet + OSM"
         title="目的地地图"

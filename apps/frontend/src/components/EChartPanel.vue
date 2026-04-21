@@ -55,13 +55,16 @@ onBeforeUnmount(() => {
 <template>
   <article class="chart-panel-shell" v-motion-slide-visible-once-bottom>
     <div class="chart-head chart-panel-head">
-      <div>
-        <p class="eyebrow">Business Chart</p>
+      <div class="chart-panel-copy">
+        <div class="section-header-kicker chart-panel-kicker">
+          <p class="eyebrow">Business Chart</p>
+          <a-tag color="cyan">Live Chart</a-tag>
+        </div>
         <h3>{{ title }}</h3>
+        <p v-if="subtitle" class="muted chart-subtitle">{{ subtitle }}</p>
       </div>
       <div class="chart-panel-side">
-        <p v-if="subtitle" class="muted chart-subtitle">{{ subtitle }}</p>
-        <a-tag color="cyan">Live Chart</a-tag>
+        <p class="muted chart-microcopy">产品化趋势观察卡</p>
       </div>
     </div>
     <div ref="root" class="chart-canvas"></div>

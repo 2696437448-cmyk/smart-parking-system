@@ -22,18 +22,25 @@ const orderMetaItems = computed(() => ownerOrderMetaItems(orderDetail.value));
         subtitle="让订单状态、金额信息和下一步动作形成清晰顺序，而不是平铺展示。"
         :badge="orderDetail?.billing_status ?? 'WAITING'"
         badge-tone="accent"
-      />
+      >
+        <template #actions>
+          <a-space class="action-row" wrap size="medium">
+            <a-button type="primary" :loading="busy" @click="loadOrder">刷新订单</a-button>
+            <a-button :disabled="busy || !orderDetail" @click="openNavigation">查看导航</a-button>
+          </a-space>
+        </template>
+      </SectionHeader>
       <p class="hero-note">{{ orderStatusNote }}</p>
-      <a-space class="action-row" wrap size="medium">
-        <a-button type="primary" :loading="busy" @click="loadOrder">刷新订单</a-button>
-        <a-button :disabled="busy || !orderDetail" @click="openNavigation">查看导航</a-button>
-      </a-space>
+      <div class="order-status-band">
+        <StatusBadge :label="orderDetail?.billing_status ?? 'WAITING'" tone="accent" />
+        <p class="muted">先完成账单确认，再继续进入导航和停车结算。</p>
+      </div>
     </article>
 
-    <article class="panel order-panel" v-motion-slide-visible-once-top>
+    <article class="panel order-panel billing-summary-card" v-motion-slide-visible-once-top>
       <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" :badge="state.badge" />
       <div v-if="orderDetail" class="detail-list order-stack">
-        <div class="order-inline-status">
+        <div class="order-inline-status order-status-band">
           <StatusBadge :label="orderDetail.billing_status" tone="accent" />
           <p class="muted">当前订单已进入账单中心，可继续查看费用明细与导航入口。</p>
         </div>
@@ -44,7 +51,10 @@ const orderMetaItems = computed(() => ownerOrderMetaItems(orderDetail.value));
           <MetricCard label="结算日期" :value="orderDetail.recognized_on || '未结算'" :note="orderDetail.billing_rule?.timezone ?? 'Asia/Shanghai'" />
         </div>
         <KeyValueList :items="orderMetaItems" />
-        <a-button type="primary" class="settle-action" :loading="busy" @click="finishOrder">完成停车并结算</a-button>
+        <div class="task-footer-actions">
+          <a-button type="primary" class="settle-action" :loading="busy" @click="finishOrder">完成停车并结算</a-button>
+          <a-button :disabled="busy || !orderDetail" @click="openNavigation">前往导航</a-button>
+        </div>
       </div>
       <div v-else-if="state.tone !== 'loading'" class="empty-state">
         <p class="metric-label">暂无订单</p>

@@ -18,10 +18,10 @@ REQUIRED_FILES = [
 ]
 
 REQUIRED_TOKENS = {
-    "src/pages/OwnerDashboard.vue": ["owner-smart-grid", "a-form", "a-button", "智能预约中枢"],
-    "src/pages/OwnerOrders.vue": ["order-task-flow", "a-button", "订单与账单任务流"],
-    "src/pages/OwnerNavigation.vue": ["navigation-task-panel", "MapPreview", "目标车位导航"],
-    "src/pages/AdminMonitor.vue": ["operations-cockpit", "EChartPanel", "停车运营驾驶舱"],
+    "src/pages/OwnerDashboard.vue": ["owner-smart-grid", "owner-summary-band", "reservation-panel", "recommendation-list", "智能预约中枢"],
+    "src/pages/OwnerOrders.vue": ["order-task-flow", "order-status-band", "billing-summary-card", "task-footer-actions", "订单与账单任务流"],
+    "src/pages/OwnerNavigation.vue": ["navigation-task-panel", "navigation-summary-stack", "navigation-map-stage", "目标车位导航"],
+    "src/pages/AdminMonitor.vue": ["operations-cockpit", "operations-primary-grid", "operations-secondary-grid", "primary-chart-card", "停车运营驾驶舱"],
 }
 
 

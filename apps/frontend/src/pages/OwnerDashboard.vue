@@ -38,37 +38,44 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
         subtitle="把推荐、账单和下一步动作收束到同一屏，让首页直接承担停车旅程入口。"
         :badge="heroSummary.badge"
         badge-tone="accent"
-      />
-      <p class="hero-note">{{ activeSummary }}</p>
-      <p class="muted hero-support">{{ heroSummary.helper }}</p>
-      <a-space class="hero-actions" wrap size="medium">
-        <a-button type="primary" :loading="busy" @click="openOrders">查看订单</a-button>
-        <a-button status="normal" :loading="busy" @click="loadRecommendations">刷新推荐</a-button>
-      </a-space>
-      <div class="metric-grid compact-metric-grid">
-        <MetricCard
-          label="目标区域"
-          :value="dashboard?.summary.region_id ?? location"
-          :note="dashboard?.summary.region_label ?? '社区停车区'"
-          tone="accent"
-          eyebrow="Region"
-        />
-        <MetricCard
-          label="候选车位"
-          :value="dashboard?.summary.recommendation_count ?? recommendations.length"
-          note="按预约窗口与区域生成"
-          tone="calm"
-        />
-        <MetricCard
-          label="计费单位"
-          :value="`${dashboard?.billing_rule.unit_minutes ?? 15} 分钟`"
-          :note="dashboard?.billing_rule.timezone ?? 'Asia/Shanghai'"
-        />
-        <MetricCard
-          label="最近订单"
-          :value="dashboard?.summary.latest_order_id || '暂无'"
-          :note="`${dashboard?.summary.latest_billing_status ?? 'NONE'} / ${formatCurrency(dashboard?.summary.latest_amount)}`"
-        />
+      >
+        <template #actions>
+          <a-space class="hero-actions" wrap size="medium">
+            <a-button type="primary" :loading="busy" @click="openOrders">查看订单</a-button>
+            <a-button status="normal" :loading="busy" @click="loadRecommendations">刷新推荐</a-button>
+          </a-space>
+        </template>
+      </SectionHeader>
+      <div class="owner-summary-band">
+        <div class="owner-summary-copy">
+          <p class="hero-note">{{ activeSummary }}</p>
+          <p class="muted hero-support">{{ heroSummary.helper }}</p>
+        </div>
+        <div class="metric-grid compact-metric-grid">
+          <MetricCard
+            label="目标区域"
+            :value="dashboard?.summary.region_id ?? location"
+            :note="dashboard?.summary.region_label ?? '社区停车区'"
+            tone="accent"
+            eyebrow="Region"
+          />
+          <MetricCard
+            label="候选车位"
+            :value="dashboard?.summary.recommendation_count ?? recommendations.length"
+            note="按预约窗口与区域生成"
+            tone="calm"
+          />
+          <MetricCard
+            label="计费单位"
+            :value="`${dashboard?.billing_rule.unit_minutes ?? 15} 分钟`"
+            :note="dashboard?.billing_rule.timezone ?? 'Asia/Shanghai'"
+          />
+          <MetricCard
+            label="最近订单"
+            :value="dashboard?.summary.latest_order_id || '暂无'"
+            :note="`${dashboard?.summary.latest_billing_status ?? 'NONE'} / ${formatCurrency(dashboard?.summary.latest_amount)}`"
+          />
+        </div>
       </div>
       <div class="hero-footer">
         <StatusBadge :label="state.badge" tone="calm" />
@@ -76,13 +83,17 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
       </div>
     </article>
 
-    <article class="panel form-panel" v-motion-slide-visible-once-left>
+    <article class="panel form-panel reservation-panel" v-motion-slide-visible-once-left>
       <SectionHeader
         eyebrow="Reservation Inputs"
         title="预约参数"
         subtitle="保留真实业务入口，同时把区域、时间窗和车位选择收进统一表单面板。"
         badge="可调整"
-      />
+      >
+        <template #actions>
+          <StatusBadge :label="preferredWindow" tone="default" />
+        </template>
+      </SectionHeader>
       <a-form layout="vertical" class="smart-form-grid" :model="{ userId, location, windowStart, windowEnd }">
         <div class="form-grid">
           <a-form-item label="用户 ID">
@@ -110,7 +121,7 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
       <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" :badge="state.badge" />
     </article>
 
-    <article class="panel recommendation-panel" v-motion-slide-visible-once-right>
+    <article class="panel recommendation-panel recommendation-list" v-motion-slide-visible-once-right>
       <SectionHeader
         eyebrow="Slot Suggestions"
         title="推荐车位"

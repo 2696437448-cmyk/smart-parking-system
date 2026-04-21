@@ -487,6 +487,118 @@ button:disabled,
   margin-bottom: 0;
 }
 
+.section-header {
+  gap: 20px;
+}
+
+.section-header-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.section-header-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.section-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.metric-card-shell {
+  gap: 14px;
+  min-height: 168px;
+  padding: 20px;
+  background:
+    linear-gradient(180deg, rgba(11, 24, 42, 0.96), rgba(8, 19, 33, 0.84)),
+    radial-gradient(circle at top right, rgba(55, 215, 255, 0.12), transparent 28%);
+}
+
+.metric-card-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.metric-card-trend {
+  margin-bottom: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-line-soft);
+}
+
+.metric-statistic :deep(.arco-statistic-content),
+.metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--color-ink-strong);
+}
+
+.state-notice {
+  background: linear-gradient(180deg, rgba(10, 23, 39, 0.9), rgba(8, 19, 33, 0.82));
+  border-color: var(--color-line);
+}
+
+.state-notice-inline {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-line-soft);
+  color: var(--color-ink-soft);
+}
+
+.state-notice-inline strong {
+  color: var(--color-ink-strong);
+}
+
+.state-notice[data-tone="loading"],
+.state-notice[data-tone="ready"],
+.state-notice[data-tone="empty"],
+.state-notice[data-tone="error"],
+.state-notice[data-tone="degraded"],
+.state-notice[data-tone="stale"] {
+  background: linear-gradient(180deg, rgba(10, 23, 39, 0.9), rgba(8, 19, 33, 0.82));
+}
+
+.chart-panel-shell,
+.map-preview-shell {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border-radius: calc(var(--radius-card) + 2px);
+  background:
+    linear-gradient(180deg, rgba(10, 23, 39, 0.94), rgba(8, 19, 33, 0.84)),
+    radial-gradient(circle at top right, rgba(55, 215, 255, 0.12), transparent 26%);
+  border: 1px solid rgba(111, 205, 255, 0.16);
+  box-shadow: var(--color-panel-float);
+}
+
+.chart-panel-copy {
+  display: grid;
+  gap: 8px;
+}
+
+.chart-panel-kicker {
+  justify-content: space-between;
+}
+
+.chart-microcopy {
+  margin-bottom: 0;
+  color: var(--color-ink-soft);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 900px) {
   .metric-grid,
   .recommend-grid,
@@ -511,5 +623,11 @@ button:disabled,
   .state-notice-head,
   .key-value-row {
     flex-direction: column;
+  }
+
+  .section-header-actions,
+  .chart-panel-side {
+    justify-content: flex-start;
+    justify-items: start;
   }
 }

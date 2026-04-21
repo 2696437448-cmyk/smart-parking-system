@@ -184,6 +184,109 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
+.owner-journey-header {
+  display: grid;
+  gap: var(--space-4);
+  background:
+    linear-gradient(135deg, rgba(8, 21, 37, 0.98), rgba(11, 30, 51, 0.88)),
+    radial-gradient(circle at top right, rgba(55, 215, 255, 0.16), transparent 28%);
+}
+
+.owner-journey-bar {
+  align-items: start;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+}
+
+.owner-journey-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.owner-journey-actions {
+  justify-content: flex-end;
+}
+
+.owner-journey-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.owner-nav-pill {
+  min-width: 108px;
+  justify-content: center;
+  text-align: center;
+}
+
+.owner-mobile-dock {
+  background: rgba(5, 13, 24, 0.94);
+  box-shadow: var(--color-panel-float);
+}
+
+.admin-sidebar-shell {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-rows: auto auto auto 1fr auto;
+}
+
+.admin-sidebar-brand {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.admin-sidebar-nav a {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+}
+
+.admin-sidebar-nav a small {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-soft);
+}
+
+.admin-sidebar-notes {
+  padding: 16px 18px;
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-line-soft);
+  background: linear-gradient(180deg, rgba(8, 19, 33, 0.76), rgba(10, 24, 43, 0.54));
+}
+
+.admin-sidebar-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  align-items: flex-start;
+  background:
+    linear-gradient(140deg, rgba(8, 21, 37, 0.96), rgba(12, 29, 48, 0.92)),
+    radial-gradient(circle at top right, rgba(55, 215, 255, 0.12), transparent 24%);
+}
+
+.admin-page-header-copy {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-page-header-side {
+  display: grid;
+  gap: 12px;
+  justify-items: end;
+}
+
+.admin-page-header-note {
+  margin-bottom: 0;
+  max-width: 220px;
+  text-align: right;
+}
+
 @media (max-width: 960px) {
   .admin-shell {
     grid-template-columns: minmax(0, 1fr);
@@ -196,6 +299,23 @@
 
   .admin-main {
     gap: var(--space-4);
+  }
+
+  .owner-journey-bar,
+  .admin-page-header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .admin-page-header {
+    flex-direction: column;
+  }
+
+  .admin-page-header-side {
+    justify-items: start;
+  }
+
+  .admin-page-header-note {
+    text-align: left;
   }
 }
 
@@ -211,5 +331,14 @@
 
   .owner-page-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .owner-journey-actions {
+    justify-content: flex-start;
+  }
+
+  .owner-nav-pill {
+    min-width: 0;
+    flex: 1 1 0;
   }
 }

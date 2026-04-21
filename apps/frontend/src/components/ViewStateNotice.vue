@@ -26,6 +26,8 @@ const toneLabel = computed(() => {
       return "状态稳定";
   }
 });
+
+const showAlert = computed(() => props.tone === "error" || props.tone === "degraded");
 </script>
 
 <template>
@@ -34,7 +36,11 @@ const toneLabel = computed(() => {
       <p class="eyebrow">View State</p>
       <a-tag color="cyan">{{ badge ?? toneLabel }}</a-tag>
     </div>
-    <a-alert :title="title" show-icon>
+    <div class="state-notice-inline">
+      <strong>{{ title }}</strong>
+      {{ message }}
+    </div>
+    <a-alert v-if="showAlert" :title="title" show-icon>
       {{ message }}
     </a-alert>
     <p v-if="detail" class="muted state-detail">{{ detail }}</p>
