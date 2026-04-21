@@ -53,6 +53,7 @@ export function useOwnerDashboardView() {
           message: "推荐车位、计费规则和最近订单已经汇合到同一视图，可直接进入订单页继续流程。",
           detail: `trace ${payload.trace_id} / ${payload.service}`,
           staleMessage: "当前推荐结果可能已经过时，请点击刷新推荐以重新同步最新候选车位。",
+          badge: "订单已同步",
         });
       } else {
         state.markReady({
@@ -60,6 +61,7 @@ export function useOwnerDashboardView() {
           message: "当前预约窗口的候选车位已经刷新，可直接选择车位发起预约。",
           detail: `trace ${payload.trace_id} / ${payload.service}`,
           staleMessage: "推荐视图可能已经过时，请重新刷新以获取当前候选结果。",
+          badge: "推荐已更新",
         });
       }
     } catch (error) {

@@ -13,10 +13,29 @@ body {
   min-height: 100vh;
   color: var(--color-ink);
   background:
-    radial-gradient(circle at 12% 12%, rgba(255, 199, 133, 0.28), transparent 24%),
-    radial-gradient(circle at 88% 14%, rgba(97, 167, 196, 0.22), transparent 26%),
-    linear-gradient(160deg, #f7f2ea 0%, #eef4f8 58%, #edf7f3 100%);
+    radial-gradient(circle at 10% 10%, rgba(55, 215, 255, 0.12), transparent 24%),
+    radial-gradient(circle at 84% 10%, rgba(59, 130, 246, 0.16), transparent 28%),
+    radial-gradient(circle at 50% 100%, rgba(255, 180, 84, 0.08), transparent 35%),
+    linear-gradient(180deg, #050b14 0%, var(--color-bg-main) 48%, #081425 100%);
   font-family: var(--font-display);
+}
+
+.tech-theme-root {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+.app-grid-glow {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(111, 205, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(111, 205, 255, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at center, black 45%, transparent 88%);
 }
 
 button,
@@ -27,6 +46,7 @@ select {
 
 button {
   cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 
 h1,
@@ -47,7 +67,16 @@ select {
   border: 1px solid var(--color-line);
   border-radius: 16px;
   padding: 13px 14px;
-  background: rgba(255, 255, 255, 0.96);
+  background: rgba(9, 24, 43, 0.94);
+  color: var(--color-ink);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: rgba(55, 215, 255, 0.48);
+  box-shadow: 0 0 0 4px rgba(55, 215, 255, 0.12);
 }
 
 label {
@@ -79,5 +108,14 @@ label {
   text-transform: uppercase;
   letter-spacing: 0.18em;
   font-size: 12px;
-  color: #c66535;
+  color: rgba(55, 215, 255, 0.82);
+}
+
+.panel {
+  position: relative;
+  z-index: 1;
+  background: var(--color-bg-panel);
+  border: 1px solid var(--color-line);
+  box-shadow: var(--color-panel-glow);
+  backdrop-filter: blur(18px);
 }

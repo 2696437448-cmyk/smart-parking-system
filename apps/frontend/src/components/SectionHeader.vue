@@ -4,6 +4,7 @@ defineProps<{
   title: string;
   subtitle?: string;
   badge?: string;
+  badgeTone?: "default" | "accent";
 }>();
 </script>
 
@@ -14,6 +15,8 @@ defineProps<{
       <h3>{{ title }}</h3>
       <p v-if="subtitle" class="muted section-subtitle">{{ subtitle }}</p>
     </div>
-    <span v-if="badge" class="pill ghost">{{ badge }}</span>
+    <div class="section-header-side">
+      <a-tag v-if="badge" :color="badgeTone === 'accent' ? 'cyan' : 'arcoblue'">{{ badge }}</a-tag>
+    </div>
   </div>
 </template>

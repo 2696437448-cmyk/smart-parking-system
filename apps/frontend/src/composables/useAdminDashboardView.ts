@@ -61,6 +61,7 @@ export function useAdminDashboardView() {
       staleTitle: "经营视图可能已过时",
       staleMessage: "请刷新业务数据或手动重连实时通道，以恢复最新经营视图。",
       staleDetail: detail.join(" / "),
+      badge: "经营已同步",
     });
   }
 
