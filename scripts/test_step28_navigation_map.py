@@ -68,7 +68,7 @@ def main() -> None:
     assert isinstance(nav["route_summary"], dict) and nav["route_summary"].get("summary"), nav
 
     page = (FRONTEND / "src" / "pages" / "OwnerNavigation.vue").read_text(encoding="utf-8")
-    for token in ["MapPreview", "route_summary", "Leaflet + OSM"]:
+    for token in ["MapPreview", "route_summary", "地图"]:
         if token not in page:
             raise AssertionError(f"OwnerNavigation.vue missing token: {token}")
     print("STEP28_GATE_PASS")

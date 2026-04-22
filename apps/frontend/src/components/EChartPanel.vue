@@ -57,14 +57,14 @@ onBeforeUnmount(() => {
     <div class="chart-head chart-panel-head">
       <div class="chart-panel-copy">
         <div class="section-header-kicker chart-panel-kicker">
-          <p class="eyebrow">Business Chart</p>
-          <a-tag color="cyan">Live Chart</a-tag>
+          <p class="eyebrow">图表</p>
+          <a-tag color="arcoblue">实时</a-tag>
         </div>
         <h3>{{ title }}</h3>
         <p v-if="subtitle" class="muted chart-subtitle">{{ subtitle }}</p>
       </div>
       <div class="chart-panel-side">
-        <p class="muted chart-microcopy">产品化趋势观察卡</p>
+        <p class="muted chart-microcopy">指标走势</p>
       </div>
     </div>
     <div ref="root" class="chart-canvas"></div>

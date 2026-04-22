@@ -14,11 +14,11 @@ const isNumericValue = computed(() => typeof props.value === "number");
 const toneLabel = computed(() => {
   switch (props.tone) {
     case "accent":
-      return "Priority";
+      return "重点";
     case "calm":
-      return "Stable";
+      return "平稳";
     default:
-      return "Tracking";
+      return "跟踪";
   }
 });
 

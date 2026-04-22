@@ -57,14 +57,14 @@ onBeforeUnmount(() => {
     <div class="chart-head chart-panel-head">
       <div class="chart-panel-copy">
         <div class="section-header-kicker chart-panel-kicker">
-          <p class="eyebrow">Destination Lock</p>
-          <a-tag color="arcoblue">Leaflet</a-tag>
+          <p class="eyebrow">地图</p>
+          <a-tag color="arcoblue">预览</a-tag>
         </div>
         <h3>{{ title || "目标车位" }}</h3>
-        <p class="muted chart-subtitle">目标车位已锁定，地图预览与外部导航入口保持同一任务上下文。</p>
+        <p class="muted chart-subtitle">查看目标车位位置，并支持跳转外部地图。</p>
       </div>
       <div class="chart-panel-side">
-        <p class="muted chart-microcopy">Map Stage</p>
+        <p class="muted chart-microcopy">路线预览</p>
       </div>
     </div>
     <div ref="root" class="map-preview leaflet-container"></div>

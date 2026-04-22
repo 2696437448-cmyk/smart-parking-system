@@ -14,18 +14,12 @@ const routeSummaryTextLines = computed(() => routeSummaryLines(navigation.value)
 </script>
 
 <template>
-  <section class="page-grid nav-page-grid owner-navigation navigation-task-panel">
-    <article class="panel hero-card nav-info-card" v-motion-slide-visible-once-left>
-      <SectionHeader
-        eyebrow="Navigation Task"
-        title="目标车位导航"
-        subtitle="把 ETA、路线摘要和目标锁定信息集中呈现，让导航页像一张任务面板。"
-        :badge="navigation ? `ETA ${navigation.eta_minutes} 分钟` : '等待订单'"
-        badge-tone="accent"
-      />
+  <section class="page-grid nav-page-grid owner-navigation navigation-grid">
+    <article class="panel route-panel" v-motion-slide-visible-once-left>
+      <SectionHeader eyebrow="导航" title="路线信息" subtitle="查看目标车位、预计到达时间和路线摘要。" :badge="navigation ? `ETA ${navigation.eta_minutes} 分钟` : '等待订单'" badge-tone="accent" />
       <p class="hero-note">{{ routeSummaryText }}</p>
       <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" :badge="state.badge" />
-      <div v-if="navigation" class="detail-list compact-detail navigation-summary-stack">
+      <div v-if="navigation" class="detail-list compact-detail">
         <div class="navigation-badge-row">
           <a-tag color="cyan">{{ navigation.region_label }}</a-tag>
           <a-tag color="arcoblue">{{ navigation.slot_display_name ?? navigation.slot_id }}</a-tag>
@@ -42,14 +36,8 @@ const routeSummaryTextLines = computed(() => routeSummaryLines(navigation.value)
       </div>
     </article>
 
-    <article class="panel map-panel navigation-map-stage" v-if="navigation" v-motion-slide-visible-once-right>
-      <SectionHeader
-        eyebrow="Leaflet + OSM"
-        title="目的地地图"
-        subtitle="页面内预览和外部地图跳转并存，便于答辩展示与移动端使用。"
-        :badge="`ETA ${navigation.eta_minutes} 分钟`"
-        badge-tone="default"
-      />
+    <article class="panel map-panel" v-if="navigation" v-motion-slide-visible-once-right>
+      <SectionHeader eyebrow="地图" title="地图预览" subtitle="查看目标车位位置。" :badge="`ETA ${navigation.eta_minutes} 分钟`" badge-tone="default" />
       <MapPreview
         :lat="Number(navigation.destination?.lat ?? 0)"
         :lng="Number(navigation.destination?.lng ?? 0)"

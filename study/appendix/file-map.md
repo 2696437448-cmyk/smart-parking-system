@@ -12,13 +12,13 @@
 - `router.ts`
   页面路由入口。
 - `pages/OwnerDashboard.vue`
-  业主推荐与预约首页。
+  业主首页与推荐入口。
 - `pages/OwnerOrders.vue`
-  订单与账单页。
+  订单状态与结算页。
 - `pages/OwnerNavigation.vue`
   导航页。
 - `pages/AdminMonitor.vue`
-  物业经营驾驶舱。
+  物业监管总览页。
 - `composables/useOwnerDashboardView.ts`
   业主页面的主要逻辑入口。
 - `composables/useAdminDashboardView.ts`
