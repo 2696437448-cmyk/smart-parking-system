@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { IconCompass, IconFire, IconNotification } from "@arco-design/web-vue/es/icon";
-import { RouterLink, RouterView, useRoute } from "vue-router";
+import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
 const route = useRoute();
+const router = useRouter();
+const auth = useAuthStore();
 const tabs = [
   { to: "/owner/dashboard", label: "推荐" },
   { to: "/owner/orders", label: "订单" },
@@ -11,6 +14,7 @@ const tabs = [
 ];
 
 const activeTab = computed(() => tabs.find((tab) => route.path === tab.to) ?? tabs[0]);
+const currentUser = computed(() => auth.currentUser);
 
 const journeyMeta = computed(() => {
   switch (activeTab.value.to) {
@@ -37,6 +41,11 @@ const journeyMeta = computed(() => {
       };
   }
 });
+
+async function logout() {
+  await auth.logout();
+  await router.replace("/login");
+}
 </script>
 
 <template>
@@ -54,9 +63,12 @@ const journeyMeta = computed(() => {
           <p>{{ journeyMeta.summary }}</p>
         </div>
         <div class="chip-row owner-journey-actions">
+          <span class="pill ghost">{{ currentUser?.display_name ?? "未登录用户" }}</span>
+          <span class="pill ghost">{{ currentUser?.role ?? "OWNER" }}</span>
           <span class="pill"><IconCompass /> 智能推荐</span>
           <span class="pill"><IconFire /> 计费感知</span>
           <span class="pill"><IconNotification /> 路径同步</span>
+          <a-button size="small" status="normal" @click="logout">退出登录</a-button>
         </div>
       </div>
       <div class="owner-journey-meta">

@@ -17,8 +17,8 @@
    - `Step30`：功能与增强交付基线
    - `Step24`：原始题目主链闭环基线
 4. 当前默认业务入口：
-   - 业主端：`http://localhost:4173/owner/dashboard`
-   - 物业端：`http://localhost:4173/admin/monitor`
+   - 统一登录：`http://localhost:4173/login`
+   - 登录后按角色自动跳转到业主端或物业端
 
 ## 📖 项目简介
 
@@ -125,8 +125,10 @@ make preflight-static
 
 ### 5. 打开业务页面
 
-1. 业主端：`http://localhost:4173/owner/dashboard`
-2. 物业端：`http://localhost:4173/admin/monitor`
+1. 统一登录：`http://localhost:4173/login`
+2. 业主演示账号：`owner_demo / demo123`
+3. 物业演示账号：`admin_demo / admin123`
+4. 登录后会自动跳转到业主端或物业端首页
 
 ### 6. 运行当前默认验收（Step40）
 

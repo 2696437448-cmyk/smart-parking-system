@@ -1,5 +1,7 @@
 import { buildTraceHeaders, runtimeConfig } from "./runtime";
 
+export const AUTH_TOKEN_STORAGE_KEY = "smartParkingAccessToken";
+
 export class HttpRequestError extends Error {
   status: number;
   traceId: string;
@@ -67,6 +69,13 @@ function payloadTraceId(payload: unknown) {
   return typeof traceId === "string" ? traceId : "";
 }
 
+export function getStoredAccessToken() {
+  if (typeof window === "undefined") {
+    return "";
+  }
+  return window.localStorage.getItem(AUTH_TOKEN_STORAGE_KEY) ?? "";
+}
+
 export function gatewayUrl(path: string, query: Record<string, string | number | boolean | undefined | null> = {}) {
   const url = new URL(path, runtimeConfig.gatewayBaseUrl);
   for (const [key, value] of Object.entries(query)) {
@@ -86,9 +95,11 @@ export function formatRequestError(error: unknown) {
 }
 
 export async function requestJson<T>(scope: string, url: string, options: RequestInit = {}): Promise<T> {
+  const accessToken = getStoredAccessToken();
+  const authHeaders: HeadersInit = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
   const response = await fetch(url, {
     ...options,
-    headers: buildTraceHeaders(scope, mergeHeaders({ Accept: "application/json" }, options.headers ?? {})),
+    headers: buildTraceHeaders(scope, mergeHeaders({ Accept: "application/json" }, authHeaders, options.headers ?? {})),
   });
   const text = await response.text();
   const payload = parsePayload(text);

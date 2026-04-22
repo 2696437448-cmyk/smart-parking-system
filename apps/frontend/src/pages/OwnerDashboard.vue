@@ -9,7 +9,7 @@ import { ownerDashboardHero } from "../presenters/owner";
 import { useOwnerDashboardView } from "../composables/useOwnerDashboardView";
 
 const {
-  userId,
+  authenticatedUserId,
   location,
   windowStart,
   windowEnd,
@@ -94,10 +94,10 @@ const latestTrace = computed(() => (dashboard.value ? formatTraceDetail(dashboar
           <StatusBadge :label="preferredWindow" tone="default" />
         </template>
       </SectionHeader>
-      <a-form layout="vertical" class="smart-form-grid" :model="{ userId, location, windowStart, windowEnd }">
+      <a-form layout="vertical" class="smart-form-grid" :model="{ authenticatedUserId, location, windowStart, windowEnd }">
         <div class="form-grid">
-          <a-form-item label="用户 ID">
-            <a-input v-model="userId" placeholder="owner-step40-demo" />
+          <a-form-item label="登录账号">
+            <a-input :model-value="authenticatedUserId" disabled />
           </a-form-item>
           <a-form-item label="区域">
             <a-select v-model="location">

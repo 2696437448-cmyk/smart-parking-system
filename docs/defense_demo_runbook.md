@@ -87,9 +87,10 @@ make release-bundle
 
 ## 5. 默认展示地址
 
-1. 业主端：`http://localhost:4173/owner/dashboard`
-2. 物业端：`http://localhost:4173/admin/monitor`
-3. 诊断地址（仅备用）：
+1. 统一登录：`http://localhost:4173/login`
+2. 业主演示账号：`owner_demo / demo123`
+3. 物业演示账号：`admin_demo / admin123`
+4. 诊断地址（仅备用）：
    - Gateway health：`http://localhost:8080/actuator/health`
    - RabbitMQ：`http://localhost:15672`
    - Grafana：`http://localhost:13000`

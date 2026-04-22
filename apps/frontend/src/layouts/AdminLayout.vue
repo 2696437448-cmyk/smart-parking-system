@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { IconDashboard, IconLiveBroadcast, IconSafe } from "@arco-design/web-vue/es/icon";
 import { computed } from "vue";
-import { RouterLink, RouterView, useRoute } from "vue-router";
+import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
 const route = useRoute();
+const router = useRouter();
+const auth = useAuthStore();
+const currentUser = computed(() => auth.currentUser);
 
 const pageMeta = computed(() => {
   if (route.path === "/admin/monitor") {
@@ -22,6 +26,11 @@ const pageMeta = computed(() => {
     snapshot: "基础运行模式",
   };
 });
+
+async function logout() {
+  await auth.logout();
+  await router.replace("/login");
+}
 </script>
 
 <template>
@@ -52,10 +61,12 @@ const pageMeta = computed(() => {
       <div class="detail-list compact-detail admin-sidebar-notes">
         <p><strong>默认模式</strong> 实时事件流 + 轮询回退</p>
         <p><strong>目标能力</strong> 让管理者快速判断收益、占用率和系统状态</p>
+        <p><strong>当前账号</strong> {{ currentUser?.display_name ?? "未登录用户" }}</p>
       </div>
       <div class="admin-sidebar-footer">
         <span class="pill ghost">中控式布局</span>
         <span class="pill">图表按需加载</span>
+        <a-button size="small" status="normal" @click="logout">退出登录</a-button>
       </div>
     </aside>
 
