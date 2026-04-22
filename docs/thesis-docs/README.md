@@ -20,6 +20,7 @@
 4. `process-record.md`
    - 对应 `reference/指导过程记录表_*.doc`。
    - 已按阶段记录方式整理 15 次指导内容，后续可直接补日期、签字与纸质归档字段。
+   - 当前版本已补入统一登录、角色隔离和网关鉴权收口等项目后期完善内容。
 
 5. `thesis-draft.md`
    - 对应 `reference/本科毕业设计说明书模板.doc`。
@@ -63,8 +64,9 @@
 2. 系统架构与业务链路：`memory-bank/architecture.md`
 3. 论文证据索引：`reports/thesis_evidence_package.md`
 4. 综合验收结论：`reports/step40_technical_acceptance.md`
-5. 学校表单口径参考：`reference/任务书_*.docx`、`reference/开题报告_*.docx`、`reference/中期检查_*.docx`、`reference/指导过程记录表_*.doc`、`reference/本科毕业设计说明书模板.doc`
-6. 论文生成提示词参考：`writing-prompts.md`
+5. 登录与认证补充材料：`docs/superpowers/specs/2026-04-21-smart-parking-login-design.md`、`reports/step43_login_auth_execution.md`
+6. 学校表单口径参考：`reference/任务书_*.docx`、`reference/开题报告_*.docx`、`reference/中期检查_*.docx`、`reference/指导过程记录表_*.doc`、`reference/本科毕业设计说明书模板.doc`
+7. 论文生成提示词参考：`writing-prompts.md`
 
 ## 使用建议
 

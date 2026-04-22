@@ -82,3 +82,23 @@ python3 scripts/test_step35_security_config.py
    - TLS / HTTPS
    - 最小权限账户
    - 容器镜像漏洞扫描
+
+## 7. Step43 认证补充说明
+
+1. 当前系统已补入统一登录页与 gateway 级轻量 JWT 鉴权。
+2. 演示账号默认值：
+   - `owner_demo / demo123`
+   - `admin_demo / admin123`
+3. 这些账号仅用于本地 demo、验收与答辩演示，不应作为真实交付环境默认凭据继续保留。
+4. `gateway-service` 中的 JWT secret 与演示账号配置应在非 demo 场景通过环境变量或独立配置覆盖。
+5. owner 业务身份已开始优先依赖 `X-Auth-User-Id` 认证头，而不是前端自由提交的 `user_id`，这是当前版本最重要的身份收口点。
+
+## 8. 非 demo 环境建议
+
+1. 替换所有演示账号用户名与密码。
+2. 替换 JWT secret，避免继续使用仓库内 demo 默认值。
+3. 若进入正式部署，应继续补充：
+   - refresh token 或服务端会话失效策略
+   - 登录失败次数限制
+   - 审计日志
+   - HTTPS 终止与反向代理安全配置
