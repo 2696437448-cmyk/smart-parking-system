@@ -1,5 +1,9 @@
 {
-  "generated_at_utc": "2026-03-31T08:32:46.102501+00:00",
+<<<<<<< HEAD
+  "generated_at_utc": "2026-03-31T09:24:39.856398+00:00",
+=======
+  "generated_at_utc": "2026-04-20T07:23:43.621397+00:00",
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
   "overall_passed": true,
   "steps": [
     {
@@ -13,29 +17,48 @@
       "name": "step33_ci_smoke",
       "command": "make ci-smoke",
       "passed": true,
-      "elapsed_seconds": 1.104,
+<<<<<<< HEAD
+      "elapsed_seconds": 0.988,
       "output_tail": "./scripts/preflight_check.sh --static\n[preflight] root=/Users/yanchen/VscodeProject/smart-parking-thesis\n[preflight] python=python3\n[preflight] mode=static\n[preflight] warnings:\n  - root .env not found; compose will use defaults from docker-compose/.env.example\n  - apps/frontend/.env.local not found; Vite will fall back to built-in localhost defaults\nSTEP32_PREFLIGHT_PASS\npython3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml\nopenapi_validation_passed spec=openapi/smart-parking.yaml\npython3 scripts/test_step33_ci_smoke.py\nSTEP33_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step33_ci_smoke.json"
+=======
+      "elapsed_seconds": 1.054,
+      "output_tail": "./scripts/preflight_check.sh --static\n[preflight] root=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement\n[preflight] python=python3\n[preflight] mode=static\n[preflight] warnings:\n  - root .env not found; compose will use defaults from docker-compose/.env.example\n  - apps/frontend/.env.local not found; Vite will fall back to built-in localhost defaults\nSTEP32_PREFLIGHT_PASS\npython3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml\nopenapi_validation_passed spec=openapi/smart-parking.yaml\npython3 scripts/test_step33_ci_smoke.py\nSTEP33_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/reports/step33_ci_smoke.json"
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
     },
     {
       "name": "step35_security_scan",
       "command": "make security-scan",
       "passed": true,
-      "elapsed_seconds": 0.391,
+<<<<<<< HEAD
+      "elapsed_seconds": 0.282,
       "output_tail": "python3 scripts/security_scan.py\nSTEP35_SECURITY_SCAN_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step35_security_scan.json\npython3 scripts/test_step35_security_config.py\nSTEP35_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step35_gate_results.json"
+=======
+      "elapsed_seconds": 0.28,
+      "output_tail": "python3 scripts/security_scan.py\nSTEP35_SECURITY_SCAN_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/reports/step35_security_scan.json\npython3 scripts/test_step35_security_config.py\nSTEP35_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/reports/step35_gate_results.json"
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
     },
     {
       "name": "step34_release_bundle",
       "command": "make release-bundle",
       "passed": true,
-      "elapsed_seconds": 0.386,
-      "output_tail": "./scripts/create_release_bundle.sh\nSTEP34_BUNDLE_PASS bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260331-163245.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260331-163245.manifest.txt"
+<<<<<<< HEAD
+      "elapsed_seconds": 0.363,
+      "output_tail": "./scripts/create_release_bundle.sh\nSTEP34_BUNDLE_PASS bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260331-172439.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260331-172439.manifest.txt"
+=======
+      "elapsed_seconds": 0.968,
+      "output_tail": "./scripts/create_release_bundle.sh\nSTEP34_BUNDLE_PASS bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/deliverables/bundles/smart-parking-step40-release-20260420-152343.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/deliverables/bundles/smart-parking-step40-release-20260420-152343.manifest.txt"
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
     },
     {
       "name": "latest_release_bundle_present",
       "command": "inspect deliverables/bundles",
       "passed": true,
       "elapsed_seconds": 0.0,
-      "output_tail": "bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260331-163245.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260331-163245.manifest.txt"
+<<<<<<< HEAD
+      "output_tail": "bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260331-172439.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260331-172439.manifest.txt"
+=======
+      "output_tail": "bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/deliverables/bundles/smart-parking-step40-release-20260420-152343.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/deliverables/bundles/smart-parking-step40-release-20260420-152343.manifest.txt"
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
     }
   ]
 }

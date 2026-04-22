@@ -17,8 +17,8 @@
    - `Step30`：功能与增强交付基线
    - `Step24`：原始题目主链闭环基线
 4. 当前默认业务入口：
-   - 业主端：`http://localhost:4173/owner/dashboard`
-   - 物业端：`http://localhost:4173/admin/monitor`
+   - 统一登录：`http://localhost:4173/login`
+   - 登录后按角色自动跳转到业主端或物业端
 
 ## 📖 项目简介
 
@@ -29,6 +29,11 @@
 3. 确定性 Hungarian 算法进行全局匹配。
 4. 一致性三重防护（幂等 + 分布式锁 + DB 唯一约束）保障高并发稳定性。
 5. 共享计费、收益统计、地图导航、App 壳层、dashboard 聚合接口与图表化物业端补齐完整业务闭环。
+
+## 📘 学习资料
+
+如需面向代码小白按阶段学习当前 `Step40` 主线，可直接阅读 [`study/README.md`](study/README.md)。  
+这里提供了一套中文 `8 周学习包`，覆盖系统全景、前端、网关、Java 业务主链、模型与 ETL、验收与小改动路径。
 
 ## 🎯 Step40 默认完成态
 
@@ -120,8 +125,10 @@ make preflight-static
 
 ### 5. 打开业务页面
 
-1. 业主端：`http://localhost:4173/owner/dashboard`
-2. 物业端：`http://localhost:4173/admin/monitor`
+1. 统一登录：`http://localhost:4173/login`
+2. 业主演示账号：`owner_demo / demo123`
+3. 物业演示账号：`admin_demo / admin123`
+4. 登录后会自动跳转到业主端或物业端首页
 
 ### 6. 运行当前默认验收（Step40）
 

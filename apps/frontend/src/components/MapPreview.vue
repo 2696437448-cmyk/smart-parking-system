@@ -6,6 +6,7 @@ const props = defineProps<{
   lat: number;
   lng: number;
   title: string;
+  caption?: string;
 }>();
 
 const root = ref<HTMLElement | null>(null);
@@ -52,5 +53,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="root" class="map-preview"></div>
+  <article class="map-preview-shell">
+    <div class="chart-head chart-panel-head">
+      <div class="chart-panel-copy">
+        <div class="section-header-kicker chart-panel-kicker">
+          <p class="eyebrow">Destination Lock</p>
+          <a-tag color="arcoblue">Leaflet</a-tag>
+        </div>
+        <h3>{{ title || "目标车位" }}</h3>
+        <p class="muted chart-subtitle">目标车位已锁定，地图预览与外部导航入口保持同一任务上下文。</p>
+      </div>
+      <div class="chart-panel-side">
+        <p class="muted chart-microcopy">Map Stage</p>
+      </div>
+    </div>
+    <div ref="root" class="map-preview leaflet-container"></div>
+    <p v-if="caption" class="map-caption">{{ caption }}</p>
+  </article>
 </template>

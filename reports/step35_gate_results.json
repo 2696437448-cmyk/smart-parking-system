@@ -1,5 +1,9 @@
 {
-  "generated_at_utc": "2026-03-31T08:32:45.711565+00:00",
+<<<<<<< HEAD
+  "generated_at_utc": "2026-03-31T09:24:39.488705+00:00",
+=======
+  "generated_at_utc": "2026-04-20T07:23:42.650060+00:00",
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
   "overall_passed": true,
   "checks": [
     {
@@ -96,7 +100,7 @@
     {
       "name": "security_scan",
       "passed": true,
-      "output_tail": "STEP35_SECURITY_SCAN_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step35_security_scan.json"
+      "output_tail": "STEP35_SECURITY_SCAN_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/reports/step35_security_scan.json"
     }
   ]
 }

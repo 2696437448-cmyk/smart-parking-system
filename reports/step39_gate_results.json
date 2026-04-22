@@ -1,12 +1,20 @@
 {
-  "generated_at_utc": "2026-03-31T08:32:52.273964+00:00",
+<<<<<<< HEAD
+  "generated_at_utc": "2026-03-31T09:24:46.703901+00:00",
+=======
+  "generated_at_utc": "2026-04-20T07:23:50.146190+00:00",
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
   "overall_passed": true,
   "steps": [
     {
       "name": "openapi_validation",
       "command": "python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml",
       "passed": true,
-      "elapsed_seconds": 0.111,
+<<<<<<< HEAD
+      "elapsed_seconds": 0.117,
+=======
+      "elapsed_seconds": 0.113,
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
       "output_tail": "openapi_validation_passed spec=openapi/smart-parking.yaml"
     },
     {
@@ -28,15 +36,24 @@
       "name": "frontend_typecheck",
       "command": "npm run typecheck",
       "passed": true,
-      "elapsed_seconds": 2.84,
+<<<<<<< HEAD
+      "elapsed_seconds": 3.171,
+=======
+      "elapsed_seconds": 2.972,
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
       "output_tail": "> smart-parking-frontend@0.3.0 typecheck\n> vue-tsc --noEmit"
     },
     {
       "name": "frontend_build_warning_free",
       "command": "npm run build",
       "passed": true,
-      "elapsed_seconds": 2.699,
-      "output_tail": "dist/assets/AdminLayout-BXiZpX3g.js                                       1.20 kB │ gzip:   0.87 kB\ndist/assets/OwnerLayout-DLpf64f-.js                                       1.22 kB │ gzip:   0.76 kB\ndist/assets/useOrderContext-BO5qDi_V.js                                   1.72 kB │ gzip:   0.75 kB\ndist/assets/index-CBEmz7A6.js                                             3.34 kB │ gzip:   1.56 kB\ndist/assets/OwnerNavigation-BBvaqpTr.js                                   3.58 kB │ gzip:   2.02 kB\ndist/assets/useViewState-DIDdnrrZ.js                                      3.71 kB │ gzip:   1.99 kB\ndist/assets/OwnerOrders-CZjQ-cT6.js                                       4.09 kB │ gzip:   2.28 kB\ndist/assets/OwnerDashboard-CEiaPglU.js                                    6.83 kB │ gzip:   3.45 kB\ndist/assets/AdminMonitor-BCpUx_MQ.js                                     10.25 kB │ gzip:   4.51 kB\ndist/assets/vendor-vue-BSABWYwr.js                                       95.56 kB │ gzip:  37.25 kB\ndist/assets/vendor-leaflet-Qxmb5mNE.js                                  149.76 kB │ gzip:  43.33 kB\ndist/assets/vendor-zrender-Cv4prEms.js                                  170.42 kB │ gzip:  56.05 kB\ndist/assets/vendor-echarts-C-Q5kK9T.js                                  335.25 kB │ gzip: 113.23 kB\n✓ built in 2.29s"
+<<<<<<< HEAD
+      "elapsed_seconds": 2.924,
+      "output_tail": "dist/assets/AdminLayout-BXiZpX3g.js                                       1.20 kB │ gzip:   0.87 kB\ndist/assets/OwnerLayout-DLpf64f-.js                                       1.22 kB │ gzip:   0.76 kB\ndist/assets/useOrderContext-BO5qDi_V.js                                   1.72 kB │ gzip:   0.75 kB\ndist/assets/index-CBEmz7A6.js                                             3.34 kB │ gzip:   1.56 kB\ndist/assets/OwnerNavigation-BBvaqpTr.js                                   3.58 kB │ gzip:   2.02 kB\ndist/assets/useViewState-DIDdnrrZ.js                                      3.71 kB │ gzip:   1.99 kB\ndist/assets/OwnerOrders-CZjQ-cT6.js                                       4.09 kB │ gzip:   2.28 kB\ndist/assets/OwnerDashboard-CEiaPglU.js                                    6.83 kB │ gzip:   3.45 kB\ndist/assets/AdminMonitor-BCpUx_MQ.js                                     10.25 kB │ gzip:   4.51 kB\ndist/assets/vendor-vue-BSABWYwr.js                                       95.56 kB │ gzip:  37.25 kB\ndist/assets/vendor-leaflet-Qxmb5mNE.js                                  149.76 kB │ gzip:  43.33 kB\ndist/assets/vendor-zrender-Cv4prEms.js                                  170.42 kB │ gzip:  56.05 kB\ndist/assets/vendor-echarts-C-Q5kK9T.js                                  335.25 kB │ gzip: 113.23 kB\n✓ built in 2.50s"
+=======
+      "elapsed_seconds": 2.875,
+      "output_tail": "dist/assets/OwnerLayout-Die_uhRw.js                                         1.37 kB │ gzip:   0.83 kB\ndist/assets/AdminLayout-DTIQRFR3.js                                         1.41 kB │ gzip:   0.95 kB\ndist/assets/useOrderContext-DA3sJqv8.js                                     2.86 kB │ gzip:   1.39 kB\ndist/assets/index-Bkm2Nl64.js                                               3.50 kB │ gzip:   1.60 kB\ndist/assets/OwnerNavigation-8D6D-0R7.js                                     3.68 kB │ gzip:   2.12 kB\ndist/assets/OwnerOrders-7xVFFmQH.js                                         4.05 kB │ gzip:   2.30 kB\ndist/assets/useViewState-BtfFD1Dr.js                                        4.41 kB │ gzip:   2.28 kB\ndist/assets/OwnerDashboard-BOh2iB8L.js                                      7.69 kB │ gzip:   3.76 kB\ndist/assets/AdminMonitor-FxGBPOxT.js                                       11.55 kB │ gzip:   4.97 kB\ndist/assets/vendor-vue-SXWDtRCF.js                                         95.98 kB │ gzip:  37.46 kB\ndist/assets/vendor-leaflet-Qxmb5mNE.js                                    149.76 kB │ gzip:  43.33 kB\ndist/assets/vendor-zrender-Cv4prEms.js                                    170.42 kB │ gzip:  56.05 kB\ndist/assets/vendor-echarts-C-Q5kK9T.js                                    335.25 kB │ gzip: 113.23 kB\n✓ built in 2.49s"
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
     },
     {
       "name": "frontend_hardening_sources",
@@ -48,14 +65,22 @@
       "command": "GET /api/v1/owner/dashboard",
       "passed": true,
       "elapsed_seconds": 0.0,
-      "output_tail": "{\"status\": 200, \"trace\": \"step39-1617ff8f\"}"
+<<<<<<< HEAD
+      "output_tail": "{\"status\": 200, \"trace\": \"step39-fa126a83\"}"
+=======
+      "output_tail": "{\"status\": 200, \"trace\": \"step39-9034398b\"}"
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
     },
     {
       "name": "admin_dashboard_runtime_smoke",
       "command": "GET /api/v1/admin/dashboard",
       "passed": true,
       "elapsed_seconds": 0.0,
-      "output_tail": "{\"status\": 200, \"trace\": \"step39-21819af8\"}"
+<<<<<<< HEAD
+      "output_tail": "{\"status\": 200, \"trace\": \"step39-61e07cd7\"}"
+=======
+      "output_tail": "{\"status\": 200, \"trace\": \"step39-9004af39\"}"
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
     }
   ]
 }

@@ -481,9 +481,15 @@ class ReservationService {
         this.billingService = billingService;
     }
 
-    ApiResponse reserve(Map<String, Object> payload, String idempotencyKey, String traceId) {
-        for (String field : List.of("user_id", "preferred_window", "location")) {
-            if (!StringUtils.hasText(stringValue(payload.get(field)))) {
+    ApiResponse reserve(Map<String, Object> payload, String authenticatedUserId, String idempotencyKey, String traceId) {
+        Map<String, Object> normalizedPayload = new LinkedHashMap<>(payload);
+        String effectiveUserId = StringUtils.hasText(authenticatedUserId)
+                ? authenticatedUserId
+                : stringValue(normalizedPayload.get("user_id"));
+        normalizedPayload.put("user_id", effectiveUserId);
+
+        for (String field : List.of("preferred_window", "location")) {
+            if (!StringUtils.hasText(stringValue(normalizedPayload.get(field)))) {
                 return ApiResponse.of(400, Map.of(
                         "error", "missing_field",
                         "field", field,
@@ -493,7 +499,16 @@ class ReservationService {
             }
         }
 
-        String payloadHash = payloadHash(payload);
+        if (!StringUtils.hasText(effectiveUserId)) {
+            return ApiResponse.of(400, Map.of(
+                    "error", "missing_field",
+                    "field", "user_id",
+                    "trace_id", traceId,
+                    "service", serviceName
+            ));
+        }
+
+        String payloadHash = payloadHash(normalizedPayload);
         if (StringUtils.hasText(idempotencyKey)) {
             IdempotencyRecord cached = idempotencyStore.get(idempotencyKey);
             if (cached != null) {
@@ -513,11 +528,10 @@ class ReservationService {
             }
         }
 
-        String userId = stringValue(payload.get("user_id"));
-        String location = stringValue(payload.get("location"));
-        String preferredWindow = stringValue(payload.get("preferred_window"));
-        String slotId = StringUtils.hasText(stringValue(payload.get("slot_id")))
-                ? stringValue(payload.get("slot_id"))
+        String location = stringValue(normalizedPayload.get("location"));
+        String preferredWindow = stringValue(normalizedPayload.get("preferred_window"));
+        String slotId = StringUtils.hasText(stringValue(normalizedPayload.get("slot_id")))
+                ? stringValue(normalizedPayload.get("slot_id"))
                 : location + "-S001";
 
         String[] window = splitWindow(preferredWindow);
@@ -573,7 +587,7 @@ class ReservationService {
                 String reservationId = "res-" + UUID.randomUUID().toString().replace("-", "").substring(0, 16);
                 ReservationRow row = new ReservationRow(
                         reservationId,
-                        userId,
+                        effectiveUserId,
                         slotId,
                         windowStart,
                         windowEnd,
@@ -583,7 +597,7 @@ class ReservationService {
                 repository.insert(row);
                 BillingRecordRow estimate = billingService.createEstimatedOrder(
                         reservationId,
-                        userId,
+                        effectiveUserId,
                         slotId,
                         location,
                         windowStart,
@@ -703,11 +717,12 @@ class ParkingController {
     @PostMapping("/api/v1/owner/reservations")
     public ResponseEntity<Map<String, Object>> createReservation(
             @RequestBody Map<String, Object> payload,
+            @RequestHeader(value = "X-Auth-User-Id", required = false) String authenticatedUserId,
             @RequestHeader(value = "Idempotency-Key", required = false) String idempotencyKey,
             @RequestHeader(value = "X-Trace-Id", required = false) String traceHeader
     ) {
         String traceId = trace(traceHeader);
-        ApiResponse response = reservationService.reserve(payload, idempotencyKey, traceId);
+        ApiResponse response = reservationService.reserve(payload, authenticatedUserId, idempotencyKey, traceId);
         return withTrace(traceId, response.statusCode(), response.body());
     }
 
