@@ -1,11 +1,6 @@
 {
-<<<<<<< HEAD
-  "generated_at_utc": "2026-03-31T09:24:39.205973+00:00",
-  "elapsed_seconds": 0.011,
-=======
-  "generated_at_utc": "2026-04-20T07:23:42.368009+00:00",
-  "elapsed_seconds": 0.014,
->>>>>>> b8f92bf (feat: refine smart parking frontend UI)
+  "generated_at_utc": "2026-04-22T08:09:40.861713+00:00",
+  "elapsed_seconds": 0.016,
   "overall_passed": true,
   "checks": [
     {
@@ -71,47 +66,47 @@
     {
       "name": "make target preflight-static",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/Makefile"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
     },
     {
       "name": "make target ci-smoke",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/Makefile"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
     },
     {
       "name": "make target step38-check",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/Makefile"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
     },
     {
       "name": "make target step39-check",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/Makefile"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
     },
     {
       "name": "make target step40-check",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/Makefile"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/Makefile"
     },
     {
       "name": "demo script acceptance-step36 command",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/scripts/defense_demo.sh"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/scripts/defense_demo.sh"
     },
     {
       "name": "README Step25~40 roadmap",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/README.md"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/README.md"
     },
     {
       "name": "README step38 command",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/README.md"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/README.md"
     },
     {
       "name": "README step40 command",
       "passed": true,
-      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/.worktrees/ui-refinement/README.md"
+      "path": "/Users/yanchen/VscodeProject/smart-parking-thesis/README.md"
     },
     {
       "name": "frontend_script:typecheck",

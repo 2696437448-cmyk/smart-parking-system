@@ -33,7 +33,7 @@ const showAlert = computed(() => props.tone === "error" || props.tone === "degra
 <template>
   <article class="state-notice" :data-tone="tone">
     <div class="state-notice-head">
-      <p class="eyebrow">View State</p>
+      <p class="eyebrow">状态</p>
       <a-tag color="cyan">{{ badge ?? toneLabel }}</a-tag>
     </div>
     <div class="state-notice-inline">

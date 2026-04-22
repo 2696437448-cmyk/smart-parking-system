@@ -1,7 +1,7 @@
 export const arcoTheme = {
-  primaryColor: "#37d7ff",
-  borderRadius: "18px",
-  dark: true,
+  primaryColor: "#2f6fed",
+  borderRadius: "16px",
+  dark: false,
   componentConfig: {
     Button: { shape: "round" as const },
     Card: { bordered: true },
