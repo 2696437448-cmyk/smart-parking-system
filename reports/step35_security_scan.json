@@ -1,5 +1,9 @@
 {
-  "generated_at_utc": "2026-03-31T08:32:45.707641+00:00",
+<<<<<<< HEAD
+  "generated_at_utc": "2026-03-31T09:24:39.484534+00:00",
+=======
+  "generated_at_utc": "2026-04-20T07:23:42.646787+00:00",
+>>>>>>> b8f92bf (feat: refine smart parking frontend UI)
   "overall_passed": true,
   "finding_count": 0,
   "findings": []

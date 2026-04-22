@@ -49,3 +49,20 @@ management:
     web:
       exposure:
         include: health,info,metrics,prometheus,circuitbreakers,circuitbreakerevents
+
+auth:
+  jwt-secret: ${AUTH_JWT_SECRET:smart-parking-demo-secret-1234567890}
+  jwt-expires-seconds: ${AUTH_JWT_EXPIRES_SECONDS:28800}
+  users:
+    - username: ${AUTH_OWNER_USERNAME:owner_demo}
+      password: ${AUTH_OWNER_PASSWORD:demo123}
+      role: OWNER
+      user-id: owner-app-001
+      display-name: 业主演示账号
+      enabled: true
+    - username: ${AUTH_ADMIN_USERNAME:admin_demo}
+      password: ${AUTH_ADMIN_PASSWORD:admin123}
+      role: ADMIN
+      user-id: admin-console-001
+      display-name: 物业演示账号
+      enabled: true

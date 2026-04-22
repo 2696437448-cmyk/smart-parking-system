@@ -12,8 +12,10 @@
     "cap:android": "npx cap open android"
   },
   "dependencies": {
+    "@arco-design/web-vue": "^2.57.0",
     "@capacitor/android": "^7.1.1",
     "@capacitor/core": "^7.1.1",
+    "@vueuse/motion": "^2.2.6",
     "echarts": "^5.6.0",
     "leaflet": "^1.9.4",
     "pinia": "^2.3.1",

@@ -1,44 +1,60 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import KeyValueList from "../components/KeyValueList.vue";
 import MetricCard from "../components/MetricCard.vue";
 import SectionHeader from "../components/SectionHeader.vue";
+import StatusBadge from "../components/StatusBadge.vue";
 import ViewStateNotice from "../components/ViewStateNotice.vue";
+import { formatCurrency } from "../presenters/format";
+import { ownerOrderMetaItems } from "../presenters/owner";
 import { useOwnerOrderView } from "../composables/useOwnerOrderView";
 
 const { orderDetail, busy, state, orderStatusNote, loadOrder, finishOrder, openNavigation } = useOwnerOrderView();
+const orderMetaItems = computed(() => ownerOrderMetaItems(orderDetail.value));
 </script>
 
 <template>
-  <section class="page-grid owner-page-grid owner-orders">
-    <article class="panel hero-card">
+  <section class="page-grid owner-page-grid owner-orders order-task-flow">
+    <article class="panel hero-card" v-motion-slide-visible-once-bottom>
       <SectionHeader
-        eyebrow="Order Center"
-        title="订单与账单"
-        subtitle="查看预约结果、计费规则与最终账单，并从这里进入导航引导。"
+        eyebrow="Order Task Flow"
+        title="订单与账单任务流"
+        subtitle="让订单状态、金额信息和下一步动作形成清晰顺序，而不是平铺展示。"
         :badge="orderDetail?.billing_status ?? 'WAITING'"
-      />
+        badge-tone="accent"
+      >
+        <template #actions>
+          <a-space class="action-row" wrap size="medium">
+            <a-button type="primary" :loading="busy" @click="loadOrder">刷新订单</a-button>
+            <a-button :disabled="busy || !orderDetail" @click="openNavigation">查看导航</a-button>
+          </a-space>
+        </template>
+      </SectionHeader>
       <p class="hero-note">{{ orderStatusNote }}</p>
-      <div class="action-row">
-        <button class="primary" type="button" :disabled="busy" @click="loadOrder">刷新订单</button>
-        <button type="button" :disabled="busy || !orderDetail" @click="openNavigation">查看导航</button>
+      <div class="order-status-band">
+        <StatusBadge :label="orderDetail?.billing_status ?? 'WAITING'" tone="accent" />
+        <p class="muted">先完成账单确认，再继续进入导航和停车结算。</p>
       </div>
     </article>
 
-    <article class="panel order-panel">
-      <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" />
+    <article class="panel order-panel billing-summary-card" v-motion-slide-visible-once-top>
+      <ViewStateNotice :tone="state.tone" :title="state.title" :message="state.message" :detail="state.detail" :badge="state.badge" />
       <div v-if="orderDetail" class="detail-list order-stack">
+        <div class="order-inline-status order-status-band">
+          <StatusBadge :label="orderDetail.billing_status" tone="accent" />
+          <p class="muted">当前订单已进入账单中心，可继续查看费用明细与导航入口。</p>
+        </div>
         <div class="metric-grid compact-metric-grid">
-          <MetricCard label="当前订单" :value="orderDetail.order_id" :note="`${orderDetail.slot_id} / ${orderDetail.region_id}`" tone="accent" />
-          <MetricCard label="预估金额" :value="`¥${Number(orderDetail.estimated_amount ?? 0).toFixed(2)}`" :note="`状态：${orderDetail.billing_status}`" />
-          <MetricCard label="最终金额" :value="`¥${Number(orderDetail.final_amount ?? 0).toFixed(2)}`" :note="`计费分钟：${orderDetail.billable_minutes}`" tone="calm" />
+          <MetricCard label="当前订单" :value="orderDetail.order_id" :note="`${orderDetail.slot_id} / ${orderDetail.region_id}`" tone="accent" eyebrow="Order" />
+          <MetricCard label="预估金额" :value="formatCurrency(orderDetail.estimated_amount)" :note="`状态：${orderDetail.billing_status}`" />
+          <MetricCard label="最终金额" :value="formatCurrency(orderDetail.final_amount)" :note="`计费分钟：${orderDetail.billable_minutes}`" tone="calm" />
           <MetricCard label="结算日期" :value="orderDetail.recognized_on || '未结算'" :note="orderDetail.billing_rule?.timezone ?? 'Asia/Shanghai'" />
         </div>
-        <div class="detail-list compact-detail">
-          <p><strong>开始时间</strong> {{ orderDetail.started_at }}</p>
-          <p><strong>结束时间</strong> {{ orderDetail.ended_at }}</p>
-          <p><strong>结算日期</strong> {{ orderDetail.recognized_on || '未结算' }}</p>
-          <p><strong>计费规则</strong> {{ orderDetail.billing_rule?.timezone }} / {{ orderDetail.billing_rule?.unit_minutes }} 分钟</p>
+        <KeyValueList :items="orderMetaItems" />
+        <div class="task-footer-actions">
+          <a-button type="primary" class="settle-action" :loading="busy" @click="finishOrder">完成停车并结算</a-button>
+          <a-button :disabled="busy || !orderDetail" @click="openNavigation">前往导航</a-button>
         </div>
-        <button class="primary" type="button" :disabled="busy" @click="finishOrder">完成停车并结算</button>
       </div>
       <div v-else-if="state.tone !== 'loading'" class="empty-state">
         <p class="metric-label">暂无订单</p>

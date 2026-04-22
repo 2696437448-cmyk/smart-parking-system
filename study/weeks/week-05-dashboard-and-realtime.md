@@ -5,6 +5,7 @@
 - 理解 dashboard 为什么要单独做聚合层
 - 看懂前端实时通道和降级逻辑
 - 能分清“经营数据”和“实时状态”不是同一条链
+- 理解最终版本为什么把 admin 页面做成“停车运营驾驶舱”
 
 ## 你会先看哪些文件
 
@@ -13,12 +14,13 @@
 - `apps/frontend/src/composables/useAdminDashboardView.ts`
 - `apps/frontend/src/composables/useRealtimeChannel.ts`
 - `apps/frontend/src/stores/realtime.ts`
+- `apps/frontend/src/components/EChartPanel.vue`
 - `services/realtime_service.py`
 - `apps/frontend/src/pages/AdminMonitor.vue`
 
 ## 这部分代码到底在做什么
 
-到了 Step40，这个项目已经不只是“把几个接口接起来”，而是在做一种更适合页面消费的 `view-model` 聚合方式。
+到了 Step40，这个项目已经不只是“把几个接口接起来”，而是在做一种更适合页面消费的 `view-model` 聚合方式。最终版本里的 admin 页面也不再只是“监控页”，而是一个更像经营驾驶舱的业务页面。
 
 ### Dashboard 聚合层在解决什么问题
 
@@ -45,6 +47,20 @@
 所以你要记住：  
 `dashboard` 和 `实时通道` 是互补关系，不是同一个东西。
 
+### 为什么最终版本强调“驾驶舱”
+
+因为页面真正想解决的问题不是“多放几个图表”，而是让管理人员在一个页面里先看到：
+
+- 当前运行模式
+- 数据来源
+- 实时占用率
+- 活动预约数
+- 今日收益
+- 调度策略
+
+然后再往下看图表、亮点和降级状态。  
+这就是“先判断全局，再看细节”的驾驶舱思路。
+
 ## 一条必须跟读的调用链
 
 这周建议你跟 `物业端 AdminMonitor` 这条链：
@@ -57,6 +73,7 @@
 6. `DashboardViewService -> DashboardQueryService -> AdminDashboardAssembler`
 7. 后端返回 `summary / highlights / sections / degraded_metadata`
 8. 前端同时尝试 WebSocket，如果失败就自动切到 polling
+9. `AdminMonitor.vue` 再把这些数据组织成摘要区、亮点区和图表区
 
 ## 给新手的概念解释
 
@@ -80,11 +97,25 @@ Assembler 就是“组装器”。
 
 页面仍然可用，只是实时性下降。
 
+### 什么是最终版本里的图表卡片壳层
+
+最终版本里，图表不再是裸 `ECharts` 容器，而是通过 `EChartPanel.vue` 统一包一层：
+
+- 标题
+- 标签
+- 副标题
+- 图表说明
+
+这样做的好处是，管理端页面不会变成一堆样式零散的图表块，而是更像统一的经营分析面板。
+
 ## 本周可直接运行的命令
 
 ```bash
 # 启动整套环境
 ./scripts/defense_demo.sh start
+
+# 直接打开最终业务页面
+# http://localhost:4173/admin/monitor
 
 # 查看 admin dashboard 聚合接口
 curl "http://localhost:8080/api/v1/admin/dashboard?date=2026-03-31&trend_days=7&trend_limit=12"
@@ -102,12 +133,14 @@ curl "http://localhost:8080/api/v1/admin/realtime/status"
 1. 写出 `summary`、`highlights`、`sections` 三块数据各自大概负责什么。
 2. 找出 `useRealtimeChannel.ts` 中 WebSocket 失败后切到 polling 的位置。
 3. 用一句话解释：为什么 dashboard 聚合接口更适合页面，而不是让页面自己拼 4 个接口。
+4. 观察 `AdminMonitor.vue`，说出它为什么更像“驾驶舱”，而不是普通图表页。
 
 ## 本周完成标准
 
 - 你能说清 dashboard 聚合层解决了什么问题
 - 你知道 `AdminMonitor` 页面同时依赖“聚合接口 + 实时通道”
 - 你能解释 WebSocket 和 polling 的降级关系
+- 你能说清摘要区、亮点区、图表区在驾驶舱里的不同作用
 
 ## 可选加深阅读
 
@@ -121,4 +154,3 @@ Dashboard 聚合与 realtime 降级的详细教程在这里：
 
 - `../chains/chain-03-admin-dashboard-realtime.md`
 - `../labs/lab-03-admin-realtime.md`
-
