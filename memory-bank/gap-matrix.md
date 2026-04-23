@@ -52,7 +52,13 @@
 ### 2.7 演示入口与默认完成态
 
 1. 目标：一键启动后落到业务页面，而不是 RabbitMQ/Grafana。
-2. 当前：已完成，并在 Step40 后升级默认演示与验收入口。
+2. 当前：已完成，并在 Step40 后升级默认演示与验收入口；当前主线默认从 `/login` 进入业务页。
+3. 判定：已完成。
+
+### 2.8 统一登录与最终 UI
+
+1. 目标：统一登录入口、角色识别、最终 UI 结构、学习资料与演示文档全部进入主线。
+2. 当前：已完成，`feat/login-auth` 与 `feat/ui-refinement` 对应成果都已经收口到 `main`。
 3. 判定：已完成。
 
 ## 3. 增强阶段完成项（Step25~30）
@@ -97,6 +103,13 @@
 3. 证据：`scripts/test_step40_release_acceptance.py`、`reports/step40_technical_acceptance.md`、`reports/step40_gate_results.json`。
 4. 判定：已完成。
 
+### 5.4 登录与最终 UI 合流
+
+1. 目标：把统一登录、最终亮色 UI、学习资料与更新后的文档说明纳入主线。
+2. 当前：已完成，主线已包含登录页、auth store、Owner/Admin 新布局、`study/` 学习包以及更新后的 README / runbook / thesis-docs。
+3. 证据：`apps/frontend/src/pages/LoginPage.vue`、`apps/frontend/src/stores/auth.ts`、`study/README.md`、`scripts/test_step41_arco_tech_ui.py`、`scripts/test_step43_login_auth.py`。
+4. 判定：已完成。
+
 ### 5.7 Step38
 
 1. 状态：完成。
@@ -111,3 +124,8 @@
 
 1. 状态：完成。
 2. 备注：重点解决默认完成态升级、综合验收与交付包收口。
+
+### 5.10 登录 / UI / 文档收口
+
+1. 状态：完成。
+2. 备注：重点解决统一登录、最终 UI、学习资料和更新后的文档说明全部进入主线。

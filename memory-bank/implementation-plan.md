@@ -10,6 +10,7 @@
 4. Git 闸门强制执行：`branch created`、`commit exists`、`PR merged`、`tag created`。
 5. Step18 定义为工程化基线完成态，Step24 定义为原始题目主链历史稳定基线，Step30 定义为功能增强基线，Step36 定义为发布化稳定锚点，Step40 定义为“当前默认完成态”。
 6. 后续开发只允许在 Step40 基线之上增强，不允许退化 Step40 已通过能力。
+7. 已经并入主线的后续增强，应直接写进 Step40 之后的主线计划，不再继续按 worktree 临时状态描述。
 
 ## 全步骤通用 Git 闸门（强制）
 
@@ -27,8 +28,9 @@
 4. Step31~36：发布化增强阶段，已完成环境模板、preflight、CI、release bundle、安全扫描与发布化总验收。
 5. Step37：提示词体系与第一轮前后端现代化起点。
 6. Step38~40：dashboard 合同/体验收敛、聚合层模块化与综合验收升级阶段。
-7. 当前默认稳定入口：Step40。
-8. 当前继续开发入口：Post-Step40 增强迭代。
+7. 登录与最终 UI / 学习资料增强已合入 `main`，当前主线已同时具备统一登录、最终 UI 和 `study/` 学习包。
+8. 当前默认稳定入口：Step40。
+9. 当前继续开发入口：Post-Step40 增强迭代。
 
 ## Step 0 - Step 37（历史阶段）
 
@@ -101,3 +103,29 @@
   - Step40 默认 release bundle
 - 验证：`python3 scripts/test_step40_release_acceptance.py`、`python3 scripts/test_step40_release_acceptance.py --static-only`。
 - 证据：`reports/step40_technical_acceptance.md`、`reports/step40_gate_results.json`。
+
+## Post-Step40 已并入主线的增强（已完成）
+
+### A. 统一登录与角色入口
+
+- 输出：
+  - `apps/frontend/src/pages/LoginPage.vue`
+  - `apps/frontend/src/stores/auth.ts`
+  - `apps/frontend/src/services/auth.ts`
+  - `services/gateway-service/src/main/java/com/smartparking/gateway/auth/*`
+- 验证：
+  - `python3 scripts/test_step43_login_auth.py`
+  - `python3 scripts/test_step44_authenticated_owner_identity.py`
+
+### B. 最终 UI 与学习资料收口
+
+- 输出：
+  - Owner/Admin 新布局与亮色主题
+  - `scripts/test_step41_arco_tech_ui.py`
+  - `scripts/test_step42_shadcn_ui_polish.py`
+  - `scripts/test_step43_simple_bright_ui.py`
+  - `study/` 目录
+- 验证：
+  - `python3 scripts/test_step41_arco_tech_ui.py`
+  - `python3 scripts/test_step42_shadcn_ui_polish.py`
+  - `python3 scripts/test_step43_simple_bright_ui.py`

@@ -4,7 +4,7 @@
 
 1. 后端网关/业务：Java 17 + Spring Boot 3 + Spring Cloud Gateway
 2. 算法服务：Python 3.11 + FastAPI + PySpark + PyTorch + SciPy
-3. 前端：Vue3 + TypeScript + Pinia + ECharts
+3. 前端：Vue3 + TypeScript + Pinia + Vue Router + Arco Design Vue + ECharts + Leaflet + `@vueuse/motion`
 4. 数据与中间件：MySQL 8、Redis 7、RabbitMQ 3
 5. 可观测性：Prometheus + Grafana + 结构化 JSON 日志
 6. 部署方式：Docker Compose（单机可复现）
@@ -13,14 +13,16 @@
 
 1. 就业匹配度高：Java 后端 + 分布式可靠性模式。
 2. 题目一致性高：Python 生态适合数据处理与模型落地。
-3. 复杂度可控：3 核心服务 + 1 实时伴生服务，避免过度微服务拆分。
-4. 答辩稳定：单机 Docker 回放风险低。
+3. 前端表达力足够：Arco Design Vue + 自定义 tokens 适合后台、监管总览和登录流。
+4. 复杂度可控：3 核心服务 + 1 实时伴生服务，避免过度微服务拆分。
+5. 答辩稳定：单机 Docker 回放风险低。
 
 ## 3. 明确取舍
 
 1. 本期不引入 gRPC，降低跨语言联调复杂度。
 2. 前端固定 Vue3，不开 React 分支。
 3. 不做完整 MLOps 平台，仅做轻量模型版本激活机制。
+4. 登录与最终 UI 已进入主线，后续前端增强优先沿用当前 Vue + Arco + token 体系，不再平行开另一套 UI 栈。
 
 ## 4. 可靠性默认参数
 

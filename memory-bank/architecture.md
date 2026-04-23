@@ -28,9 +28,10 @@
 
 ## 4. 业务视图与技术视图分层
 
-1. 业主端业务视图：推荐、预约、订单/账单、导航、App 壳层。
-2. 物业端业务视图：经营摘要、收益趋势、区域对比、占用率趋势、预测对照、实时/降级解释层。
-3. 技术视图：Prometheus / Grafana / RabbitMQ，只用于诊断，不作为默认展示入口。
+1. 统一入口：`/login`，按角色进入业主端或物业端业务页面。
+2. 业主端业务视图：`首页 / 订单 / 导航` 三段式结构，桌面端左侧导航，移动端底部切换，覆盖推荐、预约、结算与导航。
+3. 物业端业务视图：物业监管总览页，集中展示经营摘要、运行状态、收益趋势、区域对比、占用率趋势与降级提示。
+4. 技术视图：Prometheus / Grafana / RabbitMQ，只用于诊断，不作为默认展示入口。
 
 ## 5. Step37 提示词驱动现代化层
 
@@ -59,6 +60,12 @@
 3. ECharts 仅在 admin 路由需要时进入 chunk；`vendor-zrender` 与 `vendor-echarts` 已拆分，默认构建无 chunk warning。
 4. `requestJson` 统一解析 trace header、非 JSON 响应与 HTTP 错误；`useRealtimeChannel` 收敛 reconnect / polling 生命周期。
 
+### 登录与最终 UI 合流状态
+
+1. `feat/login-auth` 已并入 `main`，统一登录、JWT、角色跳转与会话状态已成为主线事实。
+2. `feat/ui-refinement` 的最终页面结构、亮色 UI、`study/` 学习资料与演示文档已通过整合分支吸收到 `main`，并已补做 Git 合流收口。
+3. 当前主线不再需要单独依赖 worktree 解释登录或最终 UI 状态，README / runbook / memory-bank 应统一按主线现状表述。
+
 ## 9. 默认完成态与历史基线
 
 1. 当前默认完成态：`Step40`。
@@ -79,6 +86,13 @@
 2. `ParkingDashboardViewModules.java` 拆分 `DashboardQueryService`、`OwnerDashboardAssembler`、`AdminDashboardAssembler`、`DashboardViewService`。
 3. 前端完成请求错误统一、实时通道生命周期硬化与图表 chunk 优化。
 4. 这一层解决的是“controller 膨胀”和“admin 图表加载成本”的问题。
+
+### Post-Step40 已落地主线增强
+
+1. 登录能力已补齐：统一登录页、鉴权路由、owner/admin 会话状态与退出登录流程已经进入主线。
+2. 最终 UI 已补齐：亮色令牌、Owner 左侧导航、物业监管总览、一屏指标与中文化文案已进入主线。
+3. 学习资料已补齐：`study/` 目录已经进入主线，可作为 README 之外的结构化学习入口。
+4. 这些增强当前仍建立在 Step40 默认完成态之上，属于 additive merge，不改变 Step40 作为默认验收入口的事实。
 
 ## 12. 默认完成态升级规则
 

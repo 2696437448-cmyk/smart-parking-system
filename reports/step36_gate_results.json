@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-22T08:09:41.897717+00:00",
+  "generated_at_utc": "2026-04-23T01:30:00.110823+00:00",
   "overall_passed": true,
   "steps": [
     {
@@ -13,29 +13,29 @@
       "name": "step33_ci_smoke",
       "command": "make ci-smoke",
       "passed": true,
-      "elapsed_seconds": 1.254,
-      "output_tail": "./scripts/preflight_check.sh --static\n[preflight] root=/Users/yanchen/VscodeProject/smart-parking-thesis\n[preflight] python=python3\n[preflight] mode=static\n[preflight] warnings:\n  - root .env not found; compose will use defaults from docker-compose/.env.example\n  - apps/frontend/.env.local not found; Vite will fall back to built-in localhost defaults\nSTEP32_PREFLIGHT_PASS\npython3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml\nopenapi_validation_passed spec=openapi/smart-parking.yaml\npython3 scripts/test_step33_ci_smoke.py\nSTEP33_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step33_ci_smoke.json"
+      "elapsed_seconds": 0.536,
+      "output_tail": "[preflight] root=/Users/yanchen/VscodeProject/smart-parking-thesis\n[preflight] python=python3\n[preflight] mode=static\n[preflight] warnings:\n  - docker daemon not ready; strict preflight would fail\n  - root .env not found; compose will use defaults from docker-compose/.env.example\n  - apps/frontend/.env.local not found; Vite will fall back to built-in localhost defaults\nSTEP32_PREFLIGHT_PASS\npython3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml\nopenapi_validation_passed spec=openapi/smart-parking.yaml\npython3 scripts/test_step33_ci_smoke.py\nSTEP33_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step33_ci_smoke.json"
     },
     {
       "name": "step35_security_scan",
       "command": "make security-scan",
       "passed": true,
-      "elapsed_seconds": 0.411,
+      "elapsed_seconds": 0.3,
       "output_tail": "python3 scripts/security_scan.py\nSTEP35_SECURITY_SCAN_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step35_security_scan.json\npython3 scripts/test_step35_security_config.py\nSTEP35_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step35_gate_results.json"
     },
     {
       "name": "step34_release_bundle",
       "command": "make release-bundle",
       "passed": true,
-      "elapsed_seconds": 0.619,
-      "output_tail": "./scripts/create_release_bundle.sh\nSTEP34_BUNDLE_PASS bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260422-160941.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260422-160941.manifest.txt"
+      "elapsed_seconds": 0.318,
+      "output_tail": "./scripts/create_release_bundle.sh\nSTEP34_BUNDLE_PASS bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260423-092959.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260423-092959.manifest.txt"
     },
     {
       "name": "latest_release_bundle_present",
       "command": "inspect deliverables/bundles",
       "passed": true,
       "elapsed_seconds": 0.0,
-      "output_tail": "bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260422-160941.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260422-160941.manifest.txt"
+      "output_tail": "bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260423-092959.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260423-092959.manifest.txt"
     }
   ]
 }

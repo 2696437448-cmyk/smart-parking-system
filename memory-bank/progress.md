@@ -1058,3 +1058,35 @@
 12. 当前结论：
    - `Step40` 已升级为当前稳定默认完成态。
    - `Step36` 继续保留为发布化稳定锚点与回滚说明。
+
+## 2026-04-23 登录与最终 UI/文档说明并入 main（完成）
+
+1. 完成时间：2026-04-23 00:40（Asia/Shanghai）。
+2. 当前步骤：主线合流收口。
+3. 目标与范围：把 `feat/login-auth`、最终 UI、`study/` 学习资料以及更新后的 README / runbook / memory-bank 说明全部收口到 `main`。
+4. 实际改动：
+   - 将 `origin/main` 更新到最新 Step40 主线。
+   - 在隔离 worktree 中整合 `feat/login-auth` 与 `feat/step38-step40-dashboard-hardening`，并完成关键回归验证。
+   - 将整合结果并回 `main`。
+   - 以 `ours` 策略补做 `feat/ui-refinement` 的 Git 收口，使 UI 线在分支关系上也正式进入 `main`。
+   - 更新 `memory-bank`，把统一登录、最终 UI、学习资料和主线文档说明写入当前事实。
+5. 闸门结果：
+   - `python3 scripts/test_step41_arco_tech_ui.py` -> `STEP41_ARCO_BOOTSTRAP_PASS`
+   - `python3 scripts/test_step42_shadcn_ui_polish.py` -> `STEP42_SHADCN_UI_POLISH_PASS`
+   - `python3 scripts/test_step43_simple_bright_ui.py` -> `STEP43_SIMPLE_BRIGHT_UI_PASS`
+   - `python3 scripts/test_step43_login_auth.py` -> `STEP43_GATE_PASS`
+   - `python3 scripts/test_step44_authenticated_owner_identity.py` -> `STEP44_GATE_PASS`
+   - `npm run typecheck` -> pass
+   - `npm run build` -> pass
+   - `python3 scripts/test_step40_release_acceptance.py --static-only` -> `STEP40_GATE_PASS`
+6. Git 分支：`main`。
+7. Git 提交：`7bf9118`（整合分支合回主线），以及后续 `feat/ui-refinement` 的收口 merge commit。
+8. PR 信息：`N/A`（当前为本地主线收口阶段）。
+9. 标签信息：`N/A`。
+10. 回滚标签：`step40-pass`。
+11. 卡点与修复：
+   - 卡点：`feat/ui-refinement` 与登录线直接互相 merge 时前端布局、样式和 gate 结果文件冲突较大。
+   - 修复：先在独立 worktree 里整合登录线与已经验证过的 `feat/step38-step40-dashboard-hardening`，确认可用后再并回 `main`；最后用 `ours` 策略关闭 `feat/ui-refinement` 的 Git 关系。
+12. 当前结论：
+   - `main` 已同时包含统一登录、最终 UI、学习资料与更新后的文档说明。
+   - 后续再讨论“Step40 之后的新默认完成态”前，不需要继续把这些能力当成 worktree 特例处理。

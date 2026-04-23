@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-04-22T08:09:50.757750+00:00",
+  "generated_at_utc": "2026-04-23T01:30:07.264173+00:00",
   "overall_passed": true,
   "mode": "static-only",
   "steps": [
@@ -14,29 +14,29 @@
       "name": "step36_release_acceptance",
       "command": "python3 scripts/test_step36_release_acceptance.py",
       "passed": true,
-      "elapsed_seconds": 2.345,
+      "elapsed_seconds": 1.189,
       "output_tail": "STEP36_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step36_gate_results.json"
     },
     {
       "name": "step38_dashboard_contract_and_viewmodels",
       "command": "python3 scripts/test_step38_dashboard_contract_and_viewmodels.py",
       "passed": true,
-      "elapsed_seconds": 0.885,
+      "elapsed_seconds": 0.219,
       "output_tail": "STEP38_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step38_gate_results.json"
     },
     {
       "name": "step39_dashboard_hardening",
       "command": "python3 scripts/test_step39_dashboard_hardening.py",
       "passed": true,
-      "elapsed_seconds": 7.604,
+      "elapsed_seconds": 6.596,
       "output_tail": "STEP39_GATE_PASS report=/Users/yanchen/VscodeProject/smart-parking-thesis/reports/step39_gate_results.json"
     },
     {
       "name": "step40_release_bundle",
       "command": "./scripts/create_release_bundle.sh step40",
       "passed": true,
-      "elapsed_seconds": 0.365,
-      "output_tail": "STEP34_BUNDLE_PASS bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260422-160950.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260422-160950.manifest.txt"
+      "elapsed_seconds": 0.333,
+      "output_tail": "STEP34_BUNDLE_PASS bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260423-093006.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260423-093006.manifest.txt"
     },
     {
       "name": "exists:memory-bank/project-prompt-library.md",
@@ -128,7 +128,7 @@
       "command": "inspect deliverables/bundles",
       "passed": true,
       "elapsed_seconds": 0.0,
-      "output_tail": "bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260422-160950.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260422-160950.manifest.txt"
+      "output_tail": "bundle=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260423-093006.tar.gz manifest=/Users/yanchen/VscodeProject/smart-parking-thesis/deliverables/bundles/smart-parking-step40-release-20260423-093006.manifest.txt"
     }
   ]
 }

@@ -54,7 +54,15 @@
 4. 最新 release bundle 默认 label 为 `step40`，并包含 Step38/39/40 脚本、报告与文档。
 5. `step36-pass` 继续保留为回滚锚点说明，直到下一轮更高等级验收替代。
 
-## 7. 历史阶段验收摘要（已完成）
+## 7. 登录与最终 UI 主线要求
+
+1. 默认业务入口为 `/login`，而不是直接访问 owner/admin dashboard。
+2. owner/admin 演示账号、角色跳转与退出登录流程必须在 README 与 runbook 中写清楚。
+3. Owner 侧页面当前以 `首页 / 订单 / 导航` 三段式结构为准。
+4. 物业侧页面当前以“物业监管”总览页为准，不再沿用旧的“直接进 dashboard 页但无登录入口”的说明。
+5. `study/` 学习资料已进入主线，README 与 memory-bank 需承认它是正式仓库组成部分。
+
+## 8. 历史阶段验收摘要（已完成）
 
 1. Step25：文档与完成态口径收敛。
 2. Step26：raw ingest 与 Spark 分析增强。
@@ -70,7 +78,7 @@
 12. Step36：发布化总验收。
 13. Step37：提示词体系与前后端现代化入口。
 
-## 8. Git 管理验收
+## 9. Git 管理验收
 
 1. 仓库可 clone 并读取完整项目文档、执行脚本与增强阶段材料。
 2. 每步继续满足 `branch created`、`commit exists`、`PR merged`、`tag created`。
@@ -100,3 +108,12 @@
 5. 最新 bundle 为 `step40` label。
 6. README / runbook / memory-bank / deliverables 默认完成态已升级到 Step40。
 7. `reports/step40_gate_results.json` 显示 `overall_passed=true` 后，Step40 成为新的默认完成态。
+
+## 20. Post-Step40 登录与最终 UI 验收（已合入主线）
+
+1. `python3 scripts/test_step41_arco_tech_ui.py` 通过。
+2. `python3 scripts/test_step42_shadcn_ui_polish.py` 通过。
+3. `python3 scripts/test_step43_simple_bright_ui.py` 通过。
+4. `python3 scripts/test_step43_login_auth.py` 通过。
+5. `python3 scripts/test_step44_authenticated_owner_identity.py` 通过。
+6. 上述能力已进入 `main`，当前不再属于独立 worktree 状态。

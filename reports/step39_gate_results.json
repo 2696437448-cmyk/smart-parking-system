@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-04-22T08:09:50.383065+00:00",
+  "generated_at_utc": "2026-04-23T01:30:06.923851+00:00",
   "overall_passed": true,
   "steps": [
     {
       "name": "openapi_validation",
       "command": "python3 scripts/validate_openapi.py --spec openapi/smart-parking.yaml",
       "passed": true,
-      "elapsed_seconds": 0.424,
+      "elapsed_seconds": 0.112,
       "output_tail": "openapi_validation_passed spec=openapi/smart-parking.yaml"
     },
     {
@@ -28,15 +28,15 @@
       "name": "frontend_typecheck",
       "command": "npm run typecheck",
       "passed": true,
-      "elapsed_seconds": 2.986,
+      "elapsed_seconds": 2.179,
       "output_tail": "> smart-parking-frontend@0.3.0 typecheck\n> vue-tsc --noEmit"
     },
     {
       "name": "frontend_build_warning_free",
       "command": "npm run build",
       "passed": true,
-      "elapsed_seconds": 3.864,
-      "output_tail": "dist/assets/useViewState-DCIOqWoF.js                                        3.19 kB │ gzip:   1.74 kB\ndist/assets/LoginPage-0mR1hyVi.js                                           3.34 kB │ gzip:   1.80 kB\ndist/assets/OwnerNavigation-BIiFQ_ai.js                                     4.01 kB │ gzip:   2.19 kB\ndist/assets/OwnerOrders-CBGOhTYK.js                                         4.80 kB │ gzip:   2.50 kB\ndist/assets/index-CLDpVC4w.js                                               8.43 kB │ gzip:   3.55 kB\ndist/assets/OwnerDashboard-BZIqFBfZ.js                                      8.53 kB │ gzip:   3.93 kB\ndist/assets/AdminMonitor-DbNjGRm9.js                                       10.06 kB │ gzip:   4.39 kB\ndist/assets/vendor-motion-izltOeZh.js                                      35.79 kB │ gzip:  13.79 kB\ndist/assets/vendor-vue-CQIHA5cG.js                                        108.96 kB │ gzip:  42.51 kB\ndist/assets/vendor-leaflet-m0WKI1Zd.js                                    149.59 kB │ gzip:  43.29 kB\ndist/assets/vendor-arco-CWarlP3m.js                                       166.89 kB │ gzip:  50.15 kB\ndist/assets/vendor-zrender-Cv4prEms.js                                    170.42 kB │ gzip:  56.05 kB\ndist/assets/vendor-echarts-C-Q5kK9T.js                                    335.25 kB │ gzip: 113.23 kB\n✓ built in 3.49s"
+      "elapsed_seconds": 4.225,
+      "output_tail": "dist/assets/useViewState-DCIOqWoF.js                                        3.19 kB │ gzip:   1.74 kB\ndist/assets/LoginPage-0mR1hyVi.js                                           3.34 kB │ gzip:   1.80 kB\ndist/assets/OwnerNavigation-BIiFQ_ai.js                                     4.01 kB │ gzip:   2.19 kB\ndist/assets/OwnerOrders-CBGOhTYK.js                                         4.80 kB │ gzip:   2.50 kB\ndist/assets/index-CLDpVC4w.js                                               8.43 kB │ gzip:   3.55 kB\ndist/assets/OwnerDashboard-BZIqFBfZ.js                                      8.53 kB │ gzip:   3.93 kB\ndist/assets/AdminMonitor-DbNjGRm9.js                                       10.06 kB │ gzip:   4.39 kB\ndist/assets/vendor-motion-izltOeZh.js                                      35.79 kB │ gzip:  13.79 kB\ndist/assets/vendor-vue-CQIHA5cG.js                                        108.96 kB │ gzip:  42.51 kB\ndist/assets/vendor-leaflet-m0WKI1Zd.js                                    149.59 kB │ gzip:  43.29 kB\ndist/assets/vendor-arco-CWarlP3m.js                                       166.89 kB │ gzip:  50.15 kB\ndist/assets/vendor-zrender-Cv4prEms.js                                    170.42 kB │ gzip:  56.05 kB\ndist/assets/vendor-echarts-C-Q5kK9T.js                                    335.25 kB │ gzip: 113.23 kB\n✓ built in 3.84s"
     },
     {
       "name": "frontend_hardening_sources",
@@ -44,18 +44,11 @@
       "elapsed_seconds": 0.0
     },
     {
-      "name": "owner_dashboard_runtime_smoke",
-      "command": "GET /api/v1/owner/dashboard",
+      "name": "runtime_gateway_unavailable",
       "passed": true,
+      "skipped": true,
       "elapsed_seconds": 0.0,
-      "output_tail": "{\"status\": 200, \"trace\": \"step39-59c9ec3e\"}"
-    },
-    {
-      "name": "admin_dashboard_runtime_smoke",
-      "command": "GET /api/v1/admin/dashboard",
-      "passed": true,
-      "elapsed_seconds": 0.0,
-      "output_tail": "{\"status\": 200, \"trace\": \"step39-5de874f8\"}"
+      "output_tail": "skip runtime smoke because http://localhost:8080 is unavailable"
     }
   ]
 }
