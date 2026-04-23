@@ -8,8 +8,10 @@ apps/frontend/dist/
 
 # Local IDE/cache
 *.iml
+.DS_Store
 .idea/
 .vscode/
+.worktrees/
 
 # Python cache
 __pycache__/

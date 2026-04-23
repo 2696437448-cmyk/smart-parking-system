@@ -11,6 +11,18 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (
+            id.includes("node_modules/@arco-design") ||
+            id.includes("node_modules/dayjs") ||
+            id.includes("node_modules/number-precision") ||
+            id.includes("node_modules/b-validate") ||
+            id.includes("node_modules/compute-scroll-into-view")
+          ) {
+            return "vendor-arco";
+          }
+          if (id.includes("node_modules/@vueuse")) {
+            return "vendor-motion";
+          }
           if (id.includes("node_modules/zrender")) {
             return "vendor-zrender";
           }

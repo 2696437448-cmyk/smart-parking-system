@@ -32,10 +32,12 @@ class ParkingDashboardViewController {
             @RequestParam(name = "preferred_window", defaultValue = "") String preferredWindow,
             @RequestParam(name = "user_id", defaultValue = "") String userId,
             @RequestParam(name = "order_id", defaultValue = "") String orderId,
+            @RequestHeader(value = "X-Auth-User-Id", required = false) String authenticatedUserId,
             @RequestHeader(value = "X-Trace-Id", required = false) String traceHeader
     ) {
         String traceId = trace(traceHeader);
-        return withTrace(traceId, dashboardViewService.ownerDashboard(location, preferredWindow, userId, orderId));
+        String effectiveUserId = StringUtils.hasText(authenticatedUserId) ? authenticatedUserId : userId;
+        return withTrace(traceId, dashboardViewService.ownerDashboard(location, preferredWindow, effectiveUserId, orderId));
     }
 
     @GetMapping("/api/v1/admin/dashboard")

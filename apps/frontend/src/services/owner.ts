@@ -6,12 +6,10 @@ export const ORDER_STORAGE_KEY = "smartParkingCurrentOrderId";
 export interface OwnerDashboardParams {
   location: string;
   preferredWindow: string;
-  userId: string;
   orderId?: string;
 }
 
 export interface ReservationPayload {
-  userId: string;
   location: string;
   preferredWindow: string;
   slotId: string;
@@ -33,7 +31,6 @@ export async function fetchOwnerDashboard(params: OwnerDashboardParams) {
     gatewayUrl("/api/v1/owner/dashboard", {
       location: params.location,
       preferred_window: params.preferredWindow,
-      user_id: params.userId,
       order_id: params.orderId ?? "",
     }),
   );
@@ -44,10 +41,9 @@ export async function reserveOwnerSlot(payload: ReservationPayload) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Idempotency-Key": `reserve-${payload.userId}-${payload.slotId}-${payload.preferredWindow}`,
+      "Idempotency-Key": `reserve-${payload.slotId}-${payload.preferredWindow}`,
     },
     body: JSON.stringify({
-      user_id: payload.userId,
       preferred_window: payload.preferredWindow,
       location: payload.location,
       slot_id: payload.slotId,

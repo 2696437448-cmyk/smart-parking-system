@@ -11,6 +11,7 @@ const props = defineProps<{
   title: string;
   option: Record<string, unknown>;
   subtitle?: string;
+  note?: string;
 }>();
 
 const root = ref<HTMLElement | null>(null);
@@ -52,14 +53,21 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <article class="panel chart-panel">
-    <div class="chart-head">
-      <div>
-        <p class="eyebrow">Business Chart</p>
+  <article class="chart-panel-shell" v-motion-slide-visible-once-bottom>
+    <div class="chart-head chart-panel-head">
+      <div class="chart-panel-copy">
+        <div class="section-header-kicker chart-panel-kicker">
+          <p class="eyebrow">图表</p>
+          <a-tag color="arcoblue">实时</a-tag>
+        </div>
         <h3>{{ title }}</h3>
+        <p v-if="subtitle" class="muted chart-subtitle">{{ subtitle }}</p>
       </div>
-      <p v-if="subtitle" class="muted chart-subtitle">{{ subtitle }}</p>
+      <div class="chart-panel-side">
+        <p class="muted chart-microcopy">指标走势</p>
+      </div>
     </div>
     <div ref="root" class="chart-canvas"></div>
+    <p v-if="note" class="muted chart-note">{{ note }}</p>
   </article>
 </template>

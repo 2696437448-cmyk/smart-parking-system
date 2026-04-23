@@ -1,46 +1,121 @@
-.owner-dashboard .owner-hero,
-.admin-dashboard .admin-hero {
+.dashboard-grid,
+.orders-grid,
+.navigation-grid,
+.admin-monitor-page {
+  gap: 20px;
+}
+
+.dashboard-grid .summary-panel,
+.orders-grid .order-status-card,
+.navigation-grid .route-panel,
+.admin-monitor-page > .panel {
+  min-width: 0;
+}
+
+.dashboard-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 1fr);
+}
+
+.summary-panel {
   grid-column: 1 / -1;
 }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+.dashboard-grid .form-panel,
+.dashboard-grid .recommendation-panel {
+  min-height: 100%;
 }
 
-.order-stack {
-  gap: var(--space-4);
+.orders-grid {
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
 }
 
-.chart-cluster {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-}
-
-.insight-panel {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.nav-page-grid {
+.navigation-grid {
   grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
 }
 
-.map-panel .map-preview {
+.order-status-band {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.billing-panel,
+.route-panel,
+.map-panel,
+.recommendation-panel,
+.form-panel {
+  min-width: 0;
+}
+
+.task-footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: var(--space-4);
 }
 
+.admin-summary-board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+
+.admin-monitor-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.8fr);
+  gap: var(--space-4);
+}
+
+.admin-main-chart,
+.admin-side-cards {
+  min-width: 0;
+}
+
+.admin-side-cards {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.admin-chart-cluster {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.summary-note-list {
+  display: grid;
+  gap: 10px;
+}
+
+.summary-note-list p {
+  margin-bottom: 0;
+}
+
+@media (max-width: 1080px) {
+  .admin-summary-board {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 960px) {
-  .chart-cluster,
-  .nav-page-grid {
+  .dashboard-grid,
+  .orders-grid,
+  .navigation-grid,
+  .admin-monitor-grid,
+  .admin-chart-cluster {
     grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (max-width: 640px) {
-  .form-grid {
-    grid-template-columns: minmax(0, 1fr);
+  .admin-summary-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .task-footer-actions,
+  .order-status-band {
+    align-items: stretch;
   }
 }

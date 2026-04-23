@@ -1,38 +1,55 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+import { computed } from "vue";
+import { RouterLink, RouterView, useRoute, useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+
+const route = useRoute();
+const router = useRouter();
+const auth = useAuthStore();
+const currentUser = computed(() => auth.currentUser);
+
+const pageMeta = computed(() => {
+  if (route.path === "/admin/monitor") {
+    return {
+      title: "物业监管",
+      summary: "一屏查看主要指标、趋势和运行状态。",
+      snapshot: "实时优先，异常时自动回退",
+    };
+  }
+
+  return {
+    title: "物业监管",
+    summary: "统一查看停车场运行情况。",
+    snapshot: "基础运行模式",
+  };
+});
+
+async function logout() {
+  await auth.logout();
+  await router.replace("/login");
+}
 </script>
 
 <template>
-  <div class="experience-shell admin-shell">
-    <aside class="admin-rail">
-      <p class="eyebrow">Admin Experience</p>
-      <h1>物业经营驾驶舱</h1>
-      <p class="muted">
-        实时状态、收益趋势、区域经营对比和预测解释统一进入业务视图，技术诊断入口保持为备用。
-      </p>
-      <div class="chip-row">
-        <span class="pill">ECharts</span>
-        <span class="pill">Pinia</span>
-        <span class="pill">WebSocket / Polling</span>
-      </div>
-      <nav class="admin-nav" aria-label="admin navigation">
-        <RouterLink to="/admin/monitor">经营驾驶舱</RouterLink>
-      </nav>
-    </aside>
-
+  <div class="experience-shell admin-shell admin-simple-shell">
     <div class="admin-main">
-      <header class="shell-banner admin-banner">
-        <p class="eyebrow">Operations</p>
-        <div class="shell-banner-row">
-          <div class="shell-banner-copy">
-            <h2>业务监控与经营分析</h2>
-            <p>以聚合视图接口驱动页面，让前端聚焦展示层，让管理端更适合日常观察与答辩演示。</p>
+      <header class="shell-banner admin-header">
+        <div class="shell-banner-copy admin-header-copy">
+          <p class="eyebrow">物业端</p>
+          <h1>{{ pageMeta.title }}</h1>
+          <p>{{ pageMeta.summary }}</p>
+        </div>
+        <div class="admin-header-side">
+          <div class="shell-status-strip">
+            <a-tag color="arcoblue">实时</a-tag>
+            <a-tag color="green">已连接</a-tag>
+            <a-tag color="gold">{{ currentUser?.display_name ?? "未登录用户" }}</a-tag>
           </div>
-          <div class="chip-row">
-            <span class="pill">Business Charts</span>
-            <span class="pill">Realtime Aware</span>
-            <span class="pill">View-Model API</span>
-          </div>
+          <p class="muted admin-header-note">{{ pageMeta.snapshot }}</p>
+          <nav class="admin-nav" aria-label="admin navigation">
+            <RouterLink to="/admin/monitor">物业监管</RouterLink>
+          </nav>
+          <a-button size="small" status="normal" @click="logout">退出登录</a-button>
         </div>
       </header>
 
