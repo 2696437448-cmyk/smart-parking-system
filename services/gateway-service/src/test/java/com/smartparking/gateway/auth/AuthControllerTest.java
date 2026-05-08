@@ -1,9 +1,12 @@
 package com.smartparking.gateway.auth;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
@@ -43,5 +46,19 @@ class AuthControllerTest {
                 .uri("/api/v1/admin/dashboard?date=2026-04-21")
                 .exchange()
                 .expectStatus().isUnauthorized();
+    }
+
+    @Test
+    void protectedOwnerRouteAllowsLanCorsPreflight() {
+        client.options()
+                .uri("/api/v1/owner/dashboard?location=R1")
+                .header(HttpHeaders.ORIGIN, "http://192.168.31.108:5173")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_HEADERS, "Authorization")
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().valueEquals(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, "http://192.168.31.108:5173")
+                .expectHeader().value(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, value -> assertThat(value).contains("GET"))
+                .expectHeader().value(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, value -> assertThat(value).contains("Authorization"));
     }
 }
