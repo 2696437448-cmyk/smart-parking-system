@@ -1,0 +1,59 @@
+name: Bug 反馈
+description: 提交一个可复现的问题报告
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题描述
+      description: 请简要描述你遇到的问题
+      placeholder: 例如：登录后跳转异常，页面一直停留在加载状态
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请尽量按顺序描述如何复现
+      placeholder: |
+        1. 执行命令 ...
+        2. 打开页面 ...
+        3. 点击 ...
+        4. 出现错误 ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+      placeholder: 例如：应成功跳转到业主首页
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果
+      placeholder: 例如：页面白屏 / 返回 401 / 构建失败
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境信息
+      placeholder: |
+        - OS:
+        - Java:
+        - Python:
+        - Node.js:
+        - Docker:
+    validations:
+      required: false
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志或截图
+      description: 可粘贴报错信息、控制台日志或截图
+    validations:
+      required: false

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 使用帮助与支持
+    url: ./SUPPORT.md
+    about: 如果你需要使用帮助、排查建议或环境说明，请先阅读 SUPPORT.md
+  - name: 安全问题反馈
+    url: ./SECURITY.md
+    about: 如果问题涉及安全漏洞，请不要公开提交 Issue，请先阅读 SECURITY.md
