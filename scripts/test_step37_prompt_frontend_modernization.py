@@ -29,6 +29,21 @@ def request(path: str, method: str = "GET", body: dict | None = None, headers: d
         return resp.status, json.loads(resp.read().decode("utf-8"))
 
 
+def login(username: str, password: str) -> tuple[str, str]:
+    status, payload = request(
+        "/api/v1/auth/login",
+        method="POST",
+        body={"username": username, "password": password},
+    )
+    if status != 200:
+        raise AssertionError(f"auth login failed for {username}: {payload}")
+    access_token = str(payload.get("access_token") or "")
+    user_id = str((payload.get("user") or {}).get("user_id") or "")
+    if not access_token or not user_id:
+        raise AssertionError(f"auth login payload missing token/user_id for {username}: {payload}")
+    return access_token, user_id
+
+
 def wait_gateway() -> None:
     deadline = time.time() + 120
     while time.time() < deadline:
@@ -49,7 +64,7 @@ def assert_text(path: Path, tokens: list[str]) -> None:
             raise AssertionError(f"{path} missing token: {token}")
 
 
-def seed_owner_order() -> str:
+def seed_owner_order(owner_user_id: str, owner_headers: dict[str, str]) -> str:
     base = datetime.now(timezone(timedelta(hours=8))).replace(second=0, microsecond=0) + timedelta(minutes=90)
     preferred = f"{base.isoformat()}/{(base + timedelta(minutes=45)).isoformat()}"
     suffix = uuid.uuid4().hex[:8]
@@ -60,12 +75,15 @@ def seed_owner_order() -> str:
                 "/api/v1/owner/reservations",
                 method="POST",
                 body={
-                    "user_id": f"owner-step37-{suffix}",
+                    "user_id": owner_user_id,
                     "preferred_window": preferred,
                     "location": "R1",
                     "slot_id": slot_id,
                 },
-                headers={"Idempotency-Key": f"step37-{suffix}-{slot_index}"},
+                headers={
+                    **owner_headers,
+                    "Idempotency-Key": f"step37-{suffix}-{slot_index}",
+                },
             )
         except Exception:
             continue
@@ -115,21 +133,28 @@ def main() -> None:
     assert_text(FRONTEND / "src" / "router.ts", ['import("./layouts/OwnerLayout.vue")', 'import("./layouts/AdminLayout.vue")'])
 
     wait_gateway()
-    order_id = seed_owner_order()
+    owner_token, owner_user_id = login("owner_demo", "demo123")
+    admin_token, _ = login("admin_demo", "admin123")
+    owner_headers = {"Authorization": f"Bearer {owner_token}"}
+    admin_headers = {"Authorization": f"Bearer {admin_token}"}
+    order_id = seed_owner_order(owner_user_id, owner_headers)
     owner_query = urllib.parse.urlencode(
         {
             "location": "R1",
             "preferred_window": f"{datetime.now(timezone(timedelta(hours=8))).replace(second=0, microsecond=0).isoformat()}/{(datetime.now(timezone(timedelta(hours=8))).replace(second=0, microsecond=0) + timedelta(minutes=30)).isoformat()}",
-            "user_id": "owner-app-001",
+            "user_id": owner_user_id,
             "order_id": order_id,
         }
     )
-    status, owner_payload = request(f"/api/v1/owner/dashboard?{owner_query}")
+    status, owner_payload = request(f"/api/v1/owner/dashboard?{owner_query}", headers=owner_headers)
     assert status == 200, owner_payload
     assert isinstance(owner_payload.get("summary"), dict), owner_payload
     assert isinstance(owner_payload.get("recommendations"), list) and owner_payload.get("recommendations"), owner_payload
 
-    status, admin_payload = request(f"/api/v1/admin/dashboard?date={datetime.now(timezone.utc).date().isoformat()}")
+    status, admin_payload = request(
+        f"/api/v1/admin/dashboard?date={datetime.now(timezone.utc).date().isoformat()}",
+        headers=admin_headers,
+    )
     assert status == 200, admin_payload
     assert isinstance(admin_payload.get("summary"), dict), admin_payload
     assert isinstance(admin_payload.get("sections"), dict), admin_payload

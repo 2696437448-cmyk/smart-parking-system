@@ -10,11 +10,16 @@ spring:
         connect-timeout: ${UPSTREAM_CONNECT_TIMEOUT_MS:10000}
         response-timeout: ${UPSTREAM_TIMEOUT_MS:2500}ms
       globalcors:
+        add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]':
-            allowedOrigins:
-              - http://localhost:4173
-              - http://localhost:5173
+            allowedOriginPatterns:
+              - "http://localhost:*"
+              - "http://127.0.0.1:*"
+              - "http://192.168.*:*"
+              - "http://10.*:*"
+              - "http://172.*:*"
+              - "http://169.254.*:*"
             allowedMethods:
               - GET
               - POST

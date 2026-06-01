@@ -41,8 +41,15 @@ def assert_tokens(path: Path, tokens: list[str]) -> None:
             raise AssertionError(f"{path} missing token: {token}")
 
 
-def request(path: str):
-    req = urllib.request.Request(GATEWAY + path, headers={"X-Trace-Id": f"step39-{uuid.uuid4().hex[:8]}"})
+def request(path: str, headers: dict[str, str] | None = None, method: str = "GET", body: dict | None = None):
+    merged_headers = {"X-Trace-Id": f"step39-{uuid.uuid4().hex[:8]}"}
+    if headers:
+        merged_headers.update(headers)
+    data = None
+    if body is not None:
+        data = json.dumps(body).encode("utf-8")
+        merged_headers["Content-Type"] = "application/json"
+    req = urllib.request.Request(GATEWAY + path, data=data, headers=merged_headers, method=method)
     try:
         with urllib.request.urlopen(req, timeout=12) as resp:
             payload = json.loads(resp.read().decode("utf-8"))
@@ -50,6 +57,21 @@ def request(path: str):
     except HTTPError as ex:
         payload = json.loads(ex.read().decode("utf-8"))
         return ex.code, payload, dict(ex.headers.items())
+
+
+def login(username: str, password: str) -> tuple[str, str]:
+    status, payload, _ = request(
+        "/api/v1/auth/login",
+        method="POST",
+        body={"username": username, "password": password},
+    )
+    if status != 200:
+        raise AssertionError(f"auth login failed for {username}: {payload}")
+    access_token = str(payload.get("access_token") or "")
+    user_id = str((payload.get("user") or {}).get("user_id") or "")
+    if not access_token or not user_id:
+        raise AssertionError(f"auth login payload missing token/user_id for {username}: {payload}")
+    return access_token, user_id
 
 
 def gateway_ready() -> bool:
@@ -61,7 +83,7 @@ def gateway_ready() -> bool:
         return False
 
 
-def runtime_owner_query() -> str:
+def runtime_owner_query(owner_user_id: str) -> str:
     shanghai = timezone(timedelta(hours=8))
     start_dt = datetime.now(shanghai).replace(second=0, microsecond=0) + timedelta(minutes=60)
     end_dt = start_dt + timedelta(minutes=30)
@@ -69,7 +91,7 @@ def runtime_owner_query() -> str:
         {
             "location": "R1",
             "preferred_window": f"{start_dt.isoformat()}/{end_dt.isoformat()}",
-            "user_id": "owner-step39-smoke",
+            "user_id": owner_user_id,
         }
     )
 
@@ -155,7 +177,15 @@ def main() -> None:
     steps.append({"name": "frontend_hardening_sources", "passed": True, "elapsed_seconds": 0.0})
 
     if gateway_ready():
-        owner_status, owner_payload, owner_headers = request(f"/api/v1/owner/dashboard?{runtime_owner_query()}")
+        owner_token, owner_user_id = login("owner_demo", "demo123")
+        admin_token, _ = login("admin_demo", "admin123")
+        owner_auth_headers = {"Authorization": f"Bearer {owner_token}"}
+        admin_auth_headers = {"Authorization": f"Bearer {admin_token}"}
+
+        owner_status, owner_payload, owner_headers = request(
+            f"/api/v1/owner/dashboard?{runtime_owner_query(owner_user_id)}",
+            headers=owner_auth_headers,
+        )
         owner_ok = owner_status == 200 and isinstance(owner_payload.get("summary"), dict) and isinstance(owner_payload.get("recommendations"), list)
         owner_ok = owner_ok and isinstance(owner_payload.get("trace_id"), str) and isinstance(owner_payload.get("service"), str)
         owner_ok = owner_ok and bool(owner_headers.get("X-Trace-Id"))
@@ -173,7 +203,10 @@ def main() -> None:
             print(f"STEP39_GATE_FAIL failed=owner_dashboard_runtime_smoke report={REPORT_PATH}")
             raise SystemExit(1)
 
-        admin_status, admin_payload, admin_headers = request(f"/api/v1/admin/dashboard?date={datetime.now(timezone.utc).date().isoformat()}")
+        admin_status, admin_payload, admin_headers = request(
+            f"/api/v1/admin/dashboard?date={datetime.now(timezone.utc).date().isoformat()}",
+            headers=admin_auth_headers,
+        )
         admin_ok = admin_status == 200 and isinstance(admin_payload.get("summary"), dict) and isinstance(admin_payload.get("sections"), dict)
         admin_ok = admin_ok and isinstance(admin_payload.get("degraded_metadata"), dict) and isinstance(admin_payload.get("diagnostic_links"), dict)
         admin_ok = admin_ok and isinstance(admin_payload.get("trace_id"), str) and isinstance(admin_payload.get("service"), str)
